@@ -388,8 +388,9 @@ report 70001 "Generate Payroll Statement DLL"
         PayrollStatement3: Record "Payroll Statement";
         "##=============================BC DLL============================##": Integer;
 
-        ParamListDataTableRecL: Record "ParamList Data Table";
         PayComponentEECistTableRecL: Record "Emp. Earning Code  List Table";
+
+        ParamListDataTableRecL: Record "ParamList Data Table";
         EmpBenefitsListTableRecL: Record "Emp. Benefits List Table";
         EmpResultTableRecL: Record "Emp. Result Table";
 
@@ -399,8 +400,11 @@ report 70001 "Generate Payroll Statement DLL"
     // // BenefitRowCollection: Record "Emp. Result Table";
     begin
         // Start  @BC DLL 
-        Clear(ParamListDataTableRecL);
+        PayComponentEECistTableRecL.Reset();
+        if PayComponentEECistTableRecL.FindSet() then
+            PayComponentEECistTableRecL.DeleteAll();
         // Stop @BC DLL
+
         with RecPayrollStatement do begin
             RecEmployee.GET(EmployeeCode);
             EmployeeEarningCodeGroup.RESET;
@@ -975,12 +979,24 @@ report 70001 "Generate Payroll Statement DLL"
                             // // PayComponentTable.Rows.Add(PayComponentRow);
                             Message('PayComponentEECistTableRecL');
                             PayComponentEECistTableRecL.Init();
-                            PayComponentEECistTableRecL.EECList__Paycomponentcode := EmployeeEarningCodes."Short Name";
-                            PayComponentEECistTableRecL.EECList__UnitFormula := FormulaForPackage;
-                            PayComponentEECistTableRecL.EECList__Formulaforattendance := FormulaForAttendance;
-                            PayComponentEECistTableRecL.EECList__Formulafordays := FormulaForDays;
-                            PayComponentEECistTableRecL.EECList__Paycomponenttype := Format(EmployeeEarningCodes."Pay Component Type");
+                            PayComponentEECistTableRecL."Entry No." := 0;
                             PayComponentEECistTableRecL.Insert();
+                            PayComponentEECistTableRecL.EECList__Paycomponentcode := EmployeeEarningCodes."Short Name";
+
+                            //PayComponentEECistTableRecL.EECList__UnitFormula := FormulaForPackage;
+                            Message(' FormulaForPackage   %1', FormulaForPackage);
+                            PayComponentEECistTableRecL.SETFormulaEECList__UnitFormula_Code(FormulaForPackage, PayComponentEECistTableRecL."Entry No.");
+
+                            // PayComponentEECistTableRecL.EECList__Formulaforattendance := FormulaForAttendance;
+                            Message('FormulaForAttendance %1 ', FormulaForAttendance);
+                            PayComponentEECistTableRecL.SETEECList__Formulaforattendance_Code(FormulaForAttendance, PayComponentEECistTableRecL."Entry No.");
+
+                            // PayComponentEECistTableRecL.EECList__Formulafordays := FormulaForDays;
+                            Message('FormulaForDays  %1', FormulaForDays);
+                            PayComponentEECistTableRecL.SETEECList__Formulafordays_Code(FormulaForDays, PayComponentEECistTableRecL."Entry No.");
+
+                            PayComponentEECistTableRecL.EECList__Paycomponenttype := Format(EmployeeEarningCodes."Pay Component Type");
+                            PayComponentEECistTableRecL.Modify();
                             // Stop @BC DLL
 
 
@@ -993,66 +1009,71 @@ report 70001 "Generate Payroll Statement DLL"
                             TempDataTable."Formula for Days" := COPYSTR(FormulaForDays, 1, 250);
                             TempDataTable."Paycomponent Type" := FORMAT(EmployeeEarningCodes."Pay Component Type");
                             TempDataTable.INSERT;
+                        //Temp Data
+
+                        //Insert System Data Rows
+                        // Start @BC DLL Avinash
+                        // // // LevHREvaluation := LevHREvaluation.HrmPlus;
+                        // // // ResultTable := ResultTable.DataTable;
+                        // // // ResultTable := LevHREvaluation.PageInIt(ParameterTable, PayComponentTable, BenefitTable);
+                        // Stop @BC DLL Avinash
+
+                        // Start @BC DLL
+                        //PayComponentRowCollection := ResultTable.Rows;
+                        // Stop @BC DLL
+                        /*
+                        for i := 0 to PayComponentRowCollection.Count - 1 do begin
                             //Temp Data
-
-                            //Insert System Data Rows
-                            // Start @BC DLL Avinash
-                            // // // LevHREvaluation := LevHREvaluation.HrmPlus;
-                            // // // ResultTable := ResultTable.DataTable;
-                            // // // ResultTable := LevHREvaluation.PageInIt(ParameterTable, PayComponentTable, BenefitTable);
-                            // Stop @BC DLL Avinash
-
-                            PayComponentRowCollection := ResultTable.Rows;
-                            for i := 0 to PayComponentRowCollection.Count - 1 do begin
-                                //Temp Data
+                            dotNetDataRow := ResultTable.Rows.Item(i);
+                            TempDataTable.INIT;
+                            TempDataTable."Entry No." := 0;
+                            TempDataTable.INSERT;
+                            TempDataTable."Result Formula Type" := dotNetDataRow.Item(0);
+                            TempDataTable."Result Base Code" := dotNetDataRow.Item(1);
+                            TempDataTable."Result Fornula ID1" := dotNetDataRow.Item(2);
+                            TempDataTable.Result1 := dotNetDataRow.Item(3);
+                            TempDataTable."Result Fornula ID2" := dotNetDataRow.Item(4);
+                            TempDataTable.Result2 := dotNetDataRow.Item(5);
+                            TempDataTable."Result Fornula ID3" := dotNetDataRow.Item(6);
+                            TempDataTable.Result3 := dotNetDataRow.Item(7);
+                            TempDataTable.SetFormulaForErrorLog(dotNetDataRow.Item(8));
+                            TempDataTable.MODIFY;
+                            //Temp Data
+                            if (FORMAT(dotNetDataRow.Item(0)) = 'P') and (FORMAT(dotNetDataRow.Item(1)) = EmployeeEarningCodes."Earning Code") then begin
                                 dotNetDataRow := ResultTable.Rows.Item(i);
-                                TempDataTable.INIT;
-                                TempDataTable."Entry No." := 0;
-                                TempDataTable.INSERT;
-                                TempDataTable."Result Formula Type" := dotNetDataRow.Item(0);
-                                TempDataTable."Result Base Code" := dotNetDataRow.Item(1);
-                                TempDataTable."Result Fornula ID1" := dotNetDataRow.Item(2);
-                                TempDataTable.Result1 := dotNetDataRow.Item(3);
-                                TempDataTable."Result Fornula ID2" := dotNetDataRow.Item(4);
-                                TempDataTable.Result2 := dotNetDataRow.Item(5);
-                                TempDataTable."Result Fornula ID3" := dotNetDataRow.Item(6);
-                                TempDataTable.Result3 := dotNetDataRow.Item(7);
-                                TempDataTable.SetFormulaForErrorLog(dotNetDataRow.Item(8));
-                                TempDataTable.MODIFY;
-                                //Temp Data
-                                if (FORMAT(dotNetDataRow.Item(0)) = 'P') and (FORMAT(dotNetDataRow.Item(1)) = EmployeeEarningCodes."Earning Code") then begin
-                                    dotNetDataRow := ResultTable.Rows.Item(i);
-                                    PayrollStatementTransLines2.RESET;
-                                    PayrollStatementTransLines2.SETRANGE("Payroll Statement ID", RecPayrollStatement."Payroll Statement ID");
-                                    PayrollStatementTransLines2.SETRANGE("Payroll Statment Employee", RecEmployee."No.");
-                                    if PayrollStatementTransLines2.FINDLAST then;
-                                    PayrollStatementTransLines.INIT;
-                                    PayrollStatementTransLines."Payroll Statement ID" := RecPayrollStatement."Payroll Statement ID";
-                                    PayrollStatementTransLines."Payroll Statment Employee" := RecEmployee."No.";
-                                    PayrollStatementTransLines."Line No." := PayrollStatementTransLines2."Line No." + 10000;
-                                    PayrollStatementTransLines.INSERT;
-                                    PayrollStatementTransLines.Voucher := PayrollStatementEmployee.Voucher;
-                                    PayrollStatementTransLines.Worker := PayrollStatementEmployee.Worker;
-                                    PayrollStatementTransLines."Employee Name" := PayrollStatementEmployee."Employee Name";
-                                    PayrollStatementTransLines."Payroll Pay Cycle" := PayrollStatementEmployee."Payroll Pay Cycle";
-                                    PayrollStatementTransLines."Payroll Pay Period" := PayrollStatementEmployee."Payroll Pay Period";
-                                    PayrollStatementTransLines."Payroll Month" := PayrollStatementEmployee."Payroll Month";
-                                    PayrollStatementTransLines."Payroll Year" := PayrollStatementEmployee."Payroll Year";
-                                    PayrollStatementTransLines."Currency Code" := PayrollStatementEmployee."Currency Code";
-                                    PayrollStatementTransLines."Earning Code Type" := PayrollStatementTransLines."Earning Code Type"::"Pay Component";
-                                    PayrollStatementTransLines."Earniing Code Short Name" := EmployeeEarningCodes."Short Name";
-                                    PayrollStatementTransLines."Payroll Earning Code" := EmployeeEarningCodes."Earning Code";
-                                    PayrollStatementTransLines."Payroll Earning Code Desc" := EmployeeEarningCodes.Description;
-                                    Value := dotNetDataRow.Item(3);
-                                    EVALUATE(PayrollStatementTransLines."Calculation Units", Value);
-                                    Value := dotNetDataRow.Item(5);
-                                    EVALUATE(PayrollStatementTransLines."Earning Code Amount", Value);
-                                    Value := dotNetDataRow.Item(7);
-                                    EVALUATE(PayrollStatementTransLines."Per Unit Amount", Value);
-                                    PayrollStatementTransLines.MODIFY;
-                                end;
+                                PayrollStatementTransLines2.RESET;
+                                PayrollStatementTransLines2.SETRANGE("Payroll Statement ID", RecPayrollStatement."Payroll Statement ID");
+                                PayrollStatementTransLines2.SETRANGE("Payroll Statment Employee", RecEmployee."No.");
+                                if PayrollStatementTransLines2.FINDLAST then;
+                                PayrollStatementTransLines.INIT;
+                                PayrollStatementTransLines."Payroll Statement ID" := RecPayrollStatement."Payroll Statement ID";
+                                PayrollStatementTransLines."Payroll Statment Employee" := RecEmployee."No.";
+                                PayrollStatementTransLines."Line No." := PayrollStatementTransLines2."Line No." + 10000;
+                                PayrollStatementTransLines.INSERT;
+                                PayrollStatementTransLines.Voucher := PayrollStatementEmployee.Voucher;
+                                PayrollStatementTransLines.Worker := PayrollStatementEmployee.Worker;
+                                PayrollStatementTransLines."Employee Name" := PayrollStatementEmployee."Employee Name";
+                                PayrollStatementTransLines."Payroll Pay Cycle" := PayrollStatementEmployee."Payroll Pay Cycle";
+                                PayrollStatementTransLines."Payroll Pay Period" := PayrollStatementEmployee."Payroll Pay Period";
+                                PayrollStatementTransLines."Payroll Month" := PayrollStatementEmployee."Payroll Month";
+                                PayrollStatementTransLines."Payroll Year" := PayrollStatementEmployee."Payroll Year";
+                                PayrollStatementTransLines."Currency Code" := PayrollStatementEmployee."Currency Code";
+                                PayrollStatementTransLines."Earning Code Type" := PayrollStatementTransLines."Earning Code Type"::"Pay Component";
+                                PayrollStatementTransLines."Earniing Code Short Name" := EmployeeEarningCodes."Short Name";
+                                PayrollStatementTransLines."Payroll Earning Code" := EmployeeEarningCodes."Earning Code";
+                                PayrollStatementTransLines."Payroll Earning Code Desc" := EmployeeEarningCodes.Description;
+                                Value := dotNetDataRow.Item(3);
+                                EVALUATE(PayrollStatementTransLines."Calculation Units", Value);
+                                Value := dotNetDataRow.Item(5);
+                                EVALUATE(PayrollStatementTransLines."Earning Code Amount", Value);
+                                Value := dotNetDataRow.Item(7);
+                                EVALUATE(PayrollStatementTransLines."Per Unit Amount", Value);
+                                PayrollStatementTransLines.MODIFY;
                             end;
+                        end;
+                        */ // Avinash commneted
                         until EmployeeEarningCodes.NEXT = 0;
+
 
                     EmployeeBenefits.RESET;
                     EmployeeBenefits.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
@@ -1158,6 +1179,7 @@ report 70001 "Generate Payroll Statement DLL"
                 CreatePayrollStatementLines(PayrollStatement, PayrollStatementEmployee);
             end;
         end;
+
     end;
 
     local procedure CreatePayrollStatementLines(_RecPayrollStatement: Record "Payroll Statement"; _RecPayrollStatementEmployee: Record "Payroll Statement Employee");

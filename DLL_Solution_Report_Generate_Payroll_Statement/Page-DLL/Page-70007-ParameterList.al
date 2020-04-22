@@ -37,7 +37,7 @@ page 70007 "Parameter List"
                 ApplicationArea = All;
                 Promoted = true;
                 PromotedIsBig = true;
-                RunObject = codeunit "BC Json Handling";
+                // RunObject = codeunit "BC Json Handling";
             }
         }
     }

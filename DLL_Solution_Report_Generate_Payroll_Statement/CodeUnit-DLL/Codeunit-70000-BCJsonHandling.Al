@@ -1,3 +1,4 @@
+/*
 codeunit 70000 "BC Json Handling"
 {
     trigger OnRun()
@@ -209,3 +210,5 @@ codeunit 70000 "BC Json Handling"
     end;
     // POST
 }
+
+*/
