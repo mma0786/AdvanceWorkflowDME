@@ -1,0 +1,62 @@
+page 60126 "Payroll Increment Line Subpage"
+{
+    Caption = 'Payroll Increment Steps';
+    AutoSplitKey = true;
+    DelayedInsert = true;
+    MultipleNewLines = true;
+    PageType = List;
+    SourceTable = "Payroll Increment Line";
+    ApplicationArea = All;
+    UsageCategory = Lists;
+    layout
+    {
+        area(content)
+        {
+            repeater(Group)
+            {
+                field("Line No."; "Line No.")
+                {
+                    Editable = false;
+                    Visible = false;
+                    ApplicationArea = All;
+                }
+                field("Grade Category"; "Grade Category")
+                {
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+                field(Grade; Grade)
+                {
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+                field("Type of Increment"; "Type of Increment")
+                {
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+                field("Calculation Type"; "Calculation Type")
+                {
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+                field("Earning Code"; "Earning Code")
+                {
+                    ApplicationArea = All;
+                }
+                field("Earning Code Description"; "Earning Code Description")
+                {
+                    Editable = false;
+                    ApplicationArea = All;
+                }
+                field("Amount/Percentage"; "Amount/Percentage")
+                {
+                    ApplicationArea = All;
+                }
+            }
+        }
+    }
+
+
+}
+

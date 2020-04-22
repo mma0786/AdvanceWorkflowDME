@@ -1,0 +1,39 @@
+{
+  "id": "c35c32c2-eddd-4d9d-996b-8a138e8f5d51",
+  "name": "Payroll_Hr",
+  "publisher": "Default publisher",
+  "version": "1.0.0.0",
+  "brief": "",
+  "description": "",
+  "privacyStatement": "",
+  "EULA": "",
+  "help": "",
+  "url": "",
+  "logo": "Logo_Levtech/LevtechRIB.jpg",
+  "dependencies": [
+    {
+      "appId": "63ca2fa4-4f03-4f2b-a480-172fef340d3f",
+      "publisher": "Microsoft",
+      "name": "System Application",
+      "version": "1.0.0.0"
+    },
+    {
+      "appId": "437dbf0e-84ff-417a-965d-ed2bb9650972",
+      "publisher": "Microsoft",
+      "name": "Base Application",
+      "version": "15.0.0.0"
+    }
+  ],
+  "screenshots": [],
+  "platform": "15.0.0.0",
+  "idRanges": [
+    {
+      "from": 50000,
+      "to": 70500
+    }
+  ],
+  "contextSensitiveHelpUrl": "https://Payroll_Hr.com/help/",
+  "showMyCode": true,
+  "runtime": "4.0",
+ "target": "Internal"
+}
