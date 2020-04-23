@@ -946,31 +946,6 @@ report 70001 "Generate Payroll Statement DLL"
 
                                 until PayrollFormulaKeyWords.NEXT = 0;
                         until EmployeeBenefits.NEXT = 0;
-                    //Benefit Table and columns
-                    //Paycomponent Table and columns
-                    // Start @BC DLL
-
-                    // PayComponentTable := PayComponentTable.DataTable('Table2');                    
-                    // PayComponentColumnCollection := PayComponentTable.Columns;
-                    // PayComponentRowCollection := PayComponentTable.Rows;
-                    // PayComponentColumn := PayComponentColumn.DataColumn;
-                    // PayComponentColumn.ColumnName := 'Paycomponentcode';
-                    // PayComponentTable.Columns.Add(PayComponentColumn);
-                    // PayComponentColumn := PayComponentColumn.DataColumn;
-                    // PayComponentColumn.ColumnName := 'UnitFormula';
-                    // PayComponentTable.Columns.Add(PayComponentColumn);
-                    // PayComponentColumn := PayComponentColumn.DataColumn;
-                    // PayComponentColumn.ColumnName := 'Formulaforattendance';
-                    // PayComponentTable.Columns.Add(PayComponentColumn);
-                    // PayComponentColumn := PayComponentColumn.DataColumn;
-                    // PayComponentColumn.ColumnName := 'Formulafordays';
-                    // PayComponentTable.Columns.Add(PayComponentColumn);
-                    // PayComponentColumn := PayComponentColumn.DataColumn;
-                    // PayComponentColumn.ColumnName := 'Paycomponenttype';
-                    // PayComponentTable.Columns.Add(PayComponentColumn);
-
-                    //Paycomponent Table and columns
-                    // Stop @BC DLL
 
                     EmployeeEarningCodes.RESET;
                     EmployeeEarningCodes.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
@@ -1001,15 +976,7 @@ report 70001 "Generate Payroll Statement DLL"
                             //Insert System Data Rows
                             // Start @BC DLL 22.04.2020 
                             // @Pay Component or Earning Code value inserting into Temp Table as per DLL Solution 
-                            /*              
-                            PayComponentRow := PayComponentTable.NewRow();
-                            PayComponentRow.Item('Paycomponentcode', EmployeeEarningCodes."Short Name");
-                            PayComponentRow.Item('UnitFormula', FormulaForPackage);
-                            PayComponentRow.Item('Formulaforattendance', FormulaForAttendance);
-                            PayComponentRow.Item('Formulafordays', FormulaForDays);
-                            PayComponentRow.Item('Paycomponenttype', EmployeeEarningCodes."Pay Component Type");
-                            PayComponentTable.Rows.Add(PayComponentRow);    
-                            */
+
                             PayComponentEECistTableRecL.Init();
                             PayComponentEECistTableRecL."Entry No." := 0;
                             PayComponentEECistTableRecL.Insert();
@@ -1041,10 +1008,10 @@ report 70001 "Generate Payroll Statement DLL"
                             // Stop @BC DLL Avinash
 
                             ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL, PayComponentEECistTableRecL, BenefitTableRecL);
-                            ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
-                            Message('ReturnJsonResponse           %1', ReturnJsonResponse);
-                            Clear(EmpResultTableRecL);
-                            DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
+                            // // // // // // // // // ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
+                            // // // // // // // // // Message('ReturnJsonResponse           %1', ReturnJsonResponse);
+                            // // // // // // // // // Clear(EmpResultTableRecL);
+                            // // // // // // // // // DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
 
                             // Start @BC DLL
                             // @BC DLL // PayComponentRowCollection := ResultTable.Rows;
@@ -1056,25 +1023,6 @@ report 70001 "Generate Payroll Statement DLL"
                             PayComponentRowCollectionRecL.SetCurrentKey("Entry No.");
                             if PayComponentRowCollectionRecL.FindSet() then begin
                                 repeat
-                                    // @BC DLL //for i := 0 to PayComponentRowCollectionRecL.Count - 1 do begin
-                                    //Temp Data
-                                    // @BC DLL  START
-                                    //dotNetDataRow := ResultTable.Rows.Item(i);
-                                    /*
-                                    TempDataTable.INIT;
-                                    TempDataTable."Entry No." := 0;
-                                    TempDataTable.INSERT;
-                                    TempDataTable."Result Formula Type" := dotNetDataRow.Item(0);
-                                    TempDataTable."Result Base Code" := dotNetDataRow.Item(1);
-                                    TempDataTable."Result Fornula ID1" := dotNetDataRow.Item(2);
-                                    TempDataTable.Result1 := dotNetDataRow.Item(3);
-                                    TempDataTable."Result Fornula ID2" := dotNetDataRow.Item(4);
-                                    TempDataTable.Result2 := dotNetDataRow.Item(5);
-                                    TempDataTable."Result Fornula ID3" := dotNetDataRow.Item(6);
-                                    TempDataTable.Result3 := dotNetDataRow.Item(7);
-                                    TempDataTable.SetFormulaForErrorLog(dotNetDataRow.Item(8));
-                                    TempDataTable.MODIFY;
-                                    */
                                     TempDataTable.INIT;
                                     TempDataTable."Entry No." := 0;
                                     TempDataTable.INSERT;
@@ -1246,7 +1194,13 @@ report 70001 "Generate Payroll Statement DLL"
                         until PayrollAdjHeader.NEXT = 0;
                     //Payroll Adjustment Journals
                 end;
-
+                /*TEST*/
+                //Message('ReturnJsonStringTxtL           %1', ReturnJsonStringTxtL);
+                ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
+                Message('ReturnJsonResponse           %1', ReturnJsonResponse);
+                // Clear(EmpResultTableRecL);
+                // DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
+                /*TEST*/
                 CreatePayrollStatementLines(PayrollStatement, PayrollStatementEmployee);
             end;
         end;
