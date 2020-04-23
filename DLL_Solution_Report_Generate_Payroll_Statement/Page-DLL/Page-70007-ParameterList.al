@@ -4,6 +4,9 @@ page 70007 "Parameter List"
     SourceTable = "ParamList Data Table";
     UsageCategory = Lists;
     ApplicationArea = All;
+    DeleteAllowed = false;
+    ModifyAllowed = false;
+    InsertAllowed = false;
 
     layout
     {
@@ -11,13 +14,14 @@ page 70007 "Parameter List"
         {
             repeater(Group)
             {
-                field(ParamList__KeyId; ParamList__KeyId)
-                {
-                }
                 field("Entry No."; "Entry No.")
                 {
                 }
-                field(ParamList__KeyValue; ParamList__KeyValue)
+                field(ParamList__KeyId; ParamList__KeyId)
+                {
+                }
+
+                field(ParamList__KeyValueTxt; ParamList__KeyValueTxt)
                 {
                 }
                 field(ParamList__DataType; ParamList__DataType)
@@ -26,20 +30,14 @@ page 70007 "Parameter List"
             }
         }
     }
+    var
+        ParamList__KeyValueTxt: Text;
 
-    actions
-    {
-        area(Processing)
-        {
-            action("Run Code unit")
-            {
-                Image = ShowList;
-                ApplicationArea = All;
-                Promoted = true;
-                PromotedIsBig = true;
-                // RunObject = codeunit "BC Json Handling";
-            }
-        }
-    }
+    trigger OnAfterGetRecord()
+    begin
+        ParamList__KeyValueTxt := GET_ParamList__KeyValueP();
+    end;
+
+
 }
 

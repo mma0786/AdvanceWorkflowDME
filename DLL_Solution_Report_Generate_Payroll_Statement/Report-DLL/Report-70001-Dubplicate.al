@@ -81,7 +81,6 @@ report 70001 "Generate Payroll Statement DLL"
                     PayPeriods.SETCURRENTKEY("Pay Cycle", "Period Start Date");
                     PayPeriods.SETRANGE("Pay Cycle", PayrollPosition."Pay Cycle");
                     PayPeriods.SETRANGE("Period Start Date", PayrollStatement."Pay Period Start Date", NORMALDATE(PayrollStatement."Pay Period End Date"));
-                    //PayPeriods.SETRANGE("Period End Date",PayrollStatement."Pay Period Start Date",NORMALDATE(PayrollStatement."Pay Period End Date"));
                     if not PayPeriods.FINDFIRST then begin
                         PayrollErrorLog.INIT;
                         PayrollErrorLog."Entry No." := 0;
@@ -106,7 +105,6 @@ report 70001 "Generate Payroll Statement DLL"
                 PayrollStatementEmployee.SETCURRENTKEY(Worker, "Payroll Period RecID");
                 PayrollStatementEmployee.SETRANGE(Worker, Employee."No.");
                 PayrollStatementEmployee.SETRANGE("Payroll Period RecID", PayrollStatement."Payroll Period RecID");
-                //PayrollStatementEmployee.SETRANGE(Status,PayrollStatementEmployee.Status::Posted,PayrollStatementEmployee.Status::Posted);
                 if PayrollStatementEmployee.FINDFIRST then begin
                     PayrollErrorLog.INIT;
                     PayrollErrorLog."Entry No." := 0;
@@ -124,7 +122,6 @@ report 70001 "Generate Payroll Statement DLL"
                     if PayrollStatementEmployee.FINDFIRST then begin
                         PayrollStatementEmployee.RESET;
                         PayrollStatementEmployee.SETRANGE("Pay Period Start Date", CALCDATE('-CM', PayrollStatement."Pay Period Start Date" - 1));
-                        //PayrollStatementEmployee.SETRANGE(Status,PayrollStatementEmployee.Status::Posted,PayrollStatementEmployee.Status::Posted);
                         if not PayrollStatementEmployee.FINDFIRST then begin
                             PayrollErrorLog.INIT;
                             PayrollErrorLog."Entry No." := 0;
@@ -287,31 +284,34 @@ report 70001 "Generate Payroll Statement DLL"
 
     local procedure CreatePayrollStatementEmployees(EmployeeCode: Code[20]; RecPayrollStatement: Record "Payroll Statement");
     var
-        "============STOP=======Pay Component Till here=====================": InStream;
-        //PayComponentTable: DotNet PayComponentTable;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataTable";
-
-        PayComponentColumn: DotNet PayComponentColumn;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumn";
-        PayComponentColumnCollection: DotNet PayComponentColumnCollection;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumnCollection";
-        PayComponentRow: DotNet PayComponentRow; //"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRow";
-        PayComponentRowCollection: DotNet PayComponentRowCollection; // "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRowCollection";
-        "============START=======Pay Component Till here=====================": InStream;
+        "============START=======Pay Component Till here=====================": Integer;
+        //PayComponentTable: DotNet PayComponentTable;
+        PayComponentColumn: DotNet PayComponentColumn;
+        PayComponentColumnCollection: DotNet PayComponentColumnCollection;
+        PayComponentRow: DotNet PayComponentRow;
+        PayComponentRowCollection: DotNet PayComponentRowCollection;
+        "============STOP=======Pay Component Till here=====================": Integer;
 
         FormulaForPackage: Text;
         FormulaForAttendance: Text;
         FormulaForDays: Text;
-        ResultTable: DotNet ResultTable;// "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataTable";
-        RowResultData: DotNet RowResultData;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRow";
-        ParameterTable: DotNet ParameterTable;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataTable";
-        ParameterColumn: DotNet ParameterColumn;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumn";
-        ParameterColumnCollection: DotNet ParameterColumnCollection;// "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumnCollection";
-        ParameterRow: DotNet ParameterRow;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRow";
-        ParameterRowCollection: DotNet ParameterRowCollection;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRowCollection";
-        BenefitTable: DotNet BenefitTable;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataTable";
-        BenefitColumn: DotNet BenefitColumn;// "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumn";
-        BenefitColumnCollection: DotNet BenefitColumnCollection;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumnCollection";
-        BenefitRow: DotNet BenefitRow;// "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRow";
-        BenefitRowCollection: DotNet BenefitRowCollection;// "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRowCollection";
-        dotNetDataRow: DotNet dotNetDataRow;///"'System.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRow";
+        ResultTable: DotNet ResultTable;
+        RowResultData: DotNet RowResultData;
+
+        "============START=======Parameter Table Till here=====================": Integer;
+        //ParameterTable: DotNet ParameterTable;
+        ParameterColumn: DotNet ParameterColumn;
+        ParameterColumnCollection: DotNet ParameterColumnCollection;
+        ParameterRow: DotNet ParameterRow;
+        ParameterRowCollection: DotNet ParameterRowCollection;
+        "============STOP=======Parameter Table Till here=====================": Integer;
+
+        BenefitTable: DotNet BenefitTable;
+        BenefitColumn: DotNet BenefitColumn;
+        BenefitColumnCollection: DotNet BenefitColumnCollection;
+        BenefitRow: DotNet BenefitRow;
+        BenefitRowCollection: DotNet BenefitRowCollection;
+        dotNetDataRow: DotNet dotNetDataRow;
         Value: Variant;
         PayrollFormulaKeyWords: Record "Payroll Formula";
         EmployeeLeaveTypes: Record "HCM Leave Types Wrkr";
@@ -337,8 +337,8 @@ report 70001 "Generate Payroll Statement DLL"
         "##=============================BC DLL============================##": Integer;
 
         PayComponentEECistTableRecL: Record "Emp. Earning Code  List Table";
+        ParameterTableTableRecL: Record "ParamList Data Table";
 
-        ParamListDataTableRecL: Record "ParamList Data Table";
         EmpBenefitsListTableRecL: Record "Emp. Benefits List Table";
         EmpResultTableRecL: Record "Emp. Result Table";
 
@@ -351,6 +351,10 @@ report 70001 "Generate Payroll Statement DLL"
         PayComponentEECistTableRecL.Reset();
         if PayComponentEECistTableRecL.FindSet() then
             PayComponentEECistTableRecL.DeleteAll();
+
+        ParameterTableTableRecL.Reset();
+        if ParameterTableTableRecL.FindSet() then
+            ParameterTableTableRecL.DeleteAll();
         // Stop @BC DLL
 
         with RecPayrollStatement do begin
@@ -389,22 +393,23 @@ report 70001 "Generate Payroll Statement DLL"
                     //Initialize System Data Variables
                     //Parameter Table and columns
                     TempDataTable.DELETEALL;
+                    // Start @BC DLL 
+                    // Below code commented due  to DLL API Solution
+                    /*
                     ParameterTable := ParameterTable.DataTable('Table1');
                     ParameterColumnCollection := ParameterTable.Columns;
                     ParameterRowCollection := ParameterTable.Rows;
-
                     ParameterColumn := ParameterColumn.DataColumn;
                     ParameterColumn.ColumnName := 'Key ID';
                     ParameterTable.Columns.Add(ParameterColumn);
-
                     ParameterColumn := ParameterColumn.DataColumn;
                     ParameterColumn.ColumnName := 'Key Value';
                     ParameterTable.Columns.Add(ParameterColumn);
-
                     ParameterColumn := ParameterColumn.DataColumn;
                     ParameterColumn.ColumnName := 'Data Type';
                     ParameterTable.Columns.Add(ParameterColumn);
                     //--->>> Parameter Formulas
+                    */
                     PayrollFormulaKeyWords.RESET;
                     PayrollFormulaKeyWords.SETCURRENTKEY("Formula Key Type");
                     PayrollFormulaKeyWords.SETRANGE("Formula Key Type", PayrollFormulaKeyWords."Formula Key Type"::Parameter);
@@ -412,14 +417,30 @@ report 70001 "Generate Payroll Statement DLL"
                         repeat
                             CLEAR(ResultContainer);
                             GetParameterKey(PayrollFormulaKeyWords."Formula Key", PayrollStatementEmployee);
+                            // @BC DLL
+                            /*
                             ParameterRow := ParameterTable.NewRow();
                             ParameterRow.Item(0, PayrollFormulaKeyWords."Formula Key");
+                            */
+                            // Start 23.04.2020
+                            ParameterTableTableRecL.Init();
+                            ParameterTableTableRecL."Entry No." := 0;
+                            ParameterTableTableRecL.ParamList__KeyId := PayrollFormulaKeyWords."Formula Key";
+                            ParameterTableTableRecL.Insert();
+
                             if STRPOS(ResultContainer[1], ',') <> 0 then
-                                ParameterRow.Item(1, DELCHR(ResultContainer[1], '=', ','))
+                                ParameterTableTableRecL.SET_ParamList__KeyValue_Code(DELCHR(ResultContainer[1], '=', ','), ParameterTableTableRecL."Entry No.")
+                            //ParameterTableTableRecL.ParamList__KeyValue := DELCHR(ResultContainer[1], '=', ',')
+                            // @BC DLL //ParameterRow.Item(1, DELCHR(ResultContainer[1], '=', ','))
                             else
-                                ParameterRow.Item(1, ResultContainer[1]);
-                            ParameterRow.Item(2, ResultContainer[2]);
-                            ParameterTable.Rows.Add(ParameterRow);
+                                ParameterTableTableRecL.SET_ParamList__KeyValue_Code(ResultContainer[1], ParameterTableTableRecL."Entry No.");
+                            //ParameterTableTableRecL.ParamList__KeyValue := ResultContainer[1];
+                            // @BC DLL //ParameterRow.Item(1, ResultContainer[1]);
+                            // @BC DLL // ParameterRow.Item(2, ResultContainer[2]);
+                            // @BC DLL // ParameterTable.Rows.Add(ParameterRow);
+                            ParameterTableTableRecL.ParamList__DataType := ResultContainer[2];
+                            ParameterTableTableRecL.Modify();
+
                             //Temp Data
                             TempDataTable.INIT;
                             TempDataTable."Entry No." := 0;
@@ -576,15 +597,27 @@ report 70001 "Generate Payroll Statement DLL"
                                     end;
                                     if NoOfDays = 0 then
                                         NoOfDays := (NoOfFirstHalfDays + NoOfSecondHalfDays) / 2;
-                                    //Insert Parameter Row for Employee Leaves
-                                    ParameterRow := ParameterTable.NewRow();
-                                    ParameterRow.Item('Key ID', PayrollFormulaKeyWords."Formula Key");
+                                    //Insert Parameter Row for Employee Leaves                                    
+                                    // @BC DLL //ParameterRow := ParameterTable.NewRow();
+                                    ParameterTableTableRecL.Init();
+                                    ParameterTableTableRecL."Entry No." := 0;
+                                    ParameterTableTableRecL.Insert();
+
+                                    // @BC DLL //ParameterRow.Item('Key ID', PayrollFormulaKeyWords."Formula Key");
+                                    ParameterTableTableRecL.ParamList__KeyId := PayrollFormulaKeyWords."Formula Key";
+
                                     if STRPOS(FORMAT(NoOfDays), ',') <> 0 then
-                                        ParameterRow.Item('Key Value', DELCHR(FORMAT(NoOfDays), '=', ','))
+                                        ParameterTableTableRecL.SET_ParamList__KeyValue_Code(DELCHR(FORMAT(NoOfDays), '=', ','), ParameterTableTableRecL."Entry No.")
+                                    //@BC DLL //ParameterTableTableRecL.ParamList__KeyValue := DELCHR(FORMAT(NoOfDays), '=', ',')
+                                    //BC DLL //ParameterRow.Item('Key Value', DELCHR(FORMAT(NoOfDays), '=', ','))
                                     else
-                                        ParameterRow.Item('Key Value', NoOfDays);
-                                    ParameterRow.Item('Data Type', '#NumericDataType');
-                                    ParameterTable.Rows.Add(ParameterRow);
+                                        ParameterTableTableRecL.SET_ParamList__KeyValue_Code(Format(NoOfDays), ParameterTableTableRecL."Entry No.");
+                                    //@BC DLL // ParameterTableTableRecL.ParamList__KeyValue := Format(NoOfDays);
+                                    // @BC DLL //ParameterRow.Item('Key Value', NoOfDays);
+                                    // @BC DLL //ParameterRow.Item('Data Type', '#NumericDataType');
+                                    // @BC DLL // ParameterTable.Rows.Add(ParameterRow);
+                                    ParameterTableTableRecL.ParamList__DataType := '#NumericDataType';
+                                    ParameterTableTableRecL.Modify();
                                     //Insert Parameter Row for Employee Leaves
                                     //Temp Data
                                     TempDataTable.INIT;
@@ -605,16 +638,28 @@ report 70001 "Generate Payroll Statement DLL"
                     if PayrollFormulaKeyWords.FINDFIRST then
                         repeat
                             //GetParameterKey(PayrollFormulaKeyWords."Formula Key",PayrollStatementEmployee);
+                            // @BC DLL START
+                            /*
                             ParameterRow := ParameterTable.NewRow();
                             ParameterRow.Item(0, PayrollFormulaKeyWords."Formula Key");
                             ParameterRow.Item(1, PayrollFormulaKeyWords.Formula);
                             ParameterRow.Item(2, '#FormulaDataType');
                             ParameterTable.Rows.Add(ParameterRow);
+                            */
+                            ParameterTableTableRecL.Init();
+                            ParameterTableTableRecL."Entry No." := 0;
+                            ParameterTableTableRecL.Insert();
+                            ParameterTableTableRecL.ParamList__KeyId := PayrollFormulaKeyWords."Formula Key";
+                            // @BC DLL //ParameterTableTableRecL.ParamList__KeyValue := PayrollFormulaKeyWords.Formula;
+                            ParameterTableTableRecL.SET_ParamList__KeyValue_Code(PayrollFormulaKeyWords.Formula, ParameterTableTableRecL."Entry No.");
+                            ParameterTableTableRecL.ParamList__DataType := '#FormulaDataType';
+                            ParameterTableTableRecL.Modify();
+                            // @BC DLL STOP 
                             //Temp Data
                             TempDataTable.INIT;
                             TempDataTable."Entry No." := 0;
                             TempDataTable."Parameter ID" := PayrollFormulaKeyWords."Formula Key";
-                            TempDataTable."Parameter Value" := PayrollFormulaKeyWords.Formula;
+                            TempDataTable."Parameter Value" := CopyStr(PayrollFormulaKeyWords.Formula, 1, 250);
                             TempDataTable."Parameter Datatype" := '#FormulaDataType';
                             TempDataTable.INSERT;
                         //Temp Data
@@ -843,15 +888,30 @@ report 70001 "Generate Payroll Statement DLL"
                                             end;
                                     end;
                                     //Insert Parameter Row for Employee Leaves
+                                    // @BC DLL START
+                                    /*                                    
                                     ParameterRow := ParameterTable.NewRow();
                                     ParameterRow.Item('Key ID', PayrollFormulaKeyWords."Formula Key");
+                                    */
+                                    ParameterTableTableRecL.Init();
+                                    ParameterTableTableRecL."Entry No." := 0;
+                                    ParameterTableTableRecL.ParamList__KeyId := PayrollFormulaKeyWords."Formula Key";
+                                    ParameterTableTableRecL.Insert();
+
                                     if STRPOS(FORMAT(NoOfDays), ',') <> 0 then
-                                        ParameterRow.Item('Key Value', DELCHR(FORMAT(NoOfDays), '=', ','))
+                                        ParameterTableTableRecL.SET_ParamList__KeyValue_Code(DELCHR(FORMAT(NoOfDays), '=', ','), ParameterTableTableRecL."Entry No.")
+                                    // @BC DLL //ParameterTableTableRecL.ParamList__KeyValue := DELCHR(FORMAT(NoOfDays), '=', ',')
+                                    // @BC DLL //ParameterRow.Item('Key Value', DELCHR(FORMAT(NoOfDays), '=', ','))
                                     else
-                                        ParameterRow.Item('Key Value', openingBalanceBenefit);
-                                    ParameterRow.Item('Data Type', '#NumericDataType');
-                                    ParameterTable.Rows.Add(ParameterRow);
+                                        ParameterTableTableRecL.SET_ParamList__KeyValue_Code(format(openingBalanceBenefit), ParameterTableTableRecL."Entry No.");
+                                    // @BC DLL //ParameterTableTableRecL.ParamList__KeyValue := format(openingBalanceBenefit);
+                                    // @BC DLL //ParameterRow.Item('Key Value', openingBalanceBenefit);
+                                    // @BC DLL // ParameterRow.Item('Data Type', '#NumericDataType');
+                                    // @BC DLL // ParameterTable.Rows.Add(ParameterRow);
+                                    ParameterTableTableRecL.ParamList__DataType := '#NumericDataType';
+                                    ParameterTableTableRecL.Modify();
                                     //Insert Parameter Row for Employee Leaves
+                                    // @BC DLL STOP
                                     //Temp Data
                                     TempDataTable.INIT;
                                     TempDataTable."Entry No." := 0;
@@ -917,15 +977,16 @@ report 70001 "Generate Payroll Statement DLL"
                             //LT
                             //Insert System Data Rows
                             // Start @BC DLL 22.04.2020 
-                            // @Pay Component or Earning Code value inserting into Temp Table as per DLL Solution                         
-
-                            // // PayComponentRow := PayComponentTable.NewRow();
-                            // // PayComponentRow.Item('Paycomponentcode', EmployeeEarningCodes."Short Name");
-                            // // PayComponentRow.Item('UnitFormula', FormulaForPackage);
-                            // // PayComponentRow.Item('Formulaforattendance', FormulaForAttendance);
-                            // // PayComponentRow.Item('Formulafordays', FormulaForDays);
-                            // // PayComponentRow.Item('Paycomponenttype', EmployeeEarningCodes."Pay Component Type");
-                            // // PayComponentTable.Rows.Add(PayComponentRow);                            
+                            // @Pay Component or Earning Code value inserting into Temp Table as per DLL Solution 
+                            /*              
+                            PayComponentRow := PayComponentTable.NewRow();
+                            PayComponentRow.Item('Paycomponentcode', EmployeeEarningCodes."Short Name");
+                            PayComponentRow.Item('UnitFormula', FormulaForPackage);
+                            PayComponentRow.Item('Formulaforattendance', FormulaForAttendance);
+                            PayComponentRow.Item('Formulafordays', FormulaForDays);
+                            PayComponentRow.Item('Paycomponenttype', EmployeeEarningCodes."Pay Component Type");
+                            PayComponentTable.Rows.Add(PayComponentRow);    
+                            */
                             PayComponentEECistTableRecL.Init();
                             PayComponentEECistTableRecL."Entry No." := 0;
                             PayComponentEECistTableRecL.Insert();
@@ -960,6 +1021,7 @@ report 70001 "Generate Payroll Statement DLL"
                         //PayComponentRowCollection := ResultTable.Rows;
                         // Stop @BC DLL
                         /*
+                        Below Code need to remove start
                         for i := 0 to PayComponentRowCollection.Count - 1 do begin
                             //Temp Data
                             dotNetDataRow := ResultTable.Rows.Item(i);
@@ -1009,7 +1071,7 @@ report 70001 "Generate Payroll Statement DLL"
                                 PayrollStatementTransLines.MODIFY;
                             end;
                         end;
-                        */ // Avinash commneted
+                        */ // Below Code need to remove start
                         until EmployeeEarningCodes.NEXT = 0;
 
 

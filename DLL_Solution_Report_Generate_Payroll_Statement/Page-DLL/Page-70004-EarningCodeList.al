@@ -56,7 +56,7 @@ page 70004 "Earning Code List"
 
         EECList__UnitFormulaTxt := GETFormulaEECList__UnitFormula();
 
-        Message('%1    %2    %3', EECList__FormulafordaysTxt, EECList__FormulaforattendanceTxt, EECList__UnitFormulaTxt);
+        //Message('%1    %2    %3', EECList__FormulafordaysTxt, EECList__FormulaforattendanceTxt, EECList__UnitFormulaTxt);
     end;
 }
 

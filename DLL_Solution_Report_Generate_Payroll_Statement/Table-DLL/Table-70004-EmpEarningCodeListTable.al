@@ -33,25 +33,7 @@ table 70004 "Emp. Earning Code  List Table"
         }
     }
 
-    // #==========START======================== EECList__UnitFormula Blob =================================
-
-    procedure SETFormulaEECList__UnitFormula_Code(EECList__UnitFormulaP: Text; EntryNoP: Integer)
-    var
-        OutStream: OutStream;
-        CurrentTable: Record "Emp. Earning Code  List Table";
-    begin
-        CLEAR(EECList__UnitFormula);
-        if EECList__UnitFormulaP = '' then
-            exit;
-        CurrentTable.Reset();
-        CurrentTable.SetRange("Entry No.", EntryNoP);
-        if CurrentTable.FindFirst() then begin
-            CurrentTable.EECList__UnitFormula.CreateOutStream(OutStream, TEXTENCODING::UTF8);
-            OutStream.WriteText(EECList__UnitFormulaP);
-            CurrentTable.Modify;
-            Message('Unitform');
-        end;
-    end;
+    // #==========START======================== EECList__UnitFormula Blob =================================    
 
     procedure SETFormulaEECList__UnitFormula(EECList__UnitFormulaP: Text)
     var
@@ -78,30 +60,49 @@ table 70004 "Emp. Earning Code  List Table"
         EECList__UnitFormula.CreateInStream(InStream, TEXTENCODING::UTF8);
         exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
     end;
-    // #==========STOP======================== EECList__UnitFormula Blob =================================
-    // #
-    // #
-    // #
-    // #==========START======================== EECList__Formulaforattendance Blob =================================
 
-    procedure SETEECList__Formulaforattendance_Code(EECList__FormulaforattendanceP: Text; EntryNoP: Integer)
+    procedure SETFormulaEECList__UnitFormula_Code(EECList__UnitFormulaP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
         CurrentTable: Record "Emp. Earning Code  List Table";
     begin
         CLEAR(EECList__UnitFormula);
-        if EECList__FormulaforattendanceP = '' then
+        if EECList__UnitFormulaP = '' then
             exit;
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNoP);
         if CurrentTable.FindFirst() then begin
             CurrentTable.EECList__UnitFormula.CreateOutStream(OutStream, TEXTENCODING::UTF8);
-            OutStream.WriteText(EECList__FormulaforattendanceP);
+            OutStream.WriteText(EECList__UnitFormulaP);
             CurrentTable.Modify;
-            Message('Formulaforattendance');
         end;
     end;
 
+
+    procedure GET_FormulaEECList__UnitFormula_Code(EntryNo: Integer): Text
+    var
+        TypeHelper: Codeunit "Type Helper";
+        InStream: InStream;
+        CurrentTable: Record "Emp. Earning Code  List Table";
+    begin
+        CurrentTable.Reset();
+        CurrentTable.SetRange("Entry No.", EntryNo);
+        if CurrentTable.FindFirst() then begin
+            CurrentTable.CALCFIELDS(EECList__UnitFormula);
+            if not CurrentTable.EECList__UnitFormula.HASVALUE then
+                exit('');
+
+            CurrentTable.CALCFIELDS(EECList__UnitFormula);
+            CurrentTable.EECList__UnitFormula.CreateInStream(InStream, TEXTENCODING::UTF8);
+            exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
+        end;
+    end;
+
+    // #==========STOP======================== EECList__UnitFormula Blob ==========================================
+    // #
+    // #
+    // #
+    // #==========START======================== EECList__Formulaforattendance Blob =================================
     procedure SETEECList__Formulaforattendance(EECList__FormulaforattendanceP: Text)
     var
         OutStream: OutStream;
@@ -127,31 +128,47 @@ table 70004 "Emp. Earning Code  List Table"
         EECList__Formulaforattendance.CreateInStream(InStream, TEXTENCODING::UTF8);
         exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
     end;
-    // #==========STOP======================== EECList__Formulaforattendance Blob =================================
-    // #
-    // #
-    // #
-    // #==========START======================== EECList__Formulafordays Blob =================================
 
-    procedure SETEECList__Formulafordays_Code(EECList__FormulafordaysP: Text; EntryNoP: Integer)
+    procedure SETEECList__Formulaforattendance_Code(EECList__FormulaforattendanceP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
         CurrentTable: Record "Emp. Earning Code  List Table";
     begin
         CLEAR(EECList__UnitFormula);
-        if EECList__FormulafordaysP = '' then
+        if EECList__FormulaforattendanceP = '' then
             exit;
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNoP);
         if CurrentTable.FindFirst() then begin
             CurrentTable.EECList__UnitFormula.CreateOutStream(OutStream, TEXTENCODING::UTF8);
-            OutStream.WriteText(EECList__FormulafordaysP);
+            OutStream.WriteText(EECList__FormulaforattendanceP);
             CurrentTable.Modify;
-            Message('Formulafordays');
         end;
     end;
 
+    procedure GET_EECList__Formulaforattendance_Code(EntryNo: Integer): Text
+    var
+        TypeHelper: Codeunit "Type Helper";
+        InStream: InStream;
+        CurrentTable: Record "Emp. Earning Code  List Table";
+    begin
+        CurrentTable.Reset();
+        CurrentTable.SetRange("Entry No.", EntryNo);
+        if CurrentTable.FindFirst() then begin
+            CurrentTable.CALCFIELDS(EECList__Formulaforattendance);
+            if not CurrentTable.EECList__Formulaforattendance.HASVALUE then
+                exit('');
 
+            CurrentTable.CALCFIELDS(EECList__Formulaforattendance);
+            CurrentTable.EECList__Formulaforattendance.CreateInStream(InStream, TEXTENCODING::UTF8);
+            exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
+        end;
+    end;
+    // #==========STOP======================== EECList__Formulaforattendance Blob =================================
+    // #
+    // #
+    // #
+    // #==========START======================== EECList__Formulafordays Blob ======================================
     procedure SETEECList__Formulafordays(EECList__FormulafordaysP: Text)
     var
         OutStream: OutStream;
@@ -177,6 +194,43 @@ table 70004 "Emp. Earning Code  List Table"
         EECList__Formulafordays.CreateInStream(InStream, TEXTENCODING::UTF8);
         exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
     end;
+
+    procedure SETEECList__Formulafordays_Code(EECList__FormulafordaysP: Text; EntryNoP: Integer)
+    var
+        OutStream: OutStream;
+        CurrentTable: Record "Emp. Earning Code  List Table";
+    begin
+        CLEAR(EECList__UnitFormula);
+        if EECList__FormulafordaysP = '' then
+            exit;
+        CurrentTable.Reset();
+        CurrentTable.SetRange("Entry No.", EntryNoP);
+        if CurrentTable.FindFirst() then begin
+            CurrentTable.EECList__UnitFormula.CreateOutStream(OutStream, TEXTENCODING::UTF8);
+            OutStream.WriteText(EECList__FormulafordaysP);
+            CurrentTable.Modify;
+        end;
+    end;
+
+    procedure GET_EECList__Formulafordays_Code(EntryNo: Integer): Text
+    var
+        TypeHelper: Codeunit "Type Helper";
+        InStream: InStream;
+        CurrentTable: Record "Emp. Earning Code  List Table";
+    begin
+        CurrentTable.Reset();
+        CurrentTable.SetRange("Entry No.", EntryNo);
+        if CurrentTable.FindFirst() then begin
+            CurrentTable.CALCFIELDS(EECList__Formulafordays);
+            if not CurrentTable.EECList__Formulafordays.HASVALUE then
+                exit('');
+
+            CurrentTable.CALCFIELDS(EECList__Formulafordays);
+            CurrentTable.EECList__Formulafordays.CreateInStream(InStream, TEXTENCODING::UTF8);
+            exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
+        end;
+    end;
+
     // #==========STOP======================== EECList__Formulafordays Blob =================================
 }
 
