@@ -285,33 +285,33 @@ report 70001 "Generate Payroll Statement DLL"
     local procedure CreatePayrollStatementEmployees(EmployeeCode: Code[20]; RecPayrollStatement: Record "Payroll Statement");
     var
         "============START=======Pay Component Till here=====================": Integer;
-        //PayComponentTable: DotNet PayComponentTable;
-        PayComponentColumn: DotNet PayComponentColumn;
-        PayComponentColumnCollection: DotNet PayComponentColumnCollection;
-        PayComponentRow: DotNet PayComponentRow;
-        PayComponentRowCollection: DotNet PayComponentRowCollection;
+        //@BC DLL //PayComponentTable: DotNet PayComponentTable;
+        //@BC DLL //PayComponentColumn: DotNet PayComponentColumn;
+        //@BC DLL //PayComponentColumnCollection: DotNet PayComponentColumnCollection;
+        //@BC DLL //PayComponentRow: DotNet PayComponentRow;
+        //@BC DLL //PayComponentRowCollection: DotNet PayComponentRowCollection;
         "============STOP=======Pay Component Till here=====================": Integer;
-
         FormulaForPackage: Text;
         FormulaForAttendance: Text;
         FormulaForDays: Text;
         ResultTable: DotNet ResultTable;
         RowResultData: DotNet RowResultData;
-
         "============START=======Parameter Table Till here=====================": Integer;
-        //ParameterTable: DotNet ParameterTable;
-        ParameterColumn: DotNet ParameterColumn;
-        ParameterColumnCollection: DotNet ParameterColumnCollection;
-        ParameterRow: DotNet ParameterRow;
-        ParameterRowCollection: DotNet ParameterRowCollection;
+        //@BC DLL //ParameterTable: DotNet ParameterTable;
+        //@BC DLL //ParameterColumn: DotNet ParameterColumn;
+        //@BC DLL //ParameterColumnCollection: DotNet ParameterColumnCollection;
+        //@BC DLL //ParameterRow: DotNet ParameterRow;
+        //@BC DLL //ParameterRowCollection: DotNet ParameterRowCollection;
         "============STOP=======Parameter Table Till here=====================": Integer;
-
-        BenefitTable: DotNet BenefitTable;
+        "============START=======Benefit Table Till here=====================": Integer;
+        //@BC DLL //BenefitTable: DotNet BenefitTable;
         BenefitColumn: DotNet BenefitColumn;
         BenefitColumnCollection: DotNet BenefitColumnCollection;
         BenefitRow: DotNet BenefitRow;
         BenefitRowCollection: DotNet BenefitRowCollection;
         dotNetDataRow: DotNet dotNetDataRow;
+        "============STOP=======Benefit Table Till here=====================": Integer;
+
         Value: Variant;
         PayrollFormulaKeyWords: Record "Payroll Formula";
         EmployeeLeaveTypes: Record "HCM Leave Types Wrkr";
@@ -338,8 +338,8 @@ report 70001 "Generate Payroll Statement DLL"
 
         PayComponentEECistTableRecL: Record "Emp. Earning Code  List Table";
         ParameterTableTableRecL: Record "ParamList Data Table";
+        BenefitTableRecL: Record "Emp. Benefits List Table";
 
-        EmpBenefitsListTableRecL: Record "Emp. Benefits List Table";
         EmpResultTableRecL: Record "Emp. Result Table";
 
         ReturnJsonStringTxtL: Text;
@@ -355,6 +355,10 @@ report 70001 "Generate Payroll Statement DLL"
         ParameterTableTableRecL.Reset();
         if ParameterTableTableRecL.FindSet() then
             ParameterTableTableRecL.DeleteAll();
+
+        BenefitTableRecL.Reset();
+        if BenefitTableRecL.FindSet() then
+            BenefitTableRecL.DeleteAll();
         // Stop @BC DLL
 
         with RecPayrollStatement do begin
@@ -665,26 +669,26 @@ report 70001 "Generate Payroll Statement DLL"
                         //Temp Data
                         until PayrollFormulaKeyWords.NEXT = 0;
                     //<<<--- Custom Formulas
+                    // @BC DLL START
+                    /*
 
                     BenefitTable := BenefitTable.DataTable('Table3');
                     BenefitColumnCollection := BenefitTable.Columns;
                     BenefitRowCollection := BenefitTable.Rows;
-
                     BenefitColumn := BenefitColumn.DataColumn;
                     BenefitColumn.ColumnName := 'Benefit Code';
                     BenefitTable.Columns.Add(BenefitColumn);
-
                     BenefitColumn := BenefitColumn.DataColumn;
                     BenefitColumn.ColumnName := 'Unit Formula';
                     BenefitTable.Columns.Add(BenefitColumn);
-
                     BenefitColumn := BenefitColumn.DataColumn;
                     BenefitColumn.ColumnName := 'Value Formula';
                     BenefitTable.Columns.Add(BenefitColumn);
-
                     BenefitColumn := BenefitColumn.DataColumn;
                     BenefitColumn.ColumnName := 'Encashment Formula';
                     BenefitTable.Columns.Add(BenefitColumn);
+                    */
+                    // @BC DLL STOP                    
 
                     EmployeeBenefits.RESET;
                     EmployeeBenefits.SETCURRENTKEY("Earning Code Group", Worker, Active);
@@ -704,12 +708,26 @@ report 70001 "Generate Payroll Statement DLL"
                             EncashmentFormula := STRREPLACE(EncashmentFormula, ']', '])');
 
                             //BenefitTable.Rows.Clear();
+                            // @BC DLL START
+                            /*
                             BenefitRow := BenefitTable.NewRow();
                             BenefitRow.Item('Benefit Code', EmployeeBenefits."Short Name");
                             BenefitRow.Item('Unit Formula', UnitFormula);
                             BenefitRow.Item('Value Formula', AmountCalcFormula);
                             BenefitRow.Item('Encashment Formula', EncashmentFormula);
                             BenefitTable.Rows.Add(BenefitRow);
+                            */
+                            BenefitTableRecL.Init();
+                            BenefitTableRecL."Entry No." := 0;
+                            BenefitTableRecL.Insert();
+                            BenefitTableRecL.EBList__Benefitcode := EmployeeBenefits."Short Name";
+                            // @BC DLL //BenefitTableRecL.EBList__UnitFormula := Format(UnitFormula);
+                            BenefitTableRecL.SET_EBList__UnitFormula_Code(Format(UnitFormula), BenefitTableRecL."Entry No.");
+                            BenefitTableRecL.EBList__ValueFormula := AmountCalcFormula;
+                            //@BC DLL //BenefitTableRecL.EBList__EncashmentFormula := Format(EncashmentFormula);
+                            BenefitTableRecL.SET_EBList__EncashmentFormula_Code(Format(EncashmentFormula), BenefitTableRecL."Entry No.");
+                            BenefitTableRecL.Modify();
+                            // @BC DLL STOP
                             //Temp Data
                             TempDataTable.INIT;
                             TempDataTable."Entry No." := 0;

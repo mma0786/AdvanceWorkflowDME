@@ -173,7 +173,7 @@ page 70100 "Employee Accural Amount"
                 begin
                     // Start
                     EmployeeAccuralAmountRecL.Reset();
-                    //EmployeeAccuralAmountRecL.DeleteAll();
+                    EmployeeAccuralAmountRecL.DeleteAll();
                     // Stop 
                     if EmployeeAccuralAmountRecL.IsEmpty then begin
 
