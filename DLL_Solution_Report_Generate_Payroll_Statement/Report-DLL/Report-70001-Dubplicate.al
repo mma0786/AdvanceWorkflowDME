@@ -1,56 +1,3 @@
-//<LT_Sathish_04Mar2020_Dll_Error>
-
-/// Page 60084 where the report is tagged and uncomment it 
-//Comment - //<LT_Sathish_04Mar2020_Dll_Error>
-
-// // dotnet
-// // {
-// //     assembly(mscorlib)
-// //     {
-// //         type(System.DateTime; MyDateTime) { }
-// //         type(System.String; DotNetString) { }
-// //     }
-// // }
-
-// // dotnet
-// // {
-// //     assembly(LevhrEvaluation)
-// //     {
-// //         type(APIClientConsole.HrmPlus; LevhrEvaluation) { }
-// //     }
-// // }
-// // dotnet
-// // {
-// //     assembly(System.Data)
-// //     {
-// //         type(System.Data.DataTable; PayComponentTable) { }
-// //         type(System.Data.DataTable; ParameterTable) { }
-// //         type(System.Data.DataTable; BenefitTable) { }
-// //         type(System.Data.DataTable; ResultTable) { }
-
-// //         type(System.Data.DataColumn; PayComponentColumn) { }
-// //         type(System.Data.DataColumn; ParameterColumn) { }
-// //         type(System.Data.DataColumn; BenefitColumn) { }
-
-
-// //         type(System.Data.DataColumnCollection; PayComponentColumnCollection) { }
-// //         type(System.Data.DataColumnCollection; BenefitColumnCollection) { }
-// //         type(System.Data.DataColumnCollection; ParameterColumnCollection) { }
-
-// //         type(System.Data.DataRowCollection; PayComponentRowCollection) { }
-// //         type(System.Data.DataRowCollection; ParameterRowCollection) { }
-// //         type(System.Data.DataRowCollection; BenefitRowCollection) { }
-
-// //         type(System.Data.DataRow; PayComponentRow) { }
-// //         type(System.Data.DataRow; RowResultData) { }
-// //         type(System.Data.DataRow; ParameterRow) { }
-// //         type(System.Data.DataRow; BenefitRow) { }
-// //         type(System.Data.DataRow; dotNetDataRow) { }
-
-// //     }
-
-// // }
-
 report 70001 "Generate Payroll Statement DLL"
 {
     // version LT_Payroll
@@ -340,13 +287,14 @@ report 70001 "Generate Payroll Statement DLL"
 
     local procedure CreatePayrollStatementEmployees(EmployeeCode: Code[20]; RecPayrollStatement: Record "Payroll Statement");
     var
+        "============STOP=======Pay Component Till here=====================": InStream;
         //PayComponentTable: DotNet PayComponentTable;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataTable";
 
         PayComponentColumn: DotNet PayComponentColumn;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumn";
         PayComponentColumnCollection: DotNet PayComponentColumnCollection;//"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumnCollection";
         PayComponentRow: DotNet PayComponentRow; //"'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRow";
         PayComponentRowCollection: DotNet PayComponentRowCollection; // "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRowCollection";
-        "===================Till here=============================": InStream;
+        "============START=======Pay Component Till here=====================": InStream;
 
         FormulaForPackage: Text;
         FormulaForAttendance: Text;
@@ -968,7 +916,8 @@ report 70001 "Generate Payroll Statement DLL"
                             end;
                             //LT
                             //Insert System Data Rows
-                            // Start @BC DLL 22.04.2020                          
+                            // Start @BC DLL 22.04.2020 
+                            // @Pay Component or Earning Code value inserting into Temp Table as per DLL Solution                         
 
                             // // PayComponentRow := PayComponentTable.NewRow();
                             // // PayComponentRow.Item('Paycomponentcode', EmployeeEarningCodes."Short Name");
@@ -976,25 +925,14 @@ report 70001 "Generate Payroll Statement DLL"
                             // // PayComponentRow.Item('Formulaforattendance', FormulaForAttendance);
                             // // PayComponentRow.Item('Formulafordays', FormulaForDays);
                             // // PayComponentRow.Item('Paycomponenttype', EmployeeEarningCodes."Pay Component Type");
-                            // // PayComponentTable.Rows.Add(PayComponentRow);
-                            Message('PayComponentEECistTableRecL');
+                            // // PayComponentTable.Rows.Add(PayComponentRow);                            
                             PayComponentEECistTableRecL.Init();
                             PayComponentEECistTableRecL."Entry No." := 0;
                             PayComponentEECistTableRecL.Insert();
                             PayComponentEECistTableRecL.EECList__Paycomponentcode := EmployeeEarningCodes."Short Name";
-
-                            //PayComponentEECistTableRecL.EECList__UnitFormula := FormulaForPackage;
-                            Message(' FormulaForPackage   %1', FormulaForPackage);
                             PayComponentEECistTableRecL.SETFormulaEECList__UnitFormula_Code(FormulaForPackage, PayComponentEECistTableRecL."Entry No.");
-
-                            // PayComponentEECistTableRecL.EECList__Formulaforattendance := FormulaForAttendance;
-                            Message('FormulaForAttendance %1 ', FormulaForAttendance);
                             PayComponentEECistTableRecL.SETEECList__Formulaforattendance_Code(FormulaForAttendance, PayComponentEECistTableRecL."Entry No.");
-
-                            // PayComponentEECistTableRecL.EECList__Formulafordays := FormulaForDays;
-                            Message('FormulaForDays  %1', FormulaForDays);
                             PayComponentEECistTableRecL.SETEECList__Formulafordays_Code(FormulaForDays, PayComponentEECistTableRecL."Entry No.");
-
                             PayComponentEECistTableRecL.EECList__Paycomponenttype := Format(EmployeeEarningCodes."Pay Component Type");
                             PayComponentEECistTableRecL.Modify();
                             // Stop @BC DLL
