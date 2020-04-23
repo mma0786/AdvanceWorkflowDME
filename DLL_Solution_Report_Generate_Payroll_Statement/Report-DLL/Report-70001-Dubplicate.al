@@ -358,6 +358,10 @@ report 70001 "Generate Payroll Statement DLL"
         BenefitTableRecL.Reset();
         if BenefitTableRecL.FindSet() then
             BenefitTableRecL.DeleteAll();
+
+        EmpResultTableRecL.Reset();
+        if EmpResultTableRecL.FindSet() then
+            EmpResultTableRecL.DeleteAll();
         // Stop @BC DLL
 
         with RecPayrollStatement do begin
@@ -727,6 +731,7 @@ report 70001 "Generate Payroll Statement DLL"
                             //@BC DLL //BenefitTableRecL.EBList__EncashmentFormula := Format(EncashmentFormula);
                             BenefitTableRecL.SET_EBList__EncashmentFormula_Code(Format(EncashmentFormula), BenefitTableRecL."Entry No.");
                             BenefitTableRecL.Modify();
+                            //--->Message('1   UnitFormula - %1  AmountCalcFormula  - %2   EncashmentFormula - %3', UnitFormula, AmountCalcFormula, EncashmentFormula);
                             // @BC DLL STOP
                             //Temp Data
                             TempDataTable.INIT;
@@ -1034,13 +1039,14 @@ report 70001 "Generate Payroll Statement DLL"
                             // // // ResultTable := ResultTable.DataTable;
                             // // // ResultTable := LevHREvaluation.PageInIt(ParameterTable, PayComponentTable, BenefitTable);
                             // Stop @BC DLL Avinash
+
                             ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL, PayComponentEECistTableRecL, BenefitTableRecL);
                             ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
                             Message('ReturnJsonResponse           %1', ReturnJsonResponse);
                             Clear(EmpResultTableRecL);
                             DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
-                            // Start @BC DLL
 
+                            // Start @BC DLL
                             // @BC DLL // PayComponentRowCollection := ResultTable.Rows;
                             PayComponentRowCollectionRecL.Copy(EmpResultTableRecL);
                             // Stop @BC DLL
@@ -1135,10 +1141,6 @@ report 70001 "Generate Payroll Statement DLL"
                     //EmployeeBenefits.SETRANGE("Earning Code",'BS');
                     if EmployeeBenefits.FINDSET then
                         repeat
-                            //LevHREvaluation := LevHREvaluation.HrmPlus;
-                            //CLEAR(ResultTable);
-                            //ResultTable := ResultTable.DataTable;
-                            //ResultTable := LevHREvaluation.PageInIt(ParameterTable,PayComponentTable,BenefitTable);
 
                             // @BC DLL START
 
@@ -1244,6 +1246,7 @@ report 70001 "Generate Payroll Statement DLL"
                         until PayrollAdjHeader.NEXT = 0;
                     //Payroll Adjustment Journals
                 end;
+
                 CreatePayrollStatementLines(PayrollStatement, PayrollStatementEmployee);
             end;
         end;

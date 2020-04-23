@@ -4,6 +4,9 @@ page 70006 "Result List"
     SourceTable = "Emp. Result Table";
     UsageCategory = Lists;
     ApplicationArea = All;
+    InsertAllowed = false;
+    DeleteAllowed = false;
+    ModifyAllowed = false;
 
     layout
     {
@@ -48,12 +51,26 @@ page 70006 "Result List"
                 {
                     ApplicationArea = All;
                 }
+                field(ErrorLogTxt; ErrorLogTxt)
+                {
+                    ApplicationArea = All;
+                }
+
             }
         }
     }
 
-    actions
-    {
-    }
+
+    var
+        ErrorLogTxt: text;
+
+
+    trigger OnAfterGetRecord()
+    begin
+        ErrorLogTxt := GET_ErrorLogP();
+    end;
+
+
+
 }
 

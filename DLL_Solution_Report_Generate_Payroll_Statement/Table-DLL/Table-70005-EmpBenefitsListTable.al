@@ -199,7 +199,7 @@ table 70005 "Emp. Benefits List Table"
         InStream: InStream;
     begin
         CALCFIELDS(EBList__ValueFormula);
-        if not EBList__EncashmentFormula.HASVALUE then
+        if not EBList__ValueFormula.HASVALUE then
             exit('');
 
         CALCFIELDS(EBList__ValueFormula);
