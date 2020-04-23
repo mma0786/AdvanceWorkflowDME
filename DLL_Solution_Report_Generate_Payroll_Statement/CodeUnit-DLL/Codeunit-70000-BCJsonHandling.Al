@@ -1,4 +1,3 @@
-/*
 codeunit 70000 "BC Json Handling"
 {
     trigger OnRun()
@@ -34,7 +33,8 @@ codeunit 70000 "BC Json Handling"
                 clear(VJsonObjectLines);
 
                 VJsonObjectLines.Add('KeyId', ParameterTable.ParamList__KeyId);
-                VJsonObjectLines.Add('KeyValue', ParameterTable.ParamList__KeyValue);
+                //VJsonObjectLines.Add('KeyValue',  ParameterTable.ParamList__KeyValue);
+                VJsonObjectLines.Add('KeyValue', ParameterTable.GET_ParamList__KeyValueP_Code(ParameterTable."Entry No."));
                 VJsonObjectLines.Add('DataType', ParameterTable.ParamList__DataType);
 
                 VJsonArrayLines.Add(VJsonObjectLines);
@@ -55,9 +55,12 @@ codeunit 70000 "BC Json Handling"
                 clear(VJsonObjectLines);
 
                 VJsonObjectLines.Add('Paycomponentcode', EmpEarningCodePayComponentTable.EECList__Paycomponentcode);
-                VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.EECList__UnitFormula);
-                VJsonObjectLines.Add('Formulaforattendance', EmpEarningCodePayComponentTable.EECList__Formulaforattendance);
-                VJsonObjectLines.Add('Formulafordays', EmpEarningCodePayComponentTable.EECList__Formulafordays);
+                //VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.EECList__UnitFormula);
+                VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.GET_FormulaEECList__UnitFormula_Code(EmpEarningCodePayComponentTable."Entry No."));
+                //VJsonObjectLines.Add('Formulaforattendance', EmpEarningCodePayComponentTable.EECList__Formulaforattendance);
+                VJsonObjectLines.Add('Formulaforattendance', EmpEarningCodePayComponentTable.GET_EECList__Formulaforattendance_Code(EmpEarningCodePayComponentTable."Entry No."));
+                //VJsonObjectLines.Add('Formulafordays', EmpEarningCodePayComponentTable.EECList__Formulafordays);
+                VJsonObjectLines.Add('Formulafordays', EmpEarningCodePayComponentTable.GET_EECList__Formulafordays_Code(EmpEarningCodePayComponentTable."Entry No."));
                 VJsonObjectLines.Add('Paycomponenttype', EmpEarningCodePayComponentTable.EECList__Paycomponenttype);
 
                 VJsonArrayLines.Add(VJsonObjectLines);
@@ -79,9 +82,12 @@ codeunit 70000 "BC Json Handling"
                 clear(VJsonObjectLines);
 
                 VJsonObjectLines.Add('Benefitcode', BenefitTable.EBList__Benefitcode);
-                VJsonObjectLines.Add('UnitFormula', BenefitTable.EBList__UnitFormula);
-                VJsonObjectLines.Add('ValueFormula', BenefitTable.EBList__ValueFormula);
-                VJsonObjectLines.Add('EncashmentFormula', BenefitTable.EBList__EncashmentFormula);
+                //VJsonObjectLines.Add('UnitFormula', BenefitTable.EBList__UnitFormula);
+                VJsonObjectLines.Add('UnitFormula', BenefitTable.GET_EBList__UnitFormula_Code(BenefitTable."Entry No."));
+                //VJsonObjectLines.Add('ValueFormula', BenefitTable.EBList__ValueFormula);
+                VJsonObjectLines.Add('ValueFormula', BenefitTable.GET_EBList__ValueFormula_Code(BenefitTable."Entry No."));
+                //VJsonObjectLines.Add('EncashmentFormula', BenefitTable.EBList__EncashmentFormula);
+                VJsonObjectLines.Add('EncashmentFormula', BenefitTable.GET_EBList__EncashmentFormula_Code(BenefitTable."Entry No."));
 
                 VJsonArrayLines.Add(VJsonObjectLines);
 
@@ -123,6 +129,9 @@ codeunit 70000 "BC Json Handling"
             JsonObjectL := JsonToken2L.AsObject();
             // Start  GEtting Val from Object / Array
             ResultRec_P.Init();
+            ResultRec_P."Entry No." := 0;
+            ResultRec_P.Insert(true);
+
             ResultRec_P.FormulaType := GetJsonTokenAsText(JsonObjectL, 'FormulaType');
             ResultRec_P.BaseCode := GetJsonTokenAsText(JsonObjectL, 'BaseCode');
 
@@ -135,8 +144,8 @@ codeunit 70000 "BC Json Handling"
             ResultRec_P.FormulaID3 := GetJsonTokenAsText(JsonObjectL, 'FormulaID3');
             ResultRec_P.Result3 := GetJsonTokenAsText(JsonObjectL, 'Result3');
 
-            ResultRec_P."Error Log" := GetJsonTokenAsText(JsonObjectL, 'Error Log');
-            ResultRec_P.Insert(true);
+            ResultRec_P.SET_ErrorLog_Code(GetJsonTokenAsText(JsonObjectL, 'Error Log'), ResultRec_P."Entry No.");
+            ResultRec_P.Modify();
             // Start  GEtting Val from Object / Array
         end;
 
@@ -211,4 +220,3 @@ codeunit 70000 "BC Json Handling"
     // POST
 }
 
-*/

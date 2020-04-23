@@ -4,6 +4,9 @@ page 70005 "Benefit List"
     SourceTable = "Emp. Benefits List Table";
     UsageCategory = Lists;
     ApplicationArea = All;
+    DeleteAllowed = false;
+    ModifyAllowed = false;
+    InsertAllowed = false;
 
     layout
     {
@@ -19,24 +22,33 @@ page 70005 "Benefit List"
                 {
                     ApplicationArea = All;
                 }
-                field(EBList__UnitFormula; EBList__UnitFormula)
+                field(EBList__UnitFormulaTxt; EBList__UnitFormulaTxt)
                 {
                     ApplicationArea = All;
                 }
-                field(EBList__ValueFormula; EBList__ValueFormula)
+                field(EBList__ValueFormulaTxt; EBList__ValueFormulaTxt)
                 {
                     ApplicationArea = All;
                 }
-                field(EBList__EncashmentFormula; EBList__EncashmentFormula)
+                field(EBList__EncashmentFormulaTxt; EBList__EncashmentFormulaTxt)
                 {
                     ApplicationArea = All;
                 }
             }
         }
     }
+    var
+        EBList__UnitFormulaTxt: Text;
+        EBList__ValueFormulaTxt: text;
+        EBList__EncashmentFormulaTxt: Text;
 
-    actions
-    {
-    }
+
+    trigger OnAfterGetRecord()
+    begin
+        EBList__UnitFormulaTxt := GET_EBList__UnitFormula();
+        EBList__ValueFormulaTxt := GET_EBList__ValueFormula();
+        EBList__EncashmentFormulaTxt := GET_EBList__EncashmentFormula();
+        //Message('%1    --   %2    ---   %3', EBList__UnitFormulaTxt, EBList__ValueFormulaTxt, EBList__EncashmentFormulaTxt);
+    end;
 }
 

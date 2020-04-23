@@ -15,7 +15,7 @@ table 70005 "Emp. Benefits List Table"
         field(3; EBList__UnitFormula; Blob)
         {
         }
-        field(4; EBList__ValueFormula; Text[250])
+        field(4; EBList__ValueFormula; blob)
         {
         }
         field(5; EBList__EncashmentFormula; Blob)
@@ -78,7 +78,7 @@ table 70005 "Emp. Benefits List Table"
         end;
     end;
 
-    procedure GET_ParamList__KeyValueP_Code(EntryNo: Integer): Text
+    procedure GET_EBList__UnitFormula_Code(EntryNo: Integer): Text
     var
         TypeHelper: Codeunit "Type Helper";
         InStream: InStream;
@@ -171,6 +171,82 @@ table 70005 "Emp. Benefits List Table"
         end;
     end;
     // #==========STOP======================== EBList__EncashmentFormula Blob =================================
+
+
+    /*
+        #
+        #
+        #
+        #
+        */
+
+    // #==========START======================== EBList__ValueFormula Blob =================================
+    procedure SET_EBList__ValueFormula(EBList__ValueFormulaP: Text)
+    var
+        OutStream: OutStream;
+    begin
+        CLEAR(EBList__ValueFormula);
+        if EBList__ValueFormulaP = '' then
+            exit;
+        EBList__ValueFormula.CreateOutStream(OutStream, TEXTENCODING::UTF8);
+        OutStream.WriteText(EBList__ValueFormulaP);
+        Modify;
+    end;
+
+    procedure GET_EBList__ValueFormula(): Text
+    var
+        TypeHelper: Codeunit "Type Helper";
+        InStream: InStream;
+    begin
+        CALCFIELDS(EBList__ValueFormula);
+        if not EBList__EncashmentFormula.HASVALUE then
+            exit('');
+
+        CALCFIELDS(EBList__ValueFormula);
+        EBList__ValueFormula.CreateInStream(InStream, TEXTENCODING::UTF8);
+        exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
+    end;
+
+    /*
+    # Below 2 Method will Created for Json Text while  Running Report.
+    */
+
+    procedure SET_EBList__ValueFormula_Code(EBList__ValueFormulaP: Text; EntryNoP: Integer)
+    var
+        OutStream: OutStream;
+        CurrentTable: Record "Emp. Benefits List Table";
+    begin
+        CLEAR(EBList__ValueFormula);
+        if EBList__ValueFormulaP = '' then
+            exit;
+        CurrentTable.Reset();
+        CurrentTable.SetRange("Entry No.", EntryNoP);
+        if CurrentTable.FindFirst() then begin
+            CurrentTable.EBList__ValueFormula.CreateOutStream(OutStream, TEXTENCODING::UTF8);
+            OutStream.WriteText(EBList__ValueFormulaP);
+            CurrentTable.Modify;
+        end;
+    end;
+
+    procedure GET_EBList__ValueFormula_Code(EntryNo: Integer): Text
+    var
+        TypeHelper: Codeunit "Type Helper";
+        InStream: InStream;
+        CurrentTable: Record "Emp. Benefits List Table";
+    begin
+        CurrentTable.Reset();
+        CurrentTable.SetRange("Entry No.", EntryNo);
+        if CurrentTable.FindFirst() then begin
+            CurrentTable.CALCFIELDS(EBList__ValueFormula);
+            if not CurrentTable.EBList__ValueFormula.HASVALUE then
+                exit('');
+
+            CurrentTable.CALCFIELDS(EBList__ValueFormula);
+            CurrentTable.EBList__ValueFormula.CreateInStream(InStream, TEXTENCODING::UTF8);
+            exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
+        end;
+    end;
+    // #==========STOP======================== EBList__ValueFormula Blob =================================
 
 }
 

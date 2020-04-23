@@ -383,6 +383,7 @@ report 60010 "Generate Payroll Statements"
         PayrollAdjHeader: Record "Payroll Adjmt. Journal header";
         PayrollAdjLines: Record "Payroll Adjmt. Journal Lines";
         PayrollStatement3: Record "Payroll Statement";
+        ii: Integer;
     begin
         with RecPayrollStatement do begin
             RecEmployee.GET(EmployeeCode);
@@ -701,7 +702,7 @@ report 60010 "Generate Payroll Statements"
                             TempDataTable."Entry No." := 0;
                             TempDataTable."Benefit Code" := EmployeeBenefits."Short Name";
                             TempDataTable."Unit Formula" := UnitFormula;
-                            TempDataTable."Value Formula" := AmountCalcFormula;
+                            TempDataTable."Value Formula" := CopyStr(AmountCalcFormula, 1, 250);
                             TempDataTable."Encashment Formula" := EncashmentFormula;
                             TempDataTable.INSERT;
                             //Temp Data

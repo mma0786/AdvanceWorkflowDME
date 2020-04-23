@@ -41,7 +41,7 @@ table 70006 "Emp. Result Table"
         {
             DataClassification = ToBeClassified;
         }
-        field(10; "Error Log"; Text[250])
+        field(10; "Error Log"; Blob)
         {
             DataClassification = ToBeClassified;
         }
@@ -54,8 +54,74 @@ table 70006 "Emp. Result Table"
         }
     }
 
-    fieldgroups
-    {
-    }
+
+    // #==========START======================== ParamList__KeyValue Blob =================================
+    procedure SET_ErrorLog(ErrorLogP: Text)
+    var
+        OutStream: OutStream;
+    begin
+        CLEAR("Error Log");
+        if ErrorLogP = '' then
+            exit;
+        "Error Log".CreateOutStream(OutStream, TEXTENCODING::UTF8);
+        OutStream.WriteText(ErrorLogP);
+        Modify;
+    end;
+
+    procedure GET_ErrorLogP(): Text
+    var
+        TypeHelper: Codeunit "Type Helper";
+        InStream: InStream;
+    begin
+        CALCFIELDS("Error Log");
+        if not "Error Log".HASVALUE then
+            exit('');
+
+        CALCFIELDS("Error Log");
+        "Error Log".CreateInStream(InStream, TEXTENCODING::UTF8);
+        exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
+    end;
+    /*
+    # Below 2 Method will Created for Json Text while  Running Report.
+    */
+
+    procedure SET_ErrorLog_Code(ErrorLogP: Text; EntryNoP: Integer)
+    var
+        OutStream: OutStream;
+        CurrentTable: Record "Emp. Result Table";
+    begin
+        CLEAR("Error Log");
+        if ErrorLogP = '' then
+            exit;
+        CurrentTable.Reset();
+        CurrentTable.SetRange("Entry No.", EntryNoP);
+        if CurrentTable.FindFirst() then begin
+            CurrentTable."Error Log".CreateOutStream(OutStream, TEXTENCODING::UTF8);
+            OutStream.WriteText(ErrorLogP);
+            CurrentTable.Modify;
+        end;
+    end;
+
+    procedure GET_ErrorLog_Code(EntryNo: Integer): Text
+    var
+        TypeHelper: Codeunit "Type Helper";
+        InStream: InStream;
+        CurrentTable: Record "Emp. Result Table";
+    begin
+        CurrentTable.Reset();
+        CurrentTable.SetRange("Entry No.", EntryNo);
+        if CurrentTable.FindFirst() then begin
+            CurrentTable.CALCFIELDS("Error Log");
+            if not CurrentTable."Error Log".HASVALUE then
+                exit('');
+
+            CurrentTable.CALCFIELDS("Error Log");
+            CurrentTable."Error Log".CreateInStream(InStream, TEXTENCODING::UTF8);
+            exit(TypeHelper.ReadAsTextWithSeparator(InStream, TypeHelper.LFSeparator));
+        end;
+    end;
+
+
+    // #==========STOP======================== ParamList__KeyValue Blob =================================
 }
 
