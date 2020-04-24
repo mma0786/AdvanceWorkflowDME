@@ -891,12 +891,15 @@ report 70000 "Generate Payroll Statement DLL"
                             // // // ResultTable := LevHREvaluation.PageInIt(ParameterTable, PayComponentTable, BenefitTable);
                             // Stop @BC DLL Avinash
 
-                            ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL, PayComponentEECistTableRecL, BenefitTableRecL);
-                            ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
-                            Message('ReturnJsonResponse           %1', ReturnJsonResponse);
-                            Clear(EmpResultTableRecL);
-                            DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
+                            // // // // // // // // // ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL, PayComponentEECistTableRecL, BenefitTableRecL);
+                            // // // // // // // // // ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
+                            // // // // // // // // // Message('ReturnJsonResponse           %1', ReturnJsonResponse);
+                            // // // // // // // // // Clear(EmpResultTableRecL);
+                            // // // // // // // // // DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
 
+                            /*
+                            Start Pay Component code here
+                            */
                             // Start @BC DLL
                             PayComponentRowCollectionRecL.Copy(EmpResultTableRecL);
                             // Stop @BC DLL
@@ -954,8 +957,33 @@ report 70000 "Generate Payroll Statement DLL"
                                 until PayComponentRowCollectionRecL.Next() = 0
                             end;
                         // @BC DLL STOP
+
+                        /*
+                        Stop  Component code here
+                        */
+
                         until EmployeeEarningCodes.NEXT = 0;
 
+                    /*
+                    @BC DLL 
+                    Start Calling API Methos
+                    */
+                    ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL,
+                                                                                        PayComponentEECistTableRecL,
+                                                                                        BenefitTableRecL);
+                    ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
+                    Message('ReturnJsonStringTxtL           %1', ReturnJsonStringTxtL);
+                    //Clear(EmpResultTableRecL);
+                    // DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
+
+                    /*
+                     @BC DLL 
+                    Start Calling API Methos
+                    */
+
+                    /*
+                    Start EmployeeBenefits
+                    */
                     EmployeeBenefits.RESET;
                     EmployeeBenefits.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
                     EmployeeBenefits.SETRANGE(Worker, RecEmployee."No.");
@@ -1020,6 +1048,10 @@ report 70000 "Generate Payroll Statement DLL"
                         // @BC DLL Avinash Uncommneted t his code
                         until EmployeeBenefits.NEXT = 0;
                     //Employee Loans
+                    /*
+                    Stop EmployeeBenefits
+                    */
+
                     EmployeeLoans.RESET;
                     EmployeeLoans.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
                     EmployeeLoans.SETRANGE(Worker, PayrollStatementEmployee.Worker);
