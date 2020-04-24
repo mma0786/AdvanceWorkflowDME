@@ -863,11 +863,17 @@ report 70000 "Generate Payroll Statement DLL"
                             //Insert System Data Rows
                             // Start @BC DLL 22.04.2020 
                             // @Pay Component or Earning Code value inserting into Temp Table as per DLL Solution 
+                            //Message('FormulaForPackage  %1', FormulaForPackage);
+
                             PayComponentEECistTableRecL.Init();
                             PayComponentEECistTableRecL."Entry No." := 0;
                             PayComponentEECistTableRecL.Insert();
                             PayComponentEECistTableRecL.EECList__Paycomponentcode := EmployeeEarningCodes."Short Name";
+
                             PayComponentEECistTableRecL.SETFormulaEECList__UnitFormula_Code(FormulaForPackage, PayComponentEECistTableRecL."Entry No.");
+
+                            Evaluate(PayComponentEECistTableRecL.EECList__Pay_Comp_UnitFormula, FormulaForPackage);
+
                             PayComponentEECistTableRecL.SETEECList__Formulaforattendance_Code(FormulaForAttendance, PayComponentEECistTableRecL."Entry No.");
                             PayComponentEECistTableRecL.SETEECList__Formulafordays_Code(FormulaForDays, PayComponentEECistTableRecL."Entry No.");
                             PayComponentEECistTableRecL.EECList__Paycomponenttype := Format(EmployeeEarningCodes."Pay Component Type");
@@ -891,11 +897,11 @@ report 70000 "Generate Payroll Statement DLL"
                             // // // ResultTable := LevHREvaluation.PageInIt(ParameterTable, PayComponentTable, BenefitTable);
                             // Stop @BC DLL Avinash
 
-                            // // // // // // // // // ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL, PayComponentEECistTableRecL, BenefitTableRecL);
-                            // // // // // // // // // ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
-                            // // // // // // // // // Message('ReturnJsonResponse           %1', ReturnJsonResponse);
-                            // // // // // // // // // Clear(EmpResultTableRecL);
-                            // // // // // // // // // DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
+                            ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL, PayComponentEECistTableRecL, BenefitTableRecL);
+                            ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
+                            //Message('ReturnJsonResponse           %1', ReturnJsonResponse);
+                            Clear(EmpResultTableRecL);
+                            DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
 
                             /*
                             Start Pay Component code here
@@ -968,11 +974,12 @@ report 70000 "Generate Payroll Statement DLL"
                     @BC DLL 
                     Start Calling API Methos
                     */
-                    ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL,
-                                                                                        PayComponentEECistTableRecL,
-                                                                                        BenefitTableRecL);
-                    ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
-                    Message('ReturnJsonStringTxtL           %1', ReturnJsonStringTxtL);
+
+                    // ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL,
+                    //                                                                     PayComponentEECistTableRecL,
+                    //                                                                     BenefitTableRecL);
+                    //ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
+                    //Message('ReturnJsonStringTxtL           %1', ReturnJsonStringTxtL);
                     //Clear(EmpResultTableRecL);
                     // DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
 

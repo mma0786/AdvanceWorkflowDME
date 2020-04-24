@@ -24,6 +24,10 @@ table 70004 "Emp. Earning Code  List Table"
         field(6; EECList__Paycomponenttype; Text[250])
         {
         }
+        field(7; EECList__Pay_Comp_UnitFormula; Decimal)
+        {
+
+        }
     }
 
     keys
@@ -65,16 +69,19 @@ table 70004 "Emp. Earning Code  List Table"
     var
         OutStream: OutStream;
         CurrentTable: Record "Emp. Earning Code  List Table";
+
     begin
+        // Message('Inside Funcation %1', EECList__UnitFormulaP);
         CLEAR(EECList__UnitFormula);
         if EECList__UnitFormulaP = '' then
             exit;
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNoP);
         if CurrentTable.FindFirst() then begin
-            CurrentTable.EECList__UnitFormula.CreateOutStream(OutStream, TEXTENCODING::UTF8);
+            CurrentTable.EECList__UnitFormula.CreateOutStream(OutStream, TEXTENCODING::UTF16);
             OutStream.WriteText(EECList__UnitFormulaP);
             CurrentTable.Modify;
+
         end;
     end;
 

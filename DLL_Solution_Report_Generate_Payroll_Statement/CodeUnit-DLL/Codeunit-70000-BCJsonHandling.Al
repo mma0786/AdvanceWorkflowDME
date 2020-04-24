@@ -55,8 +55,13 @@ codeunit 70000 "BC Json Handling"
                 clear(VJsonObjectLines);
 
                 VJsonObjectLines.Add('Paycomponentcode', EmpEarningCodePayComponentTable.EECList__Paycomponentcode);
-                //VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.EECList__UnitFormula);
-                VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.GET_FormulaEECList__UnitFormula_Code(EmpEarningCodePayComponentTable."Entry No."));
+
+                VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.EECList__Pay_Comp_UnitFormula);
+
+                // Start Below need to uncommented once got solution
+                //VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.GET_FormulaEECList__UnitFormula_Code(EmpEarningCodePayComponentTable."Entry No."));
+                // Stop
+
                 //VJsonObjectLines.Add('Formulaforattendance', EmpEarningCodePayComponentTable.EECList__Formulaforattendance);
                 VJsonObjectLines.Add('Formulaforattendance', EmpEarningCodePayComponentTable.GET_EECList__Formulaforattendance_Code(EmpEarningCodePayComponentTable."Entry No."));
                 //VJsonObjectLines.Add('Formulafordays', EmpEarningCodePayComponentTable.EECList__Formulafordays);

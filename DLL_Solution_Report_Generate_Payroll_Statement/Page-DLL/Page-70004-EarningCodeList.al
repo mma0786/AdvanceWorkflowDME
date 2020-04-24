@@ -24,6 +24,7 @@ page 70004 "Earning Code List"
                 }
                 field(EECList__UnitFormulaTxt; EECList__UnitFormulaTxt)
                 {
+                    Caption = 'Formula Value';
                     ApplicationArea = All;
                 }
                 field(EECList__FormulaforattendanceTxt; EECList__FormulaforattendanceTxt)
@@ -37,6 +38,11 @@ page 70004 "Earning Code List"
                 field(EECList__Paycomponenttype; EECList__Paycomponenttype)
                 {
                     ApplicationArea = All;
+                }
+                field(EECList__Pay_Comp_UnitFormula; EECList__Pay_Comp_UnitFormula)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Amount';
                 }
             }
         }
@@ -56,7 +62,7 @@ page 70004 "Earning Code List"
 
         EECList__UnitFormulaTxt := GETFormulaEECList__UnitFormula();
 
-        //Message('%1    %2    %3', EECList__FormulafordaysTxt, EECList__FormulaforattendanceTxt, EECList__UnitFormulaTxt);
+
     end;
 }
 
