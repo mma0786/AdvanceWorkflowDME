@@ -869,11 +869,11 @@ report 70000 "Generate Payroll Statement DLL"
                             PayComponentEECistTableRecL."Entry No." := 0;
                             PayComponentEECistTableRecL.Insert();
                             PayComponentEECistTableRecL.EECList__Paycomponentcode := EmployeeEarningCodes."Short Name";
-
+                            // @BC DLL
                             PayComponentEECistTableRecL.SETFormulaEECList__UnitFormula_Code(FormulaForPackage, PayComponentEECistTableRecL."Entry No.");
 
                             Evaluate(PayComponentEECistTableRecL.EECList__Pay_Comp_UnitFormula, FormulaForPackage);
-
+                            // @BC DLL
                             PayComponentEECistTableRecL.SETEECList__Formulaforattendance_Code(FormulaForAttendance, PayComponentEECistTableRecL."Entry No.");
                             PayComponentEECistTableRecL.SETEECList__Formulafordays_Code(FormulaForDays, PayComponentEECistTableRecL."Entry No.");
                             PayComponentEECistTableRecL.EECList__Paycomponenttype := Format(EmployeeEarningCodes."Pay Component Type");
@@ -900,6 +900,7 @@ report 70000 "Generate Payroll Statement DLL"
                             ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL, PayComponentEECistTableRecL, BenefitTableRecL);
                             ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
                             //Message('ReturnJsonResponse           %1', ReturnJsonResponse);
+                            EmpResultTableRecL.DeleteAll();
                             Clear(EmpResultTableRecL);
                             DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
 
@@ -975,13 +976,13 @@ report 70000 "Generate Payroll Statement DLL"
                     Start Calling API Methos
                     */
 
-                    // ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL,
-                    //                                                                     PayComponentEECistTableRecL,
-                    //                                                                     BenefitTableRecL);
-                    //ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
-                    //Message('ReturnJsonStringTxtL           %1', ReturnJsonStringTxtL);
-                    //Clear(EmpResultTableRecL);
-                    // DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
+                    // // ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL,
+                    // //                                                                    PayComponentEECistTableRecL,
+                    // //                                                                    BenefitTableRecL);
+                    // // // // ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
+                    /////Message('ReturnJsonStringTxtL           %1', ReturnJsonStringTxtL);
+                    // // // // Clear(EmpResultTableRecL);
+                    // // // DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
 
                     /*
                      @BC DLL 
@@ -991,6 +992,8 @@ report 70000 "Generate Payroll Statement DLL"
                     /*
                     Start EmployeeBenefits
                     */
+                    BenefitRowCollectionRecL.Copy(EmpResultTableRecL); // @BC DLL
+
                     EmployeeBenefits.RESET;
                     EmployeeBenefits.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
                     EmployeeBenefits.SETRANGE(Worker, RecEmployee."No.");
@@ -1000,7 +1003,6 @@ report 70000 "Generate Payroll Statement DLL"
                         repeat
                             // @BC DLL START
                             // @BC DLL //BenefitRowCollection := ResultTable.Rows;
-                            BenefitRowCollectionRecL.Copy(EmpResultTableRecL);
                             BenefitRowCollectionRecL.Reset();
                             BenefitRowCollectionRecL.SetCurrentKey("Entry No.");
                             if BenefitRowCollectionRecL.FindSet() then begin

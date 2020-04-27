@@ -49,7 +49,6 @@ page 70005 "Benefit List"
         EBList__ValueFormulaTxt := GET_EBList__ValueFormula();
         EBList__EncashmentFormulaTxt := GET_EBList__EncashmentFormula();
 
-        Message('%1    --   %2    ---   %3', EBList__UnitFormulaTxt, EBList__ValueFormulaTxt, EBList__EncashmentFormulaTxt);
     end;
 }
 
