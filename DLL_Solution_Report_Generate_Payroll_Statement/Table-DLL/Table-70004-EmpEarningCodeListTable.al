@@ -28,6 +28,7 @@ table 70004 "Emp. Earning Code  List Table"
         {
 
         }
+
     }
 
     keys
@@ -147,7 +148,7 @@ table 70004 "Emp. Earning Code  List Table"
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNoP);
         if CurrentTable.FindFirst() then begin
-            CurrentTable.EECList__UnitFormula.CreateOutStream(OutStream, TEXTENCODING::UTF8);
+            CurrentTable.EECList__Formulaforattendance.CreateOutStream(OutStream, TEXTENCODING::UTF8);
             OutStream.WriteText(EECList__FormulaforattendanceP);
             CurrentTable.Modify;
         end;
@@ -207,13 +208,13 @@ table 70004 "Emp. Earning Code  List Table"
         OutStream: OutStream;
         CurrentTable: Record "Emp. Earning Code  List Table";
     begin
-        CLEAR(EECList__UnitFormula);
+        CLEAR(EECList__Formulafordays);
         if EECList__FormulafordaysP = '' then
             exit;
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNoP);
         if CurrentTable.FindFirst() then begin
-            CurrentTable.EECList__UnitFormula.CreateOutStream(OutStream, TEXTENCODING::UTF8);
+            CurrentTable.EECList__Formulafordays.CreateOutStream(OutStream, TEXTENCODING::UTF8);
             OutStream.WriteText(EECList__FormulafordaysP);
             CurrentTable.Modify;
         end;

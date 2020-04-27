@@ -864,6 +864,10 @@ report 70000 "Generate Payroll Statement DLL"
                             // Start @BC DLL 22.04.2020 
                             // @Pay Component or Earning Code value inserting into Temp Table as per DLL Solution 
                             //Message('FormulaForPackage  %1', FormulaForPackage);
+                            // // Message('FormulaForPackage %1', FormulaForPackage);
+                            // // Message('FormulaForAttendance %1', FormulaForAttendance);
+                            /// Message('FormulaForDays %1', FormulaForDays);
+
 
                             PayComponentEECistTableRecL.Init();
                             PayComponentEECistTableRecL."Entry No." := 0;
@@ -871,11 +875,12 @@ report 70000 "Generate Payroll Statement DLL"
                             PayComponentEECistTableRecL.EECList__Paycomponentcode := EmployeeEarningCodes."Short Name";
                             // @BC DLL
                             PayComponentEECistTableRecL.SETFormulaEECList__UnitFormula_Code(FormulaForPackage, PayComponentEECistTableRecL."Entry No.");
-
                             Evaluate(PayComponentEECistTableRecL.EECList__Pay_Comp_UnitFormula, FormulaForPackage);
                             // @BC DLL
                             PayComponentEECistTableRecL.SETEECList__Formulaforattendance_Code(FormulaForAttendance, PayComponentEECistTableRecL."Entry No.");
+
                             PayComponentEECistTableRecL.SETEECList__Formulafordays_Code(FormulaForDays, PayComponentEECistTableRecL."Entry No.");
+
                             PayComponentEECistTableRecL.EECList__Paycomponenttype := Format(EmployeeEarningCodes."Pay Component Type");
                             PayComponentEECistTableRecL.Modify();
                             // Stop @BC DLL

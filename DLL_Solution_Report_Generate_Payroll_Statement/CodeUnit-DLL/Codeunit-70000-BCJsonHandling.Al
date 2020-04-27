@@ -56,9 +56,8 @@ codeunit 70000 "BC Json Handling"
 
                 VJsonObjectLines.Add('Paycomponentcode', EmpEarningCodePayComponentTable.EECList__Paycomponentcode);
 
-                VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.EECList__Pay_Comp_UnitFormula);
-
                 // Start Below need to uncommented once got solution
+                VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.EECList__Pay_Comp_UnitFormula);
                 //VJsonObjectLines.Add('UnitFormula', EmpEarningCodePayComponentTable.GET_FormulaEECList__UnitFormula_Code(EmpEarningCodePayComponentTable."Entry No."));
                 // Stop
 

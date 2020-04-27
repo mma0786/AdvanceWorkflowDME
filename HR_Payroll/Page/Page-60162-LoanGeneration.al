@@ -1,12 +1,14 @@
 page 60162 "Loan Generation"
 {
     Caption = 'Loan Generation';
-    DeleteAllowed = false;
+    DeleteAllowed = true;
     InsertAllowed = false;
     ModifyAllowed = false;
     PageType = ListPart;
     ShowFilter = false;
     SourceTable = "Loan Installment Generation";
+    ApplicationArea = All;
+    UsageCategory = Lists;
 
     layout
     {

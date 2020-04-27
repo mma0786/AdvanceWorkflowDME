@@ -149,7 +149,7 @@ table 60113 "Loan Request"
         }
         field(17; "WorkFlow Status"; Option)
         {
-            Editable = false;
+            //Editable = false;
             OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
             OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
         }
