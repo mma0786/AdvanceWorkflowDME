@@ -972,7 +972,7 @@ report 60010 "Generate Payroll Statements"
                             TempDataTable."Paycomponent Type" := FORMAT(EmployeeEarningCodes."Pay Component Type");
                             TempDataTable.INSERT;
                             //Temp Data
-                            //Insert System Data Rows
+                            //Insert System Data Rows                   
                             LevHREvaluation := LevHREvaluation.HrmPlus;
                             ResultTable := ResultTable.DataTable;
                             ResultTable := LevHREvaluation.PageInIt(ParameterTable, PayComponentTable, BenefitTable);
