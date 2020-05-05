@@ -158,6 +158,7 @@ page 60065 "Cancel Leave Requests"
                     PostLeaveCancel(CancelLeave);
                 end;
             }
+
             group(Approval)
             {
                 Caption = 'Approval';
@@ -166,9 +167,6 @@ page 60065 "Cancel Leave Requests"
                     ApplicationArea = All;
                     Caption = 'Approve';
                     Image = Approve;
-                    Promoted = true;
-                    PromotedCategory = Category4;
-                    PromotedIsBig = true;
                     ToolTip = 'Approve the requested changes.';
                     Visible = OpenApprovalEntriesExistForCurrUser;
 
@@ -185,9 +183,6 @@ page 60065 "Cancel Leave Requests"
                     Caption = 'Reject';
                     Enabled = OpenApprovalEntriesExistForCurrUser;
                     Image = Reject;
-                    Promoted = true;
-                    PromotedCategory = Category4;
-                    PromotedIsBig = true;
                     ToolTip = 'Reject the approval request.';
                     Visible = OpenApprovalEntriesExistForCurrUser;
 
@@ -204,8 +199,6 @@ page 60065 "Cancel Leave Requests"
                     Caption = 'Delegate';
                     Enabled = OpenApprovalEntriesExistForCurrUser;
                     Image = Delegate;
-                    Promoted = true;
-                    PromotedCategory = Category4;
                     ToolTip = 'Delegate the approval to a substitute approver.';
                     Visible = OpenApprovalEntriesExistForCurrUser;
 
@@ -230,7 +223,16 @@ page 60065 "Cancel Leave Requests"
                     GenJournalLine: Record "Gen. Journal Line";
                     ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                     WfCodeU: Codeunit WFCode_LeaveCancelReq;
+
+                    ApprovalEntry: Record "Approval Entry";
                 begin
+                    ApprovalEntry.Reset();
+                    ApprovalEntry.SETRANGE("Table ID", DATABASE::"Cancel Leave Request");
+                    ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RecordId);
+                    ApprovalEntry.SETRANGE("Related to Change", FALSE);
+                    PAGE.RUN(70010, ApprovalEntry);
+
+                    ////
                     //commented By Avinash   ApprovalsMgmt.ShowLeaveCancellationApprovalEntries(Rec);
 
                 end;

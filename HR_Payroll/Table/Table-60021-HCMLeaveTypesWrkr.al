@@ -213,37 +213,37 @@ table 60021 "HCM Leave Types Wrkr"
 
             trigger OnValidate()
             begin
-
+                /*
                 TESTFIELD(Worker);
                 IF AccrualComponent.GET("Accrual ID") THEN BEGIN
-                    "Accrual Description" := AccrualComponent.Description;
-                    "Accrual Interval Basis Date" := AccrualComponent."Accrual Interval Basis Date";
-                    "Months Ahead Calculate" := AccrualComponent."Months Ahead Calculate";
-                    "Consumption Split by Month" := AccrualComponent."Consumption Split by Month";
-                    "Accrual Basis Date" := AccrualComponent."Accrual Basis Date";
-                    "Interval Month Start" := AccrualComponent."Interval Month Start";
-                    "Accrual Units Per Month" := AccrualComponent."Accrual Units Per Month";
-                    "Opening Additional Accural" := AccrualComponent."Opening Additional Accural";
-                    "Max Carry Forward" := AccrualComponent."Max Carry Forward";
-                    "CarryForward Lapse After Month" := AccrualComponent."CarryForward Lapse After Month";
-                    "Repeat After Months" := AccrualComponent."Repeat After Months";
-                    "Avail Allow Till" := AccrualComponent."Avail Allow Till";
-                END
-                ELSE BEGIN
-                    "Accrual Description" := '';
-                    "Accrual Interval Basis Date" := 0D;
-                    "Months Ahead Calculate" := 0;
-                    "Consumption Split by Month" := FALSE;
-                    "Accrual Basis Date" := 0D;
-                    "Interval Month Start" := 0;
-                    "Accrual Units Per Month" := 0;
-                    "Opening Additional Accural" := 0;
-                    "Max Carry Forward" := 0;
-                    "CarryForward Lapse After Month" := 0;
-                    "Repeat After Months" := 0;
-                    "Avail Allow Till" := "Avail Allow Till"::"Accrual Till Date";
+                   "Accrual Description" := AccrualComponent.Description;
+                   "Accrual Interval Basis Date" := AccrualComponent."Accrual Interval Basis Date";
+                   "Months Ahead Calculate" := AccrualComponent."Months Ahead Calculate";
+                   "Consumption Split by Month" := AccrualComponent."Consumption Split by Month";
+                   "Accrual Basis Date" := AccrualComponent."Accrual Basis Date";
+                   "Interval Month Start" := AccrualComponent."Interval Month Start";
+                   "Accrual Units Per Month" := AccrualComponent."Accrual Units Per Month";
+                   "Opening Additional Accural" := AccrualComponent."Opening Additional Accural";
+                   "Max Carry Forward" := AccrualComponent."Max Carry Forward";
+                   "CarryForward Lapse After Month" := AccrualComponent."CarryForward Lapse After Month";
+                   "Repeat After Months" := AccrualComponent."Repeat After Months";
+                   "Avail Allow Till" := AccrualComponent."Avail Allow Till";
+                  END
+                  ELSE BEGIN
+                   "Accrual Description" := '';
+                   "Accrual Interval Basis Date" := 0D;
+                   "Months Ahead Calculate" := 0;
+                   "Consumption Split by Month" := FALSE;
+                   "Accrual Basis Date" := 0D;
+                   "Interval Month Start" := 0;
+                   "Accrual Units Per Month" := 0;
+                   "Opening Additional Accural" := 0;
+                   "Max Carry Forward" := 0;
+                   "CarryForward Lapse After Month" := 0;
+                   "Repeat After Months" := 0;
+                   "Avail Allow Till" := "Avail Allow Till"::"Accrual Till Date";
                 END;
-
+                */
 
             end;
         }
@@ -334,6 +334,15 @@ table 60021 "HCM Leave Types Wrkr"
         }
     }
 
+    trigger OnDelete()
+    var
+        RecLeaveRequest: Record "Leave Request Header";
+    begin
+        Clear(RecLeaveRequest);
+        RecLeaveRequest.SetRange("Leave Type", Rec."Leave Type Id");
+        if RecLeaveRequest.FindFirst() then
+            Error('You cannot delete this Leave Type as it is assigned to Leave Request Id %1', RecLeaveRequest."Leave Request ID");
+    end;
 
 
     var

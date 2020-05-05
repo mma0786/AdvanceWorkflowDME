@@ -75,10 +75,12 @@ page 60177 "Loan Type Setup"
                 field("Loan Type Template"; "Loan Type Template")
                 {
                     Caption = 'Loan Type Template';
+                    ApplicationArea = All;
                 }
                 field("Loan Type Journal Batch"; "Loan Type Journal Batch")
                 {
                     Caption = 'Loan Type Journal Batch';
+                    ApplicationArea = All;
                 }
                 field("Number of Installments"; "Number of Installments")
                 {

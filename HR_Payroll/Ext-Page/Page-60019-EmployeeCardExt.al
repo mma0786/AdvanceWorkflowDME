@@ -163,6 +163,7 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
             field(Nationality; Nationality)
             {
                 ApplicationArea = All;
+                ShowMandatory = true;
             }
             field("Nationality In Arabic"; "Nationality In Arabic")
             {
@@ -535,17 +536,12 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                         PromotedCategory = Process;
                         PromotedIsBig = true;
                         ApplicationArea = All;
-                        Visible = true;
-                        // // // RunObject = Page "Employee Delegation List";
-                        // // // RunPageLink = "Employee Code" = FIELD("No.");
+                        Visible = false;
+                        //RunObject = Page 60165;
+                        //RunPageLink = Employee Code=FIELD(No.);
 
                         trigger OnAction()
                         begin
-                            DelegateWFLTRec_G.RESET;
-                            DelegateWFLTRec_G.FILTERGROUP(2);
-                            DelegateWFLTRec_G.SETRANGE("Employee Code", "No.");
-                            DelegateWFLTRec_G.FILTERGROUP(0);
-                            PAGE.RUNMODAL(60165, DelegateWFLTRec_G);
                             /*
                             ApprovalLevelSetupRec_G.RESET;
                             ApprovalLevelSetupRec_G.GET;
@@ -630,6 +626,16 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
             ERROR('Please select Gender');
         TESTFIELD("Birth Date");
         TESTFIELD("Employee Religion");
+        //
+        TestField("Joining Date");
+        TestField("Employee Religion");
+        TestField(Nationality);
+    end;
+
+    trigger OnClosePage()
+    begin
+        //To check mandatory fields while closing it
+        CheckMand();
     end;
 
     var

@@ -129,12 +129,14 @@ table 60112 "Loan Type Setup"
         }
         field(19; "Loan Type Template"; Code[20])
         {
-            Caption = 'Loan Type Journal Batch';
+            Caption = 'Loan Type Journal Template';
+            Enabled = true;
             TableRelation = "Gen. Journal Template".Name;
         }
         field(20; "Loan Type Journal Batch"; Code[20])
         {
             Caption = 'Loan Type Journal Batch';
+            Enabled = true;
             TableRelation = "Gen. Journal Batch".Name WHERE("Journal Template Name" = FIELD("Loan Type Template"));
         }
         field(21; "Number of Installments"; Integer)

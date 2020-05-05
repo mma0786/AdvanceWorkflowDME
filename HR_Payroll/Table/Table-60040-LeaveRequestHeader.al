@@ -56,6 +56,9 @@ table 60040 "Leave Request Header"
             var
                 EmployeeInterimAccuralsRecL: Record "Employee Interim Accurals";
                 HCMLeaveTypeRecL: Record "HCM Leave Types";
+                RecAccrualCompEmp: Record "Accrual Components Employee";
+                RecEmpInterAccLines: Record "Employee Interim Accurals";
+                RecLeaveRequest: Record "Leave Request Header";
             begin
 
                 if "Leave Type" <> '' then begin
@@ -110,7 +113,8 @@ table 60040 "Leave Request Header"
                         until EmployeeInterimAccuralsRecL.Next() = 0;
                     end;
                 end;
-
+                //
+                CalculateLeaveBalance();
             end;
         }
         field(5; "Short Name"; Code[20])
@@ -149,6 +153,7 @@ table 60040 "Leave Request Header"
                 if LeaveRequestHeader.FINDFIRST then begin
                     ERROR('Leave Period Overlaps with other leave request');
                 end;
+                CalCulateLeaveBalance();
             end;
         }
         field(8; "Alternative Start Date"; Date)
@@ -170,6 +175,8 @@ table 60040 "Leave Request Header"
             trigger OnValidate()
             begin
                 ValidateEndDate;
+
+                CalCulateLeaveBalance();
             end;
         }
         field(11; "Alternative End Date"; Date)
@@ -224,6 +231,7 @@ table 60040 "Leave Request Header"
         }
         field(18; "Workflow Status"; Option)
         {
+            Editable = false;
             OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
             OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
         }
@@ -277,7 +285,26 @@ table 60040 "Leave Request Header"
         field(60; User_ID; Code[20])
         {
         }
-
+        field(70; "Entitlement Days"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            trigger OnValidate()
+            begin
+                Validate("Leave Balance", "Entitlement Days" - "Consumed Leaves");
+            end;
+        }
+        field(71; "Consumed Leaves"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+            trigger OnValidate()
+            begin
+                Validate("Leave Balance", "Entitlement Days" - "Consumed Leaves");
+            end;
+        }
+        field(72; "Leave Balance"; Decimal)
+        {
+            DataClassification = ToBeClassified;
+        }
     }
 
     keys
@@ -710,12 +737,16 @@ table 60040 "Leave Request Header"
                 //Validate Max Days
                 if l_LeaveType."Max Days Avail" <> 0 then
                     if Rec."Leave Days" > l_LeaveType."Max Days Avail" then
-                        ERROR('You cannot apply more than %1 Leaves', l_LeaveType."Max Days Avail");
+                        //  ERROR('You cannot apply more than %1 Leaves', l_LeaveType."Max Days Avail");
+                        ///LT
+                        Error('You cannot apply more than 1% days of %2', l_LeaveType."Max Days Avail", l_LeaveType."Leave Type");
 
                 //Validate Max Days
                 if l_LeaveType."Min Days Avail" <> 0 then
                     if Rec."Leave Days" < l_LeaveType."Min Days Avail" then
-                        ERROR('You cannot apply less than %1 Leaves', l_LeaveType."Min Days Avail");
+                        //ERROR('You cannot apply less than %1 Leaves', l_LeaveType."Min Days Avail");
+                        //LT
+                        ERROR('You cannot apply less than 1% days of %2', l_LeaveType."Min Days Avail", l_LeaveType."Leave Type");
 
                 if l_LeaveType."Min Days Between 2 leave Req." <> 0 then
                     ValidateDaysBetweenLeaveReq(Employee, l_LeaveType);
@@ -862,12 +893,16 @@ table 60040 "Leave Request Header"
             //Validate Max Days
             if LeaveType."Max Days Avail" <> 0 then
                 if Rec."Leave Days" > LeaveType."Max Days Avail" then
-                    ERROR('You cannot apply more than %1 Leaves', LeaveType."Max Days Avail");
+                    //ERROR('You cannot apply more than %1 Leaves', LeaveType."Max Days Avail");
+                    //LT
+                      Error('You cannot apply more than 1% days of %2', LeaveType."Max Days Avail", LeaveType."Leave Type");
 
             //Validate Max Days
             if LeaveType."Min Days Avail" <> 0 then
                 if Rec."Leave Days" < LeaveType."Min Days Avail" then
-                    ERROR('You cannot apply less than %1 Leaves', LeaveType."Min Days Avail");
+                    //ERROR('You cannot apply less than %1 Leaves', LeaveType."Min Days Avail");
+                    //LT
+                    Error('You cannot apply less than 1% days of %2', LeaveType."Min Days Avail", LeaveType."Leave Type");
 
             if LeaveType."Min Days Between 2 leave Req." <> 0 then
                 ValidateDaysBetweenLeaveReq(Employee, LeaveType);
@@ -1246,6 +1281,46 @@ table 60040 "Leave Request Header"
                     EmployeeWorkDate_GCC.MODIFY;
                 until EmployeeWorkDate_GCC.NEXT = 0;
         end;
+    end;
+
+
+    procedure CalCulateLeaveBalance()
+    var
+        HCMLeaveTypeRecL: Record "HCM Leave Types";
+        RecAccrualCompEmp: Record "Accrual Components Employee";
+        RecEmpInterAccLines: Record "Employee Interim Accurals";
+        RecLeaveRequest: Record "Leave Request Header";
+    begin
+        //Show Leave Balance-Start
+        Clear(HCMLeaveTypeRecL);
+        HCMLeaveTypeRecL.SetRange("Leave Type Id", Rec."Leave Type");
+        if HCMLeaveTypeRecL.FindFirst() then begin
+            if HCMLeaveTypeRecL."Accrual ID" = '' then begin
+                Validate("Entitlement Days", HCMLeaveTypeRecL."Entitlement Days");
+            end else begin
+                Clear(RecEmpInterAccLines);
+                RecEmpInterAccLines.SetRange("Accrual ID", HCMLeaveTypeRecL."Accrual ID");
+                RecEmpInterAccLines.SetRange("Worker ID", Rec."Personnel Number");
+                RecEmpInterAccLines.SetFilter("Start Date", '<%1', Rec."End Date");
+                RecEmpInterAccLines.SetFilter("End Date", '>%1', Rec."End Date");
+                RecEmpInterAccLines.SetRange(Month, Date2DMY("End Date", 2));
+                if RecEmpInterAccLines.FindFirst() then
+                    Validate("Entitlement Days", RecEmpInterAccLines."Closing Balance");
+            end;
+
+        end;
+
+        Clear(RecLeaveRequest);
+        RecLeaveRequest.SetRange("Personnel Number", Rec."Personnel Number");
+        RecLeaveRequest.SetRange(Posted, True);
+        RecLeaveRequest.SetRange("Leave Cancelled", false);
+        RecLeaveRequest.SetFilter("Start Date", '>%1', CALCDATE('<-CY>', WorkDate()));
+        RecLeaveRequest.SetFilter("End Date", '>%1', CALCDATE('<CY>', WorkDate()));
+        if RecLeaveRequest.FindSet() then begin
+            RecLeaveRequest.CalcSums("Leave Days");
+            Validate("Consumed Leaves", RecLeaveRequest."Leave Days");
+        end;
+        //-End
     end;
 }
 

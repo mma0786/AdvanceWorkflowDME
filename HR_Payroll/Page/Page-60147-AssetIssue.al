@@ -643,6 +643,7 @@ page 60147 "Asset Issue"
         AssetAssRegRec."Issue to/Return by" := "Issue to/Return by";
         AssetAssRegRec.Name := Name;
         AssetAssRegRec."Document Date" := "Document Date";
+
         AssetAssRegRec."Issue Date" := "Issue Date";
         AssetAssRegRec."Issued Till" := "Issued Till";
         AssetAssRegRec.Status := AssetAssRegRec.Status::Issued;
@@ -659,8 +660,10 @@ page 60147 "Asset Issue"
                     FA_Rec."Asset Custody" := FA_Rec."Asset Custody"::Employee;
                     FA_Rec."Issued to Employee" := "Issue to/Return by";
                     FA_Rec."Issued to Department" := '';
-                    if FA_Rec.MODIFY then
+                    if FA_Rec.MODIFY then begin
                         Message('POSTED');
+                        Rec.Delete()
+                    End;
                     //commented By Avinash
                 end;
             end else
@@ -670,8 +673,10 @@ page 60147 "Asset Issue"
                         FA_Rec."Asset Custody" := FA_Rec."Asset Custody"::Department;
                         FA_Rec."Issued to Department" := "Issue to/Return by";
                         FA_Rec."Issued to Employee" := '';
-                        if FA_Rec.MODIFY then
+                        if FA_Rec.MODIFY then begin
                             Message('POSTED');
+                            Rec.Delete()
+                        end;
                         //commented By Avinash
                     end;
                 end;

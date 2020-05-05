@@ -59,6 +59,24 @@ page 60064 "Leave Request Card"
                     ShowMandatory = true;
                     ApplicationArea = All;
                 }
+
+                //LT
+                field("Entitlement Days"; "Entitlement Days")
+                {
+                    ApplicationArea = ALl;
+                    Enabled = false;
+                }
+                field("Consumed Leaves"; "Consumed Leaves")
+                {
+                    ApplicationArea = All;
+                    Enabled = false;
+                }
+                field("Leave Balance"; "Leave Balance")
+                {
+                    ApplicationArea = All;
+                    Enabled = false;
+                }
+                //LT
                 field("Leave End Day Type"; "Leave End Day Type")
                 {
                     ApplicationArea = All;
@@ -122,7 +140,7 @@ page 60064 "Leave Request Card"
                 }
                 field("Workflow Status"; "Workflow Status")
                 {
-                    //  Editable = false;
+                    Editable = false;
                     ApplicationArea = All;
                 }
                 group("Resumption Details")
@@ -158,57 +176,138 @@ page 60064 "Leave Request Card"
     {
         area(processing)
         {
-            action("Send Approval Request")
+            group(Approvals_1)
             {
-                Caption = 'Send Approval Request';
-                Enabled = (NOT OpenApprovalEntriesExist) AND ("Workflow Status" = "Workflow Status"::Open);
-                Image = SendApprovalRequest;
-                ApplicationArea = All;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
+                Caption = 'Approvals';
 
-                trigger OnAction()
-                var
-                    WfInitCode: Codeunit InitCodeunit_Leave_Request;
-                    AdvanceWorkflowCUL: Codeunit "Advance Workflow";
-                begin
-                    TESTFIELD("Personnel Number");
-                    TESTFIELD("Start Date");
-                    TESTFIELD("End Date");
-                    TESTFIELD(Posted, false);
+                action("Send Approval Request")
+                {
+                    Caption = 'Send Approval Request';
+                    Enabled = (NOT OpenApprovalEntriesExist) AND ("Workflow Status" = "Workflow Status"::Open);
+                    Image = SendApprovalRequest;
+                    ApplicationArea = All;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedOnly = true;
+                    PromotedIsBig = true;
 
-
-
-                    // Start #Levtech WF
-                    CancelAndDeleteApprovalEntryTrans_LT(Rec.RecordId);
-                    // Stop #Levtech WF
-                    TESTFIELD(Posted, false);
-                    if not CONFIRM('Do you want to Submit the leave request?') then
-                        exit;
-
-                    if Rec."Leave Days" = 0 then
-                        ERROR('Leave days cannot be zero');
-
-                    SubmitLeave(Rec);
-
-
-                    //LeaveRequestHeader.RESET;
-                    if WfInitCode.Is_LeaveReq_Enabled(Rec) then begin
-                        // Start #Levtech  WF
-                        LoopOfSeq_LT("Personnel Number", "Leave Request ID");
+                    trigger OnAction()
+                    var
+                        WfInitCode: Codeunit InitCodeunit_Leave_Request;
+                        AdvanceWorkflowCUL: Codeunit "Advance Workflow";
+                    begin
+                        TESTFIELD("Personnel Number");
+                        TESTFIELD("Start Date");
+                        TESTFIELD("End Date");
+                        TESTFIELD(Posted, false);
+                        // Start #Levtech WF
+                        CancelAndDeleteApprovalEntryTrans_LT(Rec.RecordId);
                         // Stop #Levtech WF
-                        WfInitCode.OnSend_LeaveReq_Approval(Rec);
-                        // Start  21.04.2020 Advance Workflow
-                        AdvanceWorkflowCUL.DeleteExtraLine_ApprovalEntry_LT(Rec.RecordId);
+                        TESTFIELD(Posted, false);
+                        if not CONFIRM('Do you want to Submit the leave request?') then
+                            exit;
 
-                        AdvanceWorkflowCUL.LeaveRequest_SwapApprovalUser_Advance_LT(Rec.RecordId);
+                        if Rec."Leave Days" = 0 then
+                            ERROR('Leave days cannot be zero');
 
-                        AdvanceWorkflowCUL.DeleteExtraLine_ApprovalEntry_LT(Rec.RecordId);
-                        // Stop 21.04.2020 Advance Workflow
+                        SubmitLeave(Rec);
+                        //LeaveRequestHeader.RESET;
+                        if WfInitCode.Is_LeaveReq_Enabled(Rec) then begin
+                            // Start #Levtech  WF
+                            LoopOfSeq_LT("Personnel Number", "Leave Request ID");
+                            // Stop #Levtech WF
+                            WfInitCode.OnSend_LeaveReq_Approval(Rec);
+                            // Start  21.04.2020 Advance Workflow
+                            ///AdvanceWorkflowCUL.DeleteExtraLine_ApprovalEntry_LT(Rec.RecordId);
 
+                            AdvanceWorkflowCUL.LeaveRequest_SwapApprovalUser_Advance_LT(Rec.RecordId);
+
+                            ///AdvanceWorkflowCUL.DeleteExtraLine_ApprovalEntry_LT(Rec.RecordId);
+                            // Stop 21.04.2020 Advance Workflow
+
+                        end;
                     end;
-                end;
+
+                }
+
+                action("Cancel Approval Request")
+                {
+                    Caption = 'Cancel Approval Request';
+                    Enabled = CanCancelApprovalForRecord;
+                    ApplicationArea = All;
+                    Image = CancelApprovalRequest;
+                    Promoted = true;
+                    PromotedOnly = true;
+                    PromotedCategory = Process;
+
+                    trigger OnAction()
+                    var
+                        INitWf: Codeunit InitCodeunit_Leave_Request;
+                    begin
+
+                        CurrPage.SETSELECTIONFILTER(LeaveRequestHeader);
+                        if LeaveRequestHeader.FINDFIRST then begin
+                            if LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved then
+                                ERROR('You cannot cancel approved leaves');
+                            INitWf.OnCancel_LeaveReq_Approval(rec);
+                            //commented By Avinash    ApprovalsMgmt.OnCancelLeaveApprovalRequest(LeaveRequestHeader);
+                            // Start #Levtech WF
+                            CancelAndDeleteApprovalEntryTrans_LT(Rec.RecordId);
+                            // Stop #Levtech WF
+                        end;
+                    end;
+                }
+                action(Reopen)
+                {
+                    Enabled = ("Workflow Status" <> "Workflow Status"::Open) AND (NOT Posted);
+                    Image = ReOpen;
+                    Promoted = true;
+                    PromotedCategory = Process;
+                    PromotedOnly = true;
+
+                    ApplicationArea = All;
+
+                    trigger OnAction()
+                    begin
+                        if Rec."Workflow Status" = Rec."Workflow Status"::"Pending For Approval" then
+                            ERROR(Text001);
+
+                        if "Workflow Status" = "Workflow Status"::Cancelled then
+                            ERROR('You Cannot reopen Cancelled Leave request');
+                        TESTFIELD(Posted, false);
+                        Reopen(Rec);
+                    end;
+                }
+                action(Post)
+                {
+                    Caption = 'Post';
+                    Enabled = EnableLeavePost;
+                    ApplicationArea = All;
+                    Image = Post;
+                    PromotedOnly = true;
+                    Promoted = true;
+                    PromotedCategory = Process;
+
+                    trigger OnAction()
+                    begin
+                        //
+
+                        if not CONFIRM('Do you want to post the leave request?') then
+                            exit;
+
+                        CurrPage.SETSELECTIONFILTER(LeaveRequestHeader);
+                        if LeaveRequestHeader.FINDFIRST then begin
+                            if LeaveRequestHeader."Leave Days" = 0 then
+                                ERROR('Leave days cannot be zero');
+                            LeaveRequestHeader.TESTFIELD("Workflow Status", "Workflow Status"::Approved);
+                            if LeaveRequestHeader.Posted then
+                                ERROR('Leave request is already posted');
+                            if not (LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved) then
+                                ERROR('Workflow Status must be Approved, Current value is %1', LeaveRequestHeader."Workflow Status");
+                            PostLeave(LeaveRequestHeader);
+                        end;
+                    end;
+                }
             }
             action("Swap USer")
             {
@@ -226,80 +325,6 @@ page 60064 "Leave Request Card"
                     AdvanceWorkflowCUL.LeaveRequest_SwapApprovalUser_Advance_LT(Rec.RecordId);
                 end;
 
-            }
-            action("Cancel Approval Request")
-            {
-                Caption = 'Cancel Approval Request';
-                Enabled = CanCancelApprovalForRecord;
-                ApplicationArea = All;
-                Image = CancelApprovalRequest;
-                Promoted = true;
-                PromotedCategory = Process;
-
-                trigger OnAction()
-                var
-                    INitWf: Codeunit InitCodeunit_Leave_Request;
-                begin
-
-                    CurrPage.SETSELECTIONFILTER(LeaveRequestHeader);
-                    if LeaveRequestHeader.FINDFIRST then begin
-                        if LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved then
-                            ERROR('You cannot cancel approved leaves');
-                        INitWf.OnCancel_LeaveReq_Approval(rec);
-                        //commented By Avinash    ApprovalsMgmt.OnCancelLeaveApprovalRequest(LeaveRequestHeader);
-                        // Start #Levtech WF
-                        CancelAndDeleteApprovalEntryTrans_LT(Rec.RecordId);
-                        // Stop #Levtech WF
-                    end;
-                end;
-            }
-            action(Reopen)
-            {
-                Enabled = ("Workflow Status" <> "Workflow Status"::Open) AND (NOT Posted);
-                Image = ReOpen;
-                Promoted = true;
-                PromotedCategory = Process;
-                ApplicationArea = All;
-
-                trigger OnAction()
-                begin
-                    if Rec."Workflow Status" = Rec."Workflow Status"::"Pending For Approval" then
-                        ERROR(Text001);
-
-                    if "Workflow Status" = "Workflow Status"::Cancelled then
-                        ERROR('You Cannot reopen Cancelled Leave request');
-                    TESTFIELD(Posted, false);
-                    Reopen(Rec);
-                end;
-            }
-            action(Post)
-            {
-                Caption = 'Post';
-                Enabled = EnableLeavePost;
-                ApplicationArea = All;
-                Image = Post;
-                Promoted = true;
-                PromotedCategory = Process;
-
-                trigger OnAction()
-                begin
-                    //
-
-                    if not CONFIRM('Do you want to post the leave request?') then
-                        exit;
-
-                    CurrPage.SETSELECTIONFILTER(LeaveRequestHeader);
-                    if LeaveRequestHeader.FINDFIRST then begin
-                        if LeaveRequestHeader."Leave Days" = 0 then
-                            ERROR('Leave days cannot be zero');
-                        LeaveRequestHeader.TESTFIELD("Workflow Status", "Workflow Status"::Approved);
-                        if LeaveRequestHeader.Posted then
-                            ERROR('Leave request is already posted');
-                        if not (LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved) then
-                            ERROR('Workflow Status must be Approved, Current value is %1', LeaveRequestHeader."Workflow Status");
-                        PostLeave(LeaveRequestHeader);
-                    end;
-                end;
             }
             action("Check Postion")
             {
@@ -342,35 +367,44 @@ page 60064 "Leave Request Card"
             group(Resumption)
             {
                 Caption = 'Resumption';
-                action("Duty Resumption")
+
+                action("Dutys Resumption")
                 {
                     Caption = 'Duty Resumption';
-                    Enabled = DutyResumeEdit;
                     Image = Replan;
                     Promoted = true;
-                    PromotedCategory = Category4;
+                    PromotedCategory = Process;
+                    ApplicationArea = All;
+
 
                     trigger OnAction()
                     begin
                         //
-                        // // // // // // // TESTFIELD(Posted, true);
-                        // // // // // // // if Rec."Workflow Status" = Rec."Workflow Status"::Cancelled then
-                        // // // // // // //     ERROR('Leave Request is Cancelled, You cannot create duty resumption');
+                        TESTFIELD(Posted, true);
+                        if Rec."Workflow Status" = Rec."Workflow Status"::Cancelled then
+                            ERROR('Leave Request is Cancelled, You cannot create duty resumption');
                         CreateDutyResumptionEntry;
                     end;
                 }
-                action("Late Resumption")
+                action("Duty Resumption")
                 {
-                    Caption = 'Late Resumption';
+                    Caption = 'Duty Resumption';
+                    Enabled = true;
                     Image = Replan;
                     Promoted = true;
-                    PromotedCategory = Category4;
-                    ApplicationArea = All;
-                    Visible = false;
+                    PromotedCategory = Process;
+                    PromotedIsBig = true;
+
+                    //PromotedOnly = true;
+                    Visible = true;
 
                     trigger OnAction()
                     begin
                         //
+                        TESTFIELD(Posted, true);
+                        if Rec."Workflow Status" = Rec."Workflow Status"::Cancelled then
+                            ERROR('Leave Request is Cancelled, You cannot create duty resumption');
+                        CreateDutyResumptionEntry;
                     end;
                 }
                 action("On Time Resumption")
@@ -379,8 +413,9 @@ page 60064 "Leave Request Card"
                     ApplicationArea = All;
                     Image = Replan;
                     Promoted = true;
-                    PromotedCategory = Category4;
+                    PromotedCategory = Process;
                     Visible = false;
+
 
                     trigger OnAction()
                     begin
@@ -393,12 +428,25 @@ page 60064 "Leave Request Card"
                         UpdateOntimeResumption;
                     end;
                 }
+
+                /* action(Test)
+                 {
+                     Image = TestFile;
+                     Promoted = true;
+                     PromotedOnly = true;
+                     Caption = 'Test Duty';
+                     trigger OnAction()
+                     begin
+                         CreateDutyResumptionEntry;
+
+                     end;
+                 }*/
                 action("Cancel Leave Request")
                 {
                     Image = Cancel;
                     ApplicationArea = All;
                     Promoted = true;
-                    PromotedCategory = Category4;
+                    PromotedCategory = Process;
 
                     trigger OnAction()
                     var
@@ -422,6 +470,7 @@ page 60064 "Leave Request Card"
                             CancelLeaveRequest."Created By" := USERID;
                             CancelLeaveRequest."Created Date Time" := CURRENTDATETIME;
                             CancelLeaveRequest."Submission Date" := 0D;
+
                             CancelLeaveRequest.INSERT;
                             COMMIT;
                         end;
@@ -439,7 +488,7 @@ page 60064 "Leave Request Card"
                     Caption = 'Approve';
                     Image = Approve;
                     Promoted = true;
-                    PromotedCategory = Category4;
+                    PromotedCategory = Process;
                     PromotedIsBig = true;
                     ToolTip = 'Approve the requested changes.';
                     Visible = OpenApprovalEntriesExistForCurrUser;
@@ -451,6 +500,7 @@ page 60064 "Leave Request Card"
                         ApprovalsMgmt.ApproveRecordApprovalRequest(RECORDID);
                     end;
                 }
+
                 action(Reject)
                 {
                     ApplicationArea = All;
@@ -459,7 +509,7 @@ page 60064 "Leave Request Card"
                     Enabled = OpenApprovalEntriesExistForCurrUser;
                     Image = Reject;
                     Promoted = true;
-                    PromotedCategory = Category4;
+                    PromotedCategory = Process;
                     PromotedIsBig = true;
                     ToolTip = 'Reject the approval request.';
                     Visible = OpenApprovalEntriesExistForCurrUser;
@@ -479,7 +529,7 @@ page 60064 "Leave Request Card"
                     Enabled = OpenApprovalEntriesExistForCurrUser;
                     Image = Delegate;
                     Promoted = true;
-                    PromotedCategory = Category4;
+                    PromotedCategory = Process;
                     ToolTip = 'Delegate the approval to a substitute approver.';
                     Visible = OpenApprovalEntriesExistForCurrUser;
 

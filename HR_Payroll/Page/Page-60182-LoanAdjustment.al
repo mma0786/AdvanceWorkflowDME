@@ -239,7 +239,8 @@ page 60182 "Loan Adjustment"
                         END;
                       END
                       */
-
+                    WFCode.IsLoan_Adj_Enabled(Rec);
+                    WFCode.OnSendLoan_Adj_Approval(Rec);
                 end;
             }
             action("Cancel Approval Request")
@@ -253,6 +254,7 @@ page 60182 "Loan Adjustment"
                 begin
                     TESTFIELD("Workflow Status", "Workflow Status"::"Pending For Approval");
                     //commented By Avinash  ApprovalsMgmt.OnCancelLoanAdjApprovalRequest(Rec);
+                    WFCode.OnCancelLoan_Adj_Approval(Rec);
                 end;
             }
             action(Approvals)
@@ -321,8 +323,9 @@ page 60182 "Loan Adjustment"
 
 
                     if Rec."Workflow Status" = Rec."Workflow Status"::"Pending For Approval" then
-                        ERROR(Text001);
-
+                        ERROR(Text001)
+                    else
+                        Rec."Workflow Status" := Rec."Workflow Status"::Open;
                     //commented By Avinash   Reopen(Rec);
                 end;
             }
@@ -382,6 +385,7 @@ page 60182 "Loan Adjustment"
         Text50006: Label 'Loan Installment Lines has been updated ! ';
         PrincipalDiff: Decimal;
         InstDiff: Decimal;
+        WFCode: Codeunit InitCodeunit_Loan_Adj;
         LoanAdjustmentLinesRecG: Record "Loan Adjustment Lines";
 
     local procedure EditableFun()

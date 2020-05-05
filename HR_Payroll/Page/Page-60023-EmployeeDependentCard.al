@@ -136,6 +136,7 @@ page 60023 "Employee Dependent Card1"
             part("Dependent Contacts"; "Dependent Contacts SubPage")
             {
                 SubPageLink = "Dependent ID" = FIELD("No."), "Table Type Option" = FILTER("Dependent Contacts Line");
+                Caption = 'Dependent Contacts';
             }
             group("Contact & Address")
             {

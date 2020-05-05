@@ -383,11 +383,8 @@ report 60010 "Generate Payroll Statements"
         PayrollAdjHeader: Record "Payroll Adjmt. Journal header";
         PayrollAdjLines: Record "Payroll Adjmt. Journal Lines";
         PayrollStatement3: Record "Payroll Statement";
-        ii: Integer;
     begin
-
         with RecPayrollStatement do begin
-
             RecEmployee.GET(EmployeeCode);
             EmployeeEarningCodeGroup.RESET;
             EmployeeEarningCodeGroup.SETCURRENTKEY("Employee Code", "Valid From", "Valid To");
@@ -704,7 +701,7 @@ report 60010 "Generate Payroll Statements"
                             TempDataTable."Entry No." := 0;
                             TempDataTable."Benefit Code" := EmployeeBenefits."Short Name";
                             TempDataTable."Unit Formula" := UnitFormula;
-                            TempDataTable."Value Formula" := CopyStr(AmountCalcFormula, 1, 250);
+                            TempDataTable."Value Formula" := AmountCalcFormula;
                             TempDataTable."Encashment Formula" := EncashmentFormula;
                             TempDataTable.INSERT;
                             //Temp Data
@@ -972,12 +969,10 @@ report 60010 "Generate Payroll Statements"
                             TempDataTable."Paycomponent Type" := FORMAT(EmployeeEarningCodes."Pay Component Type");
                             TempDataTable.INSERT;
                             //Temp Data
-                            //Insert System Data Rows                   
+                            //Insert System Data Rows
                             LevHREvaluation := LevHREvaluation.HrmPlus;
                             ResultTable := ResultTable.DataTable;
                             ResultTable := LevHREvaluation.PageInIt(ParameterTable, PayComponentTable, BenefitTable);
-                            // // ii := ii + 1;
-                            // // Message('Counter %1', ii);
 
                             PayComponentRowCollection := ResultTable.Rows;
                             for i := 0 to PayComponentRowCollection.Count - 1 do begin
@@ -1038,10 +1033,15 @@ report 60010 "Generate Payroll Statements"
                     //EmployeeBenefits.SETRANGE("Earning Code",'BS');
                     if EmployeeBenefits.FINDSET then
                         repeat
+                            //LevHREvaluation := LevHREvaluation.HrmPlus;
+                            //CLEAR(ResultTable);
+                            //ResultTable := ResultTable.DataTable;
+                            //ResultTable := LevHREvaluation.PageInIt(ParameterTable,PayComponentTable,BenefitTable);
                             BenefitRowCollection := ResultTable.Rows;
                             for i := 0 to BenefitRowCollection.Count - 1 do begin
                                 //Temp Data
                                 dotNetDataRow := ResultTable.Rows.Item(i);
+
                                 //Temp Data
 
                                 if (FORMAT(dotNetDataRow.Item(0)) = 'B') and (FORMAT(dotNetDataRow.Item(1)) = EmployeeBenefits."Short Name") then begin

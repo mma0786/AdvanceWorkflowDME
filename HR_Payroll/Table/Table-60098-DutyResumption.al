@@ -48,6 +48,8 @@ table 60098 "Duty Resumption"
             OptionCaption = ' ,On Time Resumption,Late Resumption,Early Resumption';
             OptionMembers = " ","On Time Resumption","Late Resumption","Early Resumption";
         }
+        field(51; RecID; RecordId)
+        { }
     }
 
     keys
@@ -84,6 +86,11 @@ table 60098 "Duty Resumption"
                 PostLeaveReq;
             end;
         end;
+    end;
+
+    trigger OnInsert()
+    begin
+        RecID := RecordId;
     end;
 
     var

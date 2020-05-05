@@ -109,6 +109,7 @@ page 60161 "Loan Request"
                 Editable = false;
                 SubPageLink = "Loan Request ID" = FIELD("Loan Request ID");
                 SubPageView = SORTING("Entry No.") ORDER(Ascending);
+                ApplicationArea = All;
             }
 
         }
@@ -152,6 +153,7 @@ page 60161 "Loan Request"
                     trigger OnAction()
                     var
                         ApprovalEntry: Record "Approval Entry";
+                        wfcode: Codeunit InitCodeunit_Loan_Request;
                     begin
                         TESTFIELD("Employee ID");
                         TESTFIELD("Loan Type");
@@ -163,21 +165,25 @@ page 60161 "Loan Request"
 
                         //commented By Avinash   ApprovalsMgmt.OnSendLoanRequestForApproval(Rec);
 
-                        if UserSetup.GET(USERID) then begin
-                            ApprovalEntry.SETRANGE("Table ID", 60113);
-                            ApprovalEntry.SETRANGE("Document No.", "Loan Request ID");
-                            ApprovalEntry.SETFILTER(Status, '%1', ApprovalEntry.Status::Approved);
-                            if ApprovalEntry.FINDFIRST then begin
-                                if UserSetup."Approval Administrator" = true then
-                                    LoanRequest.SETRANGE("Loan Request ID", "Loan Request ID");
-                                LoanRequest.SETRANGE("Loan Type", "Loan Type");
-                                if LoanRequest.FINDFIRST then begin
-                                    LoanRequest."WorkFlow Status" := LoanRequest."WorkFlow Status"::Approved;
-                                    LoanRequest.MODIFY;
-                                end;
+                        /* if UserSetup.GET(USERID) then begin
+                             ApprovalEntry.SETRANGE("Table ID", 60113);
+                             ApprovalEntry.SETRANGE("Document No.", "Loan Request ID");
+                             ApprovalEntry.SETFILTER(Status, '%1', ApprovalEntry.Status::Approved);
+                             if ApprovalEntry.FINDFIRST then begin
+                                 if UserSetup."Approval Administrator" = true then
+                                     LoanRequest.SETRANGE("Loan Request ID", "Loan Request ID");
+                                 LoanRequest.SETRANGE("Loan Type", "Loan Type");
+                                 if LoanRequest.FINDFIRST then begin
+                                     LoanRequest."WorkFlow Status" := LoanRequest."WorkFlow Status"::Approved;
+                                     LoanRequest.MODIFY;
+                                 end;
 
-                            end;
-                        end
+                             
+                    end;
+
+                    end*/
+                        wfcode.Is_Loan_Request_Enabled(rec);
+                        wfcode.OnSendLoan_Request_Approval(Rec);
                     end;
                 }
                 action("Cancel Approval Request")
@@ -190,13 +196,16 @@ page 60161 "Loan Request"
                     ApplicationArea = All;
 
                     trigger OnAction()
+                    var
+                        WfCode: Codeunit InitCodeunit_Loan_Request;
                     begin
                         //commented By Avinash     ApprovalsMgmt.OnCancelLoanApprovalRequest(Rec);
                         /*
                         "WorkFlow Status" := "WorkFlow Status"::Open;
                         MODIFY;
                         */
-
+                        TestField("WorkFlow Status", "WorkFlow Status"::"Pending For Approval");
+                        WfCode.OnCancelLoan_Request_Approval(rec);
                     end;
                 }
                 action(Approvals)

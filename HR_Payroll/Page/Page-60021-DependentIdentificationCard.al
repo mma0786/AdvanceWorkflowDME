@@ -76,6 +76,12 @@ page 60021 "Dependent Identification Card1"
                 field("Issuing Authority"; "Issuing Authority")
                 {
                     ApplicationArea = All;
+                    Visible = false;
+                }
+                field("Issuing Authority Description"; "Issuing Authority Description")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Issuing Authority';
                 }
                 field("Issuing Country"; "Issuing Country")
                 {
@@ -109,6 +115,10 @@ page 60021 "Dependent Identification Card1"
                     end;
                 }
                 field("Expiry Date (Hijiri)"; "Expiry Date (Hijiri)")
+                {
+                    ApplicationArea = All;
+                }
+                field("Active Document"; "Active Document")
                 {
                     ApplicationArea = All;
                 }

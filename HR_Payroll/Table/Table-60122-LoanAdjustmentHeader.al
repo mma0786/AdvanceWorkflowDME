@@ -92,6 +92,7 @@ table 60122 "Loan Adjustment Header"
         {
             Editable = false;
         }
+        field(11; RecID; RecordId) { }
     }
 
     keys
@@ -116,6 +117,7 @@ table 60122 "Loan Adjustment Header"
     begin
         "Workflow Status" := "Workflow Status"::Open;
         Initialise;
+        RecID := RecordId;
     end;
 
     var

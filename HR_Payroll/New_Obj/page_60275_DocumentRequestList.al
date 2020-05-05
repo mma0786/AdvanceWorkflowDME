@@ -4,7 +4,9 @@ page 60275 "Document Request List"
     Editable = false;
     PageType = List;
     SourceTable = "Document Request";
-
+    CardPageId = "Document request Card";
+    ApplicationArea = all;
+    UsageCategory = Lists;
     layout
     {
         area(content)

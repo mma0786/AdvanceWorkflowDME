@@ -149,7 +149,7 @@ table 60113 "Loan Request"
         }
         field(17; "WorkFlow Status"; Option)
         {
-            //Editable = false;
+            Editable = false;
             OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
             OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
         }
@@ -174,6 +174,10 @@ table 60113 "Loan Request"
         field(24; "Journal Document No."; Code[50])
         {
             Editable = false;
+        }
+        field(25; RecID; RecordId)
+        {
+
         }
     }
 
@@ -201,6 +205,7 @@ table 60113 "Loan Request"
     trigger OnInsert()
     begin
         Initialise;
+        RecID := RecordId;
     end;
 
     var

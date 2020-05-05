@@ -100,8 +100,8 @@ table 60094 "Full and Final Calculation"
         }
         field(13; "Workflow Status"; Option)
         {
-            OptionCaption = 'Open,Pending for Approval,Approved';
-            OptionMembers = Open,"Pending for Approval",Approved;
+            OptionCaption = 'Open,Approved,Send for Approval,Rejected';
+            OptionMembers = Open,Released,"Pending Approval",Rejected;
         }
         field(25; "Payroll Amount"; Decimal)
         {
@@ -133,6 +133,8 @@ table 60094 "Full and Final Calculation"
         field(30; "Earning Code Group"; Code[20])
         {
         }
+        field(31; RecId; RecordId)
+        { }
     }
 
     keys
@@ -169,6 +171,7 @@ table 60094 "Full and Final Calculation"
     trigger OnInsert()
     begin
         AdvPayrollSetup.GET;
+        RecId := RecordId;
         if "Journal ID" = '' then
             "Journal ID" := NoSeriesManagement.GetNextNo(AdvPayrollSetup."FS Journal ID", TODAY, true);
     end;

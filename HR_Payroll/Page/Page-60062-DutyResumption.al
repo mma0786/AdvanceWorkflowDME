@@ -113,12 +113,13 @@ page 60062 "Duty Resumption"
                 PromotedIsBig = true;
 
                 trigger OnAction()
-                var
-                    AdvanceWorkflowCUL: Codeunit "Advance Workflow";
+                Var
+                    WfCode: Codeunit InitCodeunit_Duty_Resumption;
                 begin
                     // Start PHASE -2 #Levtech WF
-                    CancelAndDeleteApprovalEntryTrans_LT(rec.RecordId);
+                    //commented By Avinash    CancelAndDeleteApprovalEntryTrans_LT("Leave Request ID");
                     // Stop PHASE -2 #Levtech WF
+
 
                     TESTFIELD("Workflow Status", "Workflow Status"::Open);
                     TESTFIELD("Resumption Date");
@@ -139,6 +140,11 @@ page 60062 "Duty Resumption"
                     //commented By Avinash   ApprovalsMgmt.OnSendDutyResumeForApproval(Rec);
 
                     //commented By Avinash   end;
+
+                    //New Wf Code
+
+                    WfCode.IsDuty_Resumption_Enabled(Rec);
+                    WfCode.OnSendDuty_Resumption_Approval(rec);
                 end;
             }
             action("Cancel Approval Request")
@@ -151,11 +157,16 @@ page 60062 "Duty Resumption"
                 PromotedCategory = Process;
 
                 trigger OnAction()
+                var
+                    WfCode: Codeunit InitCodeunit_Duty_Resumption;
+
                 begin
                     // Start PHASE- 2 #Levtech WF
                     //commented By Avinash   CancelAndDeleteApprovalEntryTrans_LT("Leave Request ID");
                     // Stop PHASE -2 #Levtech WF
                     //commented By Avinash  ApprovalsMgmt.OnCancelDutyResumeApprovalReq(Rec);
+                    //New WfCode
+                    WfCode.OnCancelDuty_Resumption_Approval(Rec);
                 end;
             }
             action(Approvals)
@@ -236,6 +247,7 @@ page 60062 "Duty Resumption"
     local procedure "#########################-Start Customize Workflow-##################################"()
     begin
     end;
+
     //commented By Avinash  [Scope('Internal')]
     procedure GetEmployeePostionEmployeeID_LT(EmployeeID: Code[30]): Code[50]
     var
@@ -248,6 +260,9 @@ page 60062 "Duty Resumption"
         if PayrollJobPosWorkerAssignRec_L.FINDFIRST then begin
             PayrollPositionRec_L.RESET;
             PayrollPositionRec_L.SETRANGE("Position ID", PayrollJobPosWorkerAssignRec_L."Position ID");
+            // Start 22-11-2019
+            PayrollPositionRec_L.SETFILTER("Valid From", '%1', 0D);
+            // Stop 22-11-2019
             if PayrollPositionRec_L.FINDFIRST then
                 exit(PayrollPositionRec_L.Worker);
         end;
@@ -258,19 +273,14 @@ page 60062 "Duty Resumption"
     var
         ApprovalEntrtyTranscationRec_L: Record "Approval Entrty Transcation";
     begin
-        //MESSAGE('Send -- %1   Rep -- %2   Seq -- %3',SenderID,ReportingID,SequenceID);
-
         ApprovalEntrtyTranscationRec_L.RESET;
         ApprovalEntrtyTranscationRec_L.INIT;
         ApprovalEntrtyTranscationRec_L."Trans ID" := TransID;
-        ApprovalEntrtyTranscationRec_L."Advance Payrolll Type" := ApprovalEntrtyTranscationRec_L."Advance Payrolll Type"::Leaves;
+        ApprovalEntrtyTranscationRec_L."Advance Payrolll Type" := ApprovalEntrtyTranscationRec_L."Advance Payrolll Type"::"Duty Resumption";
         ApprovalEntrtyTranscationRec_L."Employee ID - Sender" := SenderID;
         ApprovalEntrtyTranscationRec_L."Reporting ID - Approver" := ReportingID;
         ApprovalEntrtyTranscationRec_L."Delegate ID" := DelegateID;
         ApprovalEntrtyTranscationRec_L."Sequence No." := SequenceID;
-        // Start 21.04.2020
-        ApprovalEntrtyTranscationRec_L."Document RecordsID" := Rec.RecordId;
-        // Stop 21.04.2020
         ApprovalEntrtyTranscationRec_L.INSERT;
     end;
 
@@ -298,63 +308,53 @@ page 60062 "Duty Resumption"
         CLEAR(Delegate_L);
 
         ApprovalLevelSetupRec_L.RESET;
-        ApprovalLevelSetupRec_L.SETRANGE("Advance Payrolll Type", ApprovalLevelSetupRec_L."Advance Payrolll Type"::Leaves);
+        ApprovalLevelSetupRec_L.SETRANGE("Advance Payrolll Type", ApprovalLevelSetupRec_L."Advance Payrolll Type"::"Duty Resumption");
         if ApprovalLevelSetupRec_L.FINDFIRST then begin
             SenderID_L := EmpID;
             CountForLoop_L := ApprovalLevelSetupRec_L.Level;
             SeqNo_L := 0;
             for i := 1 to CountForLoop_L do begin
-                //Clear(Delegate_L);
-
                 ReportingID_L := GetEmployeePostionEmployeeID_LT(SenderID_L);
 
                 if GetEmployeePostionEmployeeID_FinalPosituion_LT(SenderID_L) then begin
-                    if (ReportingID_L = '') then begin//(i = 1) AND
+                    if (ReportingID_L = '') then begin
                         ReportingID_L := SenderID_L;
-                        // MESSAGE('dele');
                     end;
                     i := ApprovalLevelSetupRec_L.Level + 1;
                 end;
-
                 SeqNo_L += 1;
 
                 if ReportingID_L = '' then
                     ERROR('Next level Approval Position Not Define');
 
                 UserSetupRec_L.RESET;
-                UserSetupRec_L.SETRANGE("Employee Id", SenderID_L);
+                //commented By Avinash  UserSetupRec_L.SETRANGE("Employee Id", SenderID_L);
                 if not UserSetupRec_L.FINDFIRST then
                     ERROR('Employee Id  %1 must have a value in User Setup', SenderID_L);
                 UserSetupRec_L.TESTFIELD("User ID");
 
                 UserSetupRec2_L.RESET;
-                UserSetupRec2_L.SETRANGE("Employee Id", ReportingID_L);
+                //commented By Avinash  UserSetupRec2_L.SETRANGE("Employee Id", ReportingID_L);
                 if not UserSetupRec2_L.FINDFIRST then
                     ERROR('Employee Id  %1 must have a value in User Setup', ReportingID_L);
                 UserSetupRec2_L.TESTFIELD("User ID");
 
                 Delegate_L := CheckDelegateForEmployee_LT(ReportingID_L);
 
-                //MESSAGE('Sender - %1 .............. Appr - %2 ', UserSetupRec_L."User ID",UserSetupRec2_L."User ID");
-                //MESSAGE('I - %1',i);
 
-                if i <= ApprovalLevelSetupRec_L.Level then begin
+                if i <= ApprovalLevelSetupRec_L.Level then
                     InsertApprovalEntryTrans_LT(TransID,
                                                  UserSetupRec_L."User ID",
                                                  UserSetupRec2_L."User ID",
                                                  Delegate_L,
                                                  SeqNo_L);
-                    //Message('No Final i %1 Sender %2   App %3  Delegate_L %4', i, UserSetupRec_L."User ID", UserSetupRec2_L."User ID", Delegate_L);
 
-                end else
-                    if (GetEmployeePostionEmployeeID_FinalPosituion_LT(SenderID_L)) and (i > ApprovalLevelSetupRec_L.Level) then begin
-                        InsertApprovalEntryTrans_LT(TransID,
-                                                      UserSetupRec_L."User ID",
-                                                      UserSetupRec2_L."User ID",
-                                                      Delegate_L,
-                                                      SeqNo_L);
-                        // Message(' Final i %1 Sender %2   App %3  Delegate_L %4', i, UserSetupRec_L."User ID", UserSetupRec2_L."User ID", Delegate_L);
-                    end;
+                if (GetEmployeePostionEmployeeID_FinalPosituion_LT(SenderID_L)) and (i > ApprovalLevelSetupRec_L.Level) then
+                    InsertApprovalEntryTrans_LT(TransID,
+                                                  UserSetupRec_L."User ID",
+                                                  UserSetupRec2_L."User ID",
+                                                  Delegate_L,
+                                                  SeqNo_L);
 
                 // Sender is Reporter
                 OneEmpID := SenderID_L;
@@ -365,21 +365,14 @@ page 60062 "Duty Resumption"
     end;
 
     //commented By Avinash  [Scope('Internal')]
-    procedure CancelAndDeleteApprovalEntryTrans_LT(DocNo_P: RecordId)
+    procedure CancelAndDeleteApprovalEntryTrans_LT(DocNo_P: Code[50])
     var
         ApprovalEntrtyTranscation: Record "Approval Entrty Transcation";
-        ApprovalEntry: Record "Approval Entry";
     begin
-        // ApprovalEntry.Reset();
-        // ApprovalEntry.DeleteAll();
-
         ApprovalEntrtyTranscation.RESET;
-        ApprovalEntrtyTranscation.SETRANGE("Document RecordsID", DocNo_P);
-        if ApprovalEntrtyTranscation.FINDSET then begin
+        ApprovalEntrtyTranscation.SETRANGE("Trans ID", DocNo_P);
+        if ApprovalEntrtyTranscation.FINDSET then
             ApprovalEntrtyTranscation.DELETEALL;
-        end;
-        //ApprovalEntrtyTranscation.DELETEALL;
-        // Message('Delete');
     end;
 
     //commented By Avinash  [Scope('Internal')]
@@ -391,10 +384,8 @@ page 60062 "Duty Resumption"
         DelegateWFLTRec_L.SETCURRENTKEY("Employee Code");
         DelegateWFLTRec_L.SETRANGE("Employee Code", EmployeeCode_P);
         if DelegateWFLTRec_L.FINDLAST then
-            IF (DelegateWFLTRec_L."From Date" <= TODAY) AND (DelegateWFLTRec_L."To Date" >= TODAY) THEN begin
-                EXIT(DelegateWFLTRec_L."Delegate ID");
-            end;
-
+            if (WORKDATE >= DelegateWFLTRec_L."From Date") or (WORKDATE <= DelegateWFLTRec_L."To Date") then
+                exit(DelegateWFLTRec_L."Delegate ID");
     end;
 
     //commented By Avinash  [Scope('Internal')]

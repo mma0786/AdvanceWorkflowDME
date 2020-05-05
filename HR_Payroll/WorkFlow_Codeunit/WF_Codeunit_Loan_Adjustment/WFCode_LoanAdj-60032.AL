@@ -1,4 +1,4 @@
-codeunit 60028 WFCode_LeaveCancelReq
+codeunit 60032 WFCode_Loan_Adj
 {
     trigger OnRun()
     begin
@@ -10,19 +10,19 @@ codeunit 60028 WFCode_LeaveCancelReq
         AppMgmt: Codeunit "Approvals Mgmt.";
         WorkflowEventHandling: Codeunit "Workflow Event Handling";
         WorkflowResponseHandling: Codeunit "Workflow Response Handling";
-        Send_LeaveCancelReq: TextConst ENU = 'LT Approval Request for Leave Cancel is requested', ENG = 'LT Approval Request for Leave Cancel is requested';
-        AppReq_LeaveCancel: TextConst ENU = 'LT Approval Request for Leave Cancel is approved', ENG = 'LT Approval Request for Leave Cancel is approved';
-        RejReq_LeaveCancel: TextConst ENU = 'LT Approval Request for Leave Cancel is rejected', ENG = 'LT Approval Request for Leave Cancelis rejected';
-        DelReq_LeaveCancel: TextConst ENU = 'LT Approval Request for Leave Cancel is delegated', ENG = 'LT Approval Request for Leave Cancel is delegated';
-        SendForPendAppTxt: TextConst ENU = 'LT Status of Leave Cancel changed to Pending approval', ENG = 'LT Status of Leave Cancel changed to Pending approval';
-        CancelForPendAppTxt: TextConst ENU = 'LT Approval Rquest for Leave Cancel is Canceled', ENG = 'LT Approval request for Leave Cancel is Canceled';
-        Release_LeaveCancelTxt: TextConst ENU = 'LT ReleaseLeaveCancel', ENG = 'LT ReleaseLeaveCancel';
-        ReOpen_LeaveCancelTxt: TextConst ENU = 'LT ReOpenLeaveCancel', ENG = 'LT ReOpenLeaveCancel';
-        LeaveCancel_Message: TextConst ENU = 'LT LeaveCancelMessage', ENG = 'LT LeaveCancelMessage';
-        LeaveCancelSend_Message: TextConst ENU = 'LT LeaveCancelSendMessage', ENG = 'LT LeaveCancelSendMessage';
+        Send_Loan_AdjReq: TextConst ENU = 'LT Approval Request for Loan Adjustment is requested', ENG = 'LT Approval Request for Loan Adjustment is requested';
+        AppReq_Loan_Adj: TextConst ENU = 'LT Approval Request for Loan Adjustment is approved', ENG = 'LT Approval Request for Loan Adjustment is approved';
+        RejReq_Loan_Adj: TextConst ENU = 'LT Approval Request for Loan Adjustment is rejected', ENG = 'LT Approval Request for Loan Adjustmentis rejected';
+        DelReq_Loan_Adj: TextConst ENU = 'LT Approval Request for Loan Adjustment is delegated', ENG = 'LT Approval Request for Loan Adjustment is delegated';
+        SendForPendAppTxt: TextConst ENU = 'LT Status of Loan Adjustment changed to Pending approval', ENG = 'LT Status of Loan Adjustment changed to Pending approval';
+        CancelForPendAppTxt: TextConst ENU = 'LT Approval Rquest for Loan Adjustment is Canceled', ENG = 'LT Approval request for Loan Adjustment is Canceled';
+        Release_Loan_AdjTxt: TextConst ENU = 'LT ReleaseLoan_Adj', ENG = 'LT ReleaseLoan_Adj';
+        ReOpen_Loan_AdjTxt: TextConst ENU = 'LT ReOpenLoan_Adj', ENG = 'LT ReOpenLoan_Adj';
+        Loan_Adj_Message: TextConst ENU = 'LT Loan_AdjMessage', ENG = 'LT Loan_AdjMessage';
+        Loan_AdjSend_Message: TextConst ENU = 'LT Loan_AdjSendMessage', ENG = 'LT Loan_AdjSendMessage';
         // Sathish Reject Code
-        SendForRejectTxt: TextConst ENU = 'LT Status of Leave Cancel changed to Reject', ENG = 'LT Status of Leave Cancel changed to Reject';
-        Send_LeaveCancelReject_LeaveCancelReq: TextConst ENU = 'LT Approval Request for Leave Cancel is Rejected', ENG = 'LT Approval Request for Leave Cancel is Rejected';
+        SendForRejectTxt: TextConst ENU = 'LT Status of Loan Adjustment changed to Reject', ENG = 'LT Status of Loan Adjustment changed to Reject';
+        Send_Loan_AdjReject_Loan_AdjReq: TextConst ENU = 'LT Approval Request for Loan Adjustment is Rejected', ENG = 'LT Approval Request for Loan Adjustment is Rejected';
     // Sathish Reject Code
 
 
@@ -30,47 +30,47 @@ codeunit 60028 WFCode_LeaveCancelReq
     //Events Subscribe Start
 
     //Send For Approval Event************************************************************************************ start
-    procedure RunWorkflowOnSend_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnSend_Loan_AdjApprovalCode(): Code[128]
     begin
-        exit('RunWorkflowOnSend_NEW_LeaveCancelApproval');
+        exit('RunWorkflowOnSend_NEW_Loan_AdjApproval');
     end;
     // Sathish Reject
-    procedure RunWorkflowOnSend_LeaveCancelRejectCode(): Code[128]
+    procedure RunWorkflowOnSend_Loan_AdjRejectCode(): Code[128]
     begin
-        exit('RunWorkflowOnSend_NEW_LeaveCancelReject');
+        exit('RunWorkflowOnSend_NEW_Loan_AdjReject');
     end;
     // Sathish Reject
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::InitCU_LeaveCancelReq, 'OnSendLeaveCancel_Approval', '', true, true)]
-    procedure RunWorkflowOnSend_LeaveCancelApproval(var LeaveCancelReq: Record "Cancel Leave Request")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::InitCodeunit_Loan_Adj, 'OnSendLoan_Adj_Approval', '', true, true)]
+    procedure RunWorkflowOnSend_Loan_AdjApproval(var LoanAdjRec: Record "Loan Adjustment Header")
     begin
-        WFMngt.HandleEvent(RunWorkflowOnSend_LeaveCancelApprovalCode, LeaveCancelReq);
+        WFMngt.HandleEvent(RunWorkflowOnSend_Loan_AdjApprovalCode, LoanAdjRec);
     end;
     // End
 
     //Cancel For Approval Event************************************************************************************ End
-    procedure RunWorkflowOnCancel_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnCancel_Loan_AdjApprovalCode(): Code[128]
     begin
-        exit('RunWorkflowOnCancel_NEW_LeaveCancelApproval');
+        exit('RunWorkflowOnCancel_NEW_Loan_AdjApproval');
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::InitCU_LeaveCancelReq, 'OnCancelLeaveCancel_Approval', '', true, true)]
-    procedure RunWorkflowOnCancel_LeaveCancelApproval(var LeaveCancelReq: Record "Cancel Leave Request")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::InitCodeunit_Loan_Adj, 'OnCancelLoan_Adj_Approval', '', true, true)]
+    procedure RunWorkflowOnCancel_Loan_AdjApproval(var LoanAdjRec: Record "Loan Adjustment Header")
     begin
-        WFMngt.HandleEvent(RunWorkflowOnCancel_LeaveCancelApprovalCode, LeaveCancelReq);
+        WFMngt.HandleEvent(RunWorkflowOnCancel_Loan_AdjApprovalCode, LoanAdjRec);
     end;
     //End
 
     //Approve Approval reques Event************************************************************************************ End
-    procedure RunWorkflowOnApprove_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnApprove_Loan_AdjApprovalCode(): Code[128]
     begin
-        exit(UpperCase('RunWorkflowOnApprove_NEW_LeaveCancelApproval'))
+        exit(UpperCase('RunWorkflowOnApprove_NEW_Loan_AdjApproval'))
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnApproveApprovalRequest', '', true, true)]
-    procedure RunWorkflowOnApprove_LeaveCancelApproval(var ApprovalEntry: Record "Approval Entry")
+    procedure RunWorkflowOnApprove_Loan_AdjApproval(var ApprovalEntry: Record "Approval Entry")
     var
-        RequisitionRequestsRec: Record "Cancel Leave Request";
+        RequisitionRequestsRec: Record "Loan Adjustment Header";
         l_ApprovalEntry: Record "Approval Entry";
     begin
         l_ApprovalEntry.Reset;
@@ -79,31 +79,28 @@ codeunit 60028 WFCode_LeaveCancelReq
         l_ApprovalEntry.SetFilter(Status, '%1|%2', l_ApprovalEntry.Status::Open, l_ApprovalEntry.Status::Created);
         if not l_ApprovalEntry.FindLast then begin
             RequisitionRequestsRec.Reset();
-            RequisitionRequestsRec.SetRange("Leave Request ID", ApprovalEntry."Document No.");
+            RequisitionRequestsRec.SetRange("Loan Adjustment ID", ApprovalEntry."Document No.");
             if RequisitionRequestsRec.FindFirst() then begin
                 RequisitionRequestsRec."WorkFlow Status" := RequisitionRequestsRec."WorkFlow Status"::Approved;
                 RequisitionRequestsRec.Modify(true);
-                //To Post Cancel Approval document after approval
-                RequisitionRequestsRec.PostLeaveCancel(RequisitionRequestsRec);
             end;
         end;
-        WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnApprove_LeaveCancelApprovalCode(), ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
+        WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnApprove_Loan_AdjApprovalCode(), ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
     end;
     //End
     //Reject Approval reques Event************************************************************************************ End
-    procedure RunWorkflowOnReject_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnReject_Loan_AdjApprovalCode(): Code[128]
     begin
-        exit(UpperCase('RunWorkflowOnReject_NEW_LeaveCancelApproval'))
+        exit(UpperCase('RunWorkflowOnReject_NEW_Loan_AdjApproval'))
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnRejectApprovalRequest', '', true, true)]
-    procedure RunWorkflowOnReject_LeaveCancelApproval(var ApprovalEntry: Record "Approval Entry")
+    procedure RunWorkflowOnReject_Loan_AdjApproval(var ApprovalEntry: Record "Approval Entry")
     var
-        CanLeavRecRec: Record "Cancel Leave Request";
+        LoanAdjRecRec: Record "Loan Adjustment Header";
         l_ApprovalEntry: Record "Approval Entry";
-
     begin
-        // WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnReject_LeaveCancelApprovalCode, ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
+        // WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnReject_Loan_AdjApprovalCode, ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
         // Sathish Reject
 
         l_ApprovalEntry.Reset;
@@ -111,95 +108,94 @@ codeunit 60028 WFCode_LeaveCancelReq
         l_ApprovalEntry.SetRange("Document No.", ApprovalEntry."Document No.");
         l_ApprovalEntry.SetFilter(Status, '%1|%2', l_ApprovalEntry.Status::Open, l_ApprovalEntry.Status::Created);
         if l_ApprovalEntry.FindFirst() then begin
-            CanLeavRecRec.Reset();
-            CanLeavRecRec.SetRange(RecID, ApprovalEntry."Record ID to Approve");
-            if CanLeavRecRec.FindFirst() then begin
-                CanLeavRecRec."WorkFlow Status" := CanLeavRecRec."WorkFlow Status"::Rejected;
-                CanLeavRecRec.Modify(true);
-
+            LoanAdjRecRec.Reset();
+            LoanAdjRecRec.SetRange(RecID, ApprovalEntry."Record ID to Approve");
+            if LoanAdjRecRec.FindFirst() then begin
+                LoanAdjRecRec."WorkFlow Status" := LoanAdjRecRec."WorkFlow Status"::Rejected;
+                LoanAdjRecRec.Modify(true);
             end;
         end;
-        WFMngt.HandleEventOnKnownWorkflowInstance(SetStatusToReject_LT_Code_LeaveCancel(), ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
+        WFMngt.HandleEventOnKnownWorkflowInstance(SetStatusToReject_LT_Code_Loan_Adj(), ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
         // Sathish Reject
     end;
     //End
     //Delegate Approval reques Event************************************************************************************ End
-    procedure RunWorkflowOnDelegate_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnDelegate_Loan_AdjApprovalCode(): Code[128]
     begin
-        exit(UpperCase('RunWorkflowOnDelegate_LeaveCancelApproval'))
+        exit(UpperCase('RunWorkflowOnDelegate_Loan_AdjApproval'))
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnDelegateApprovalRequest', '', true, true)]
-    procedure RunWorkflowOnDelegate_LeaveCancelApproval(var ApprovalEntry: Record "Approval Entry")
+    procedure RunWorkflowOnDelegate_Loan_AdjApproval(var ApprovalEntry: Record "Approval Entry")
     begin
-        WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnDelegate_LeaveCancelApprovalCode, ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
+        WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnDelegate_Loan_AdjApprovalCode, ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
     end;
     //End
     //Events Subscribe End
 
 
     //Code for changeing approval status Pending approval in Transfer Orders
-    procedure SetStatusToPendingApprovalCode_LeaveCancel(): Code[128] // Done
+    procedure SetStatusToPendingApprovalCode_Loan_Adj(): Code[128] // Done
     begin
-        exit(UpperCase('SetStatusToPendingApproval_NEW_LeaveCancel'));
+        exit(UpperCase('SetStatusToPendingApproval_NEW_Loan_Adj'));
     end;
     // Sathish Reject
-    procedure SetStatusToReject_LT_Code_LeaveCancel(): Code[128]
+    procedure SetStatusToReject_LT_Code_Loan_Adj(): Code[128]
     begin
-        exit(UpperCase('SetStatusToReject_LT__NEW_LeaveCancel'));
+        exit(UpperCase('SetStatusToReject_LT__NEW_Loan_Adj'));
     end;
     // Sathish Reject
 
 
-    procedure SetStatusToPendingApproval_LeaveCancel(var Variant: Variant)
+    procedure SetStatusToPendingApproval_Loan_Adj(var Variant: Variant)
     var
         RecRef: RecordRef;
-        CanLeavRec: Record "Cancel Leave Request";
+        LoanAdjRec: Record "Loan Adjustment Header";
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Loan Adjustment Header":
                 begin
-                    RecRef.SetTable(CanLeavRec);
-                    CanLeavRec.Validate("WorkFlow Status", CanLeavRec."WorkFlow Status"::"Pending For Approval");
-                    CanLeavRec.Modify();
-                    Variant := CanLeavRec;
+                    RecRef.SetTable(LoanAdjRec);
+                    LoanAdjRec.Validate("WorkFlow Status", LoanAdjRec."WorkFlow Status"::"Pending For Approval");
+                    LoanAdjRec.Modify();
+                    Variant := LoanAdjRec;
                 end;
         end;
     end;
 
     // Sathish Reject Funcation
-    procedure SetStatusToReject_LT_LeaveCancel(var Variant: Variant)
+    procedure SetStatusToReject_LT_Loan_Adj(var Variant: Variant)
     var
         RecRef: RecordRef;
-        CanLeavRec: Record "Cancel Leave Request";
+        LoanAdjRec: Record "Loan Adjustment Header";
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Loan Adjustment Header":
                 begin
                     Message('Reject');
-                    RecRef.SetTable(CanLeavRec);
-                    CanLeavRec.Validate("WorkFlow Status", CanLeavRec."WorkFlow Status"::Rejected);
-                    CanLeavRec.Modify();
-                    Variant := CanLeavRec;
+                    RecRef.SetTable(LoanAdjRec);
+                    LoanAdjRec.Validate("WorkFlow Status", LoanAdjRec."WorkFlow Status"::Rejected);
+                    LoanAdjRec.Modify();
+                    Variant := LoanAdjRec;
                 end;
         end;
     end;
     // Sathish Reject Fucnaion
 
     //Code for approval status changes to Released in Transfer Order
-    procedure Release_LeaveCancelCode(): Code[128]
+    procedure Release_Loan_AdjCode(): Code[128]
     begin
-        exit(UpperCase('Release_NEW_LeaveCancel'));
+        exit(UpperCase('Release_NEW_Loan_Adj'));
     end;
 
-    procedure Release_LeaveCancel(var Variant: Variant)
+    procedure Release_Loan_Adj(var Variant: Variant)
     var
         RecRef: RecordRef;
         TargetRecRef: RecordRef;
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        LoanAdjRec: Record "Loan Adjustment Header";
     begin
         RecRef.GetTable(Variant);
         ///  InsertEmailNotification(Variant);
@@ -211,33 +207,32 @@ codeunit 60028 WFCode_LeaveCancelReq
                     TargetRecRef.Get(ApprovalEntry."Record ID to Approve");
                     Variant := TargetRecRef;
 
-                    Release_LeaveCancel(Variant);
+                    Release_Loan_Adj(Variant);
                 end;
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Loan Adjustment Header":
                 begin
 
-                    RecRef.SetTable(CanLeavRec);
-                    CanLeavRec.Validate("WorkFlow Status", CanLeavRec."WorkFlow Status"::Approved);
-                    CanLeavRec.Modify();
-                    Variant := CanLeavRec;
-                    //To Post Cancel Approval document after approval
-                    CanLeavRec.PostLeaveCancel(CanLeavRec);
+                    RecRef.SetTable(LoanAdjRec);
+                    LoanAdjRec.Validate("WorkFlow Status", LoanAdjRec."WorkFlow Status"::Approved);
+                    LoanAdjRec.Modify();
+                    Variant := LoanAdjRec;
+
                 end;
         end;
     end;
 
     //Code for approval status changes to Open When Cancel or Reopen
-    procedure ReOpen_LeaveCancelCode(): Code[128]
+    procedure ReOpen_Loan_AdjCode(): Code[128]
     begin
-        exit(UpperCase('ReOpen_NEW_LeaveCancel'));
+        exit(UpperCase('ReOpen_NEW_Loan_Adj'));
     end;
 
-    procedure ReOpen_LeaveCancel(var Variant: Variant)
+    procedure ReOpen_Loan_Adj(var Variant: Variant)
     var
         RecRef: RecordRef;
         TargetRecRef: RecordRef;
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        LoanAdjRec: Record "Loan Adjustment Header";
     begin
         RecRef.GetTable(Variant);
         //  InsertEmailNotification(Variant);
@@ -247,62 +242,62 @@ codeunit 60028 WFCode_LeaveCancelReq
                     ApprovalEntry := Variant;
                     TargetRecRef.Get(ApprovalEntry."Record ID to Approve");
                     Variant := TargetRecRef;
-                    ReOpen_LeaveCancel(Variant);
+                    ReOpen_Loan_Adj(Variant);
 
                 end;
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Loan Adjustment Header":
                 begin
-                    RecRef.SetTable(CanLeavRec);
-                    CanLeavRec.Validate("WorkFlow Status", CanLeavRec."WorkFlow Status"::Open);
-                    CanLeavRec.Modify();
-                    Variant := CanLeavRec;
+                    RecRef.SetTable(LoanAdjRec);
+                    LoanAdjRec.Validate("WorkFlow Status", LoanAdjRec."WorkFlow Status"::Open);
+                    LoanAdjRec.Modify();
+                    Variant := LoanAdjRec;
                 end;
         end;
     end;
 
     //Code For MEssage Notification start
-    procedure LeaveCancelMessageCode(): Code[128]
+    procedure Loan_AdjMessageCode(): Code[128]
     begin
-        exit(UpperCase('LeaveCancel_NEW_Message'));
+        exit(UpperCase('Loan_Adj_NEW_Message'));
     end;
 
-    procedure LeaveCancelMessage(var Variant: Variant)
+    procedure Loan_AdjMessage(var Variant: Variant)
     var
         RecRef: RecordRef;
         TargetRecRef: RecordRef;
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        LoanAdjRec: Record "Loan Adjustment Header";
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Loan Adjustment Header":
                 begin
-                    RecRef.SetTable(CanLeavRec);
+                    RecRef.SetTable(LoanAdjRec);
                     Message('The approval request for the record has been canceled.');
-                    Variant := CanLeavRec;
+                    Variant := LoanAdjRec;
                 end;
         end;
     end;
 
-    procedure LeaveCancelSendMessageCode(): Code[128]
+    procedure Loan_AdjSendMessageCode(): Code[128]
     begin
-        exit(UpperCase('LeaveCancel_NEW_SendMessage'));
+        exit(UpperCase('Loan_Adj_NEW_SendMessage'));
     end;
 
-    procedure LeaveCancelSendMessage(var Variant: Variant)
+    procedure Loan_AdjSendMessage(var Variant: Variant)
     var
         RecRef: RecordRef;
         TargetRecRef: RecordRef;
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        LoanAdjRec: Record "Loan Adjustment Header";
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Loan Adjustment Header":
                 begin
-                    RecRef.SetTable(CanLeavRec);
+                    RecRef.SetTable(LoanAdjRec);
                     Message('The approval request for the record has been sent.');
-                    Variant := CanLeavRec;
+                    Variant := LoanAdjRec;
                 end;
         end;
     end;
@@ -312,17 +307,17 @@ codeunit 60028 WFCode_LeaveCancelReq
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnPopulateApprovalEntryArgument', '', true, true)]
     local procedure OnPopulateApprovalEntryArgument(var RecRef: RecordRef; var ApprovalEntryArgument: Record "Approval Entry"; WorkflowStepInstance: Record "Workflow Step Instance")
     var
-        CanLeavRec: Record "Cancel Leave Request";
+        LoanAdjRec: Record "Loan Adjustment Header";
     begin
         case RecRef.Number of
-            database::"Cancel Leave Request":
+            database::"Loan Adjustment Header":
                 begin
-                    RecRef.SetTable(CanLeavRec);
+                    RecRef.SetTable(LoanAdjRec);
                     ApprovalEntryArgument."Table ID" := RecRef.Number;
-                    ApprovalEntryArgument."Document No." := CanLeavRec."Leave Request ID";
-                    // // // CanLeavRec.CalcFields("Total Amount ");
-                    // // // ApprovalEntryArgument.Amount := CanLeavRec."Total Amount ";
-                    // // // ApprovalEntryArgument."Amount (LCY)" := CanLeavRec."Total Amount ";
+                    ApprovalEntryArgument."Document No." := LoanAdjRec."Loan Adjustment ID";
+                    // // // LoanAdjRec.CalcFields("Total Amount ");
+                    // // // ApprovalEntryArgument.Amount := LoanAdjRec."Total Amount ";
+                    // // // ApprovalEntryArgument."Amount (LCY)" := LoanAdjRec."Total Amount ";
                     //ApprovalEntryArgument."Document Type" := ApprovalEntryArgument."Document Type"::Quote;
                 end;
         end;
@@ -334,13 +329,13 @@ codeunit 60028 WFCode_LeaveCancelReq
     procedure OnAddWorkflowEventsToLibrary()
     begin
 
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnSend_LeaveCancelApprovalCode, Database::"Cancel Leave Request", Send_LeaveCancelReq, 0, false);
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnApprove_LeaveCancelApprovalCode, Database::"Approval Entry", AppReq_LeaveCancel, 0, false);
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnCancel_LeaveCancelApprovalCode, Database::"Cancel Leave Request", CancelForPendAppTxt, 0, false);
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnReject_LeaveCancelApprovalCode, Database::"Approval Entry", RejReq_LeaveCancel, 0, false);
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnDelegate_LeaveCancelApprovalCode, Database::"Approval Entry", DelReq_LeaveCancel, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnSend_Loan_AdjApprovalCode, Database::"Loan Adjustment Header", Send_Loan_AdjReq, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnApprove_Loan_AdjApprovalCode, Database::"Approval Entry", AppReq_Loan_Adj, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnCancel_Loan_AdjApprovalCode, Database::"Loan Adjustment Header", CancelForPendAppTxt, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnReject_Loan_AdjApprovalCode, Database::"Approval Entry", RejReq_Loan_Adj, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnDelegate_Loan_AdjApprovalCode, Database::"Approval Entry", DelReq_Loan_Adj, 0, false);
         // Sathish Reject Code
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnSend_LeaveCancelRejectCode, Database::"Cancel Leave Request", Send_LeaveCancelReject_LeaveCancelReq, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnSend_Loan_AdjRejectCode, Database::"Loan Adjustment Header", Send_Loan_AdjReject_Loan_AdjReq, 0, false);
         // Sathish Reject Code
 
     end;
@@ -349,14 +344,14 @@ codeunit 60028 WFCode_LeaveCancelReq
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnAddWorkflowResponsesToLibrary', '', true, true)]
     procedure OnAddWorkflowResponsesToLibrary()
     begin
-        WorkflowResponseHandling.AddResponseToLibrary(SetStatusToPendingApprovalCode_LeaveCancel, 0, SendForPendAppTxt, 'GROUP 0');
-        WorkflowResponseHandling.AddResponseToLibrary(Release_LeaveCancelCode, 0, Release_LeaveCancelTxt, 'GROUP 0');
-        WorkflowResponseHandling.AddResponseToLibrary(ReOpen_LeaveCancelCode, 0, ReOpen_LeaveCancelTxt, 'GROUP 0');
-        //WorkflowResponseHandling.AddResponseToLibrary(SendEmailCodeLeaveCancel, 0, '', 'GROUP 0');
-        WorkflowResponseHandling.AddResponseToLibrary(LeaveCancelMessageCode, 0, LeaveCancel_Message, 'GROUP 0');
-        WorkflowResponseHandling.AddResponseToLibrary(LeaveCancelSendMessageCode, 0, LeaveCancelSend_Message, 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(SetStatusToPendingApprovalCode_Loan_Adj, 0, SendForPendAppTxt, 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(Release_Loan_AdjCode, 0, Release_Loan_AdjTxt, 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(ReOpen_Loan_AdjCode, 0, ReOpen_Loan_AdjTxt, 'GROUP 0');
+        //WorkflowResponseHandling.AddResponseToLibrary(SendEmailCodeLoan_Adj, 0, '', 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(Loan_AdjMessageCode, 0, Loan_Adj_Message, 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(Loan_AdjSendMessageCode, 0, Loan_AdjSend_Message, 'GROUP 0');
         // Sathish Reject Code
-        WorkflowResponseHandling.AddResponseToLibrary(SetStatusToReject_LT_Code_LeaveCancel, 0, SendForRejectTxt, 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(SetStatusToReject_LT_Code_Loan_Adj, 0, SendForRejectTxt, 'GROUP 0');
         // Sathish Reject Code 
 
 
@@ -368,13 +363,13 @@ codeunit 60028 WFCode_LeaveCancelReq
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnAddWorkflowResponsePredecessorsToLibrary', '', true, true)]
     procedure OnAddWorkflowResponsePredecessorsToLibrary(ResponseFunctionName: Code[128])
     var
-        WorkflowEventHandling: Codeunit InitCU_LeaveCancelReq;
+        WorkflowEventHandling: Codeunit InitCodeunit_Loan_Adj;
     begin
         case ResponseFunctionName of
             //WorkFlowResponseHandling.SetStatusToPendingApprovalCode:
             //  WorkFlowResponseHandling.AddResponsePredecessor(WorkFlowResponseHandling.SetStatusToPendingApproval, WorkFlowEventHandlingExtCust.RunWorkFlowOnApproveApprovalRequestForRequisitionCode);
             WorkFlowResponseHandling.SendApprovalRequestForApprovalCode:
-                WorkFlowResponseHandling.AddResponsePredecessor(WorkFlowResponseHandling.SendApprovalRequestForApprovalCode, RunWorkflowOnApprove_LeaveCancelApprovalCode());
+                WorkFlowResponseHandling.AddResponsePredecessor(WorkFlowResponseHandling.SendApprovalRequestForApprovalCode, RunWorkflowOnApprove_Loan_AdjApprovalCode());
         //WorkFlowResponseHandling.CancelAllApprovalRequestsCode;
         //WorkFlowResponseHandling.AddResponsePredecessor(WorkFlowResponseHandling.CancelAllApprovalRequestsCode,WorkFlowEventHandlingExtCust.run);
         //WorkFlowResponseHandling.OpenDocumentCode;
@@ -386,48 +381,48 @@ codeunit 60028 WFCode_LeaveCancelReq
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnExecuteWorkflowResponse', '', false, false)]
-    procedure ExeRespForLeaveCancel(var ResponseExecuted: Boolean; Variant: Variant; xVariant: Variant; ResponseWorkflowStepInstance: Record "Workflow Step Instance")
+    procedure ExeRespForLoan_Adj(var ResponseExecuted: Boolean; Variant: Variant; xVariant: Variant; ResponseWorkflowStepInstance: Record "Workflow Step Instance")
     var
         WorkflowResponse: Record "Workflow Response";
     begin
         IF WorkflowResponse.GET(ResponseWorkflowStepInstance."Function Name") THEN
             case WorkflowResponse."Function Name" of
 
-                SetStatusToPendingApprovalCode_LeaveCancel():
+                SetStatusToPendingApprovalCode_Loan_Adj():
                     begin
-                        SetStatusToPendingApproval_LeaveCancel(Variant);
+                        SetStatusToPendingApproval_Loan_Adj(Variant);
                         ResponseExecuted := true;
                     end;
-                Release_LeaveCancelCode():
+                Release_Loan_AdjCode():
                     begin
-                        Release_LeaveCancel(Variant);
+                        Release_Loan_Adj(Variant);
                         ResponseExecuted := true;
                     end;
-                ReOpen_LeaveCancelCode():
+                ReOpen_Loan_AdjCode():
                     begin
-                        ReOpen_LeaveCancel(Variant);
+                        ReOpen_Loan_Adj(Variant);
                         ResponseExecuted := true;
                     end;
-                SendEmailCodeLeaveCancel():
+                SendEmailCodeLoan_Adj():
                     begin
                         SendEmailRFQ(Variant);
                         ResponseExecuted := true;
                     end;
-                LeaveCancelMessageCode():
+                Loan_AdjMessageCode():
                     begin
-                        LeaveCancelMessage(Variant);
+                        Loan_AdjMessage(Variant);
                         ResponseExecuted := true;
                     end;
-                LeaveCancelSendMessageCode():
+                Loan_AdjSendMessageCode():
                     begin
-                        LeaveCancelSendMessage(Variant);
+                        Loan_AdjSendMessage(Variant);
                         ResponseExecuted := true;
                     end;
                 // Sathish Reject Code
-                SetStatusToReject_LT_Code_LeaveCancel():
+                SetStatusToReject_LT_Code_Loan_Adj():
                     begin
                         Message('Workflow');
-                        SetStatusToReject_LT_LeaveCancel(Variant);
+                        SetStatusToReject_LT_Loan_Adj(Variant);
                         ResponseExecuted := true;
                     end;
             // Sathish Reject Code
@@ -455,7 +450,7 @@ codeunit 60028 WFCode_LeaveCancelReq
     local procedure OnAfterIsSufficientApprover(UserSetup: Record "User Setup"; ApprovalEntryArgument: Record "Approval Entry"; var IsSufficient: Boolean)
     begin
         case ApprovalEntryArgument."Table ID" of
-            database::"Cancel Leave Request":
+            database::"Loan Adjustment Header":
                 IsSufficient := IsRFQSufficeintApprover(UserSetup, ApprovalEntryArgument."Amount (LCY)");
         end;
     end;
@@ -463,15 +458,15 @@ codeunit 60028 WFCode_LeaveCancelReq
 
     // Emial Notificaion Creation 05DEC2019 Start
 
-    procedure SendEmailCodeLeaveCancel(): Code[128]
+    procedure SendEmailCodeLoan_Adj(): Code[128]
     begin
-        exit(UpperCase('SendEmail_NEW_LeaveCancel'));
+        exit(UpperCase('SendEmail_NEW_Loan_Adj'));
     end;
 
     procedure SendEmailRFQ(var Variant: Variant)
     var
         RecRef: RecordRef;
-        RFQHeader: Record "Cancel Leave Request";
+        RFQHeader: Record "Loan Adjustment Header";
         SmtpMailSetup: Record "SMTP Mail Setup";
         SmtpMail: Codeunit "SMTP Mail";
         ComapnyInfo: Record "Company Information";
@@ -487,21 +482,21 @@ codeunit 60028 WFCode_LeaveCancelReq
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Loan Adjustment Header":
                 begin
                     TableId := RecRef.Number;
                     RecRef.SetTable(RFQHeader);
                     ApprovalEntry.Reset();
                     ApprovalEntry.SetRange("Table ID", TableId);
-                    ApprovalEntry.SetRange("Document No.", RFQHeader."Leave Request ID");
+                    ApprovalEntry.SetRange("Document No.", RFQHeader."Loan Adjustment ID");
                     if ApprovalEntry.FindSet then begin
                         repeat
                             if (ApprovalEntry.Status = ApprovalEntry.Status::Open) or (ApprovalEntry.Status = ApprovalEntry.Status::Created) then begin
                                 UserSetup.Reset();
                                 if UserSetup.Get(ApprovalEntry."Approver ID") then
-                                    UserSetup.TestField("E-Mail");
-                                //InsertEmailNotification(Variant);
-                                Variant := RFQHeader;
+                                    // UserSetup.TestField("E-Mail");
+                                    //InsertEmailNotification(Variant);
+                                    Variant := RFQHeader;
                             end;
                         until ApprovalEntry.Next = 0;
                     end;
@@ -516,7 +511,7 @@ codeunit 60028 WFCode_LeaveCancelReq
         // InsertEmailNotficationEntries: Record "Email Notification Entries";
         // EmailNotificationRec: Record "Email Notification Entries";
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        LoanAdjRec: Record "Loan Adjustment Header";
         l_ApprovalEntry: Record "Approval Entry";
         Recref: RecordRef;
     begin
@@ -536,13 +531,13 @@ codeunit 60028 WFCode_LeaveCancelReq
                        InsertEmailNotficationEntries.Insert(true);
 
             END; */
-            Database::"Cancel Leave Request":
+            Database::"Loan Adjustment Header":
                 begin
                     // This is Commented By Sathish
-                    // // // // Recref.SetTable(CanLeavRec);
+                    // // // // Recref.SetTable(LoanAdjRec);
                     // // // // l_ApprovalEntry.Reset();
                     // // // // l_ApprovalEntry.SetRange("Table ID", Recref.Number);
-                    // // // // l_ApprovalEntry.SetRange("Document No.", CanLeavRec."Requisition No.");
+                    // // // // l_ApprovalEntry.SetRange("Document No.", LoanAdjRec."Requisition No.");
                     // // // // if l_ApprovalEntry.FindLast() then begin
                     // // // //     InsertEmailNotficationEntries.Init;
                     // // // //     EmailNotificationRec.Reset;

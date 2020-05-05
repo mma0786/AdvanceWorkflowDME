@@ -26,8 +26,8 @@ table 60044 "Payroll Statement"
         }
         field(7; Status; Option)
         {
-            OptionCaption = 'Open,Processing,Draft,Confirmed,Posted,Cancelled';
-            OptionMembers = Open,Processing,Draft,Confirmed,Posted,Cancelled;
+            OptionCaption = 'Open,Processing,Draft,Confirmed,Posted,Cancelled,Rejected';
+            OptionMembers = Open,Processing,Draft,Confirmed,Posted,Cancelled,Rejected;
         }
         field(8; "Is Opening"; Boolean)
         {
@@ -40,8 +40,8 @@ table 60044 "Payroll Statement"
         }
         field(13; "Workflow Status"; Option)
         {
-            OptionCaption = 'Open,Pending Approval,Change Requested,Approved';
-            OptionMembers = Open,"Pending Approval","Change Requested",Approved;
+            OptionCaption = 'Open,Pending Approval,Change Requested,Approved,Rejected';
+            OptionMembers = Open,"Pending Approval","Change Requested",Approved,Rejected;
         }
         field(16; "Payment Status"; Option)
         {
@@ -105,6 +105,8 @@ table 60044 "Payroll Statement"
         field(102; Posted; Boolean)
         {
         }
+        field(103; RecID; RecordId)
+        { }
     }
 
     keys
@@ -149,7 +151,7 @@ table 60044 "Payroll Statement"
         GetPayrollSetup;
         if "Payroll Statement ID" = '' then
             "Payroll Statement ID" := NoSeriesManagement.GetNextNo(AdvPayrollSetup."Payroll Statement No. Series", TODAY, true);
-
+        RecID := RecordId;
         "Created By" := USERID;
         "Created Date and Time" := CREATEDATETIME(TODAY, TIME);
     end;

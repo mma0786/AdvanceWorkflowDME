@@ -169,6 +169,8 @@ page 60152 "Full and Final Journal Card"
                 PromotedIsBig = true;
                 ApplicationArea = All;
                 trigger OnAction()
+                var
+                    WfCode: Codeunit InitCodeunit_Final_Sett;
                 begin
                     //
                     if not CONFIRM('Do you want to Submit the leave request?') then
@@ -179,6 +181,9 @@ page 60152 "Full and Final Journal Card"
                         //SubmitLeave(FullandFinalCalculation);
                         //commented By Avinash  if ApprovalsMgmt.CheckFandFRequestApprovalPossible(FullandFinalCalculation) then
                         //commented By Avinash     ApprovalsMgmt.OnSendFandFRequestForApproval(FullandFinalCalculation);
+                        WfCode.IsF_And_F_Enabled(rec);
+                        WfCode.OnSendF_And_F_Approval(rec);
+
                     end;
                 end;
             }
@@ -191,9 +196,12 @@ page 60152 "Full and Final Journal Card"
                 PromotedCategory = Process;
                 ApplicationArea = All;
                 trigger OnAction()
+                var
+                    WfCode: Codeunit InitCodeunit_Final_Sett;
                 begin
                     //
                     //commented By Avinash  ApprovalsMgmt.OnCancelFandFApprovalRequest(Rec);
+                    WfCode.OnCancelF_And_F_Approval(rec);
                 end;
             }
             action(Approvals)
@@ -252,7 +260,7 @@ page 60152 "Full and Final Journal Card"
                 ApplicationArea = All;
                 trigger OnAction()
                 begin
-                    if Rec."Workflow Status" = Rec."Workflow Status"::"Pending for Approval" then
+                    if Rec."Workflow Status" = Rec."Workflow Status"::"Pending Approval" then
                         ERROR(Text001);
 
                     //Reopen(Rec);

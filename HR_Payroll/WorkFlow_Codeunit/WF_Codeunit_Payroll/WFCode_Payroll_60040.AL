@@ -1,4 +1,4 @@
-codeunit 60028 WFCode_LeaveCancelReq
+codeunit 60040 WFCode_Payroll
 {
     trigger OnRun()
     begin
@@ -10,67 +10,67 @@ codeunit 60028 WFCode_LeaveCancelReq
         AppMgmt: Codeunit "Approvals Mgmt.";
         WorkflowEventHandling: Codeunit "Workflow Event Handling";
         WorkflowResponseHandling: Codeunit "Workflow Response Handling";
-        Send_LeaveCancelReq: TextConst ENU = 'LT Approval Request for Leave Cancel is requested', ENG = 'LT Approval Request for Leave Cancel is requested';
-        AppReq_LeaveCancel: TextConst ENU = 'LT Approval Request for Leave Cancel is approved', ENG = 'LT Approval Request for Leave Cancel is approved';
-        RejReq_LeaveCancel: TextConst ENU = 'LT Approval Request for Leave Cancel is rejected', ENG = 'LT Approval Request for Leave Cancelis rejected';
-        DelReq_LeaveCancel: TextConst ENU = 'LT Approval Request for Leave Cancel is delegated', ENG = 'LT Approval Request for Leave Cancel is delegated';
-        SendForPendAppTxt: TextConst ENU = 'LT Status of Leave Cancel changed to Pending approval', ENG = 'LT Status of Leave Cancel changed to Pending approval';
-        CancelForPendAppTxt: TextConst ENU = 'LT Approval Rquest for Leave Cancel is Canceled', ENG = 'LT Approval request for Leave Cancel is Canceled';
-        Release_LeaveCancelTxt: TextConst ENU = 'LT ReleaseLeaveCancel', ENG = 'LT ReleaseLeaveCancel';
-        ReOpen_LeaveCancelTxt: TextConst ENU = 'LT ReOpenLeaveCancel', ENG = 'LT ReOpenLeaveCancel';
-        LeaveCancel_Message: TextConst ENU = 'LT LeaveCancelMessage', ENG = 'LT LeaveCancelMessage';
-        LeaveCancelSend_Message: TextConst ENU = 'LT LeaveCancelSendMessage', ENG = 'LT LeaveCancelSendMessage';
-        // Sathish Reject Code
-        SendForRejectTxt: TextConst ENU = 'LT Status of Leave Cancel changed to Reject', ENG = 'LT Status of Leave Cancel changed to Reject';
-        Send_LeaveCancelReject_LeaveCancelReq: TextConst ENU = 'LT Approval Request for Leave Cancel is Rejected', ENG = 'LT Approval Request for Leave Cancel is Rejected';
-    // Sathish Reject Code
+        Send_PayrollStatReq: TextConst ENU = 'LT Approval Request for Payroll Statement   is requested', ENG = 'LT Approval Request for Payroll Statement   is requested';
+        AppReq_PayrollStat: TextConst ENU = 'LT Approval Request for Payroll Statement   is approved', ENG = 'LT Approval Request for Payroll Statement   is approved';
+        RejReq_PayrollStat: TextConst ENU = 'LT Approval Request for Payroll Statement   is rejected', ENG = 'LT Approval Request for Payroll Statement  is rejected';
+        DelReq_PayrollStat: TextConst ENU = 'LT Approval Request for Payroll Statement   is delegated', ENG = 'LT Approval Request for Payroll Statement   is delegated';
+        SendForPendAppTxt: TextConst ENU = 'LT Status of Payroll Statement   changed to Pending approval', ENG = 'LT Status of Payroll Statement   changed to Pending approval';
+        CancelForPendAppTxt: TextConst ENU = 'LT Approval Rquest for Payroll Statement   is Canceled', ENG = 'LT Approval request for Payroll Statement   is Canceled';
+        Release_PayrollStatTxt: TextConst ENU = 'LT ReleasePayrollStat', ENG = 'LT ReleasePayrollStat';
+        ReOpen_PayrollStatTxt: TextConst ENU = 'LT ReOpenPayrollStat', ENG = 'LT ReOpenPayrollStat';
+        PayrollStat_Message: TextConst ENU = 'LT PayrollStatMessage', ENG = 'LT PayrollStatMessage';
+        PayrollStatSend_Message: TextConst ENU = 'LT PayrollStatSendMessage', ENG = 'LT PayrollStatSendMessage';
+        // Avinash Reject Code
+        SendForRejectTxt: TextConst ENU = 'LT Status of Payroll Statement   changed to Reject', ENG = 'LT Status of Payroll Statement   changed to Reject';
+        Send_PayrollStatReject_PayrollStatReq: TextConst ENU = 'LT Approval Request for Payroll Statement   is Rejected', ENG = 'LT Approval Request for Payroll Statement   is Rejected';
+    // Avinash Reject Code
 
 
 
     //Events Subscribe Start
 
     //Send For Approval Event************************************************************************************ start
-    procedure RunWorkflowOnSend_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnSend_PayrollStatApprovalCode(): Code[128]
     begin
-        exit('RunWorkflowOnSend_NEW_LeaveCancelApproval');
+        exit('RunWorkflowOnSend_NEW_PayrollStatApproval');
     end;
-    // Sathish Reject
-    procedure RunWorkflowOnSend_LeaveCancelRejectCode(): Code[128]
+    // Avinash Reject
+    procedure RunWorkflowOnSend_PayrollStatRejectCode(): Code[128]
     begin
-        exit('RunWorkflowOnSend_NEW_LeaveCancelReject');
+        exit('RunWorkflowOnSend_NEW_PayrollStatReject');
     end;
-    // Sathish Reject
+    // Avinash Reject
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::InitCU_LeaveCancelReq, 'OnSendLeaveCancel_Approval', '', true, true)]
-    procedure RunWorkflowOnSend_LeaveCancelApproval(var LeaveCancelReq: Record "Cancel Leave Request")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::InitCodeunit_Payroll, 'OnSendPayrollStat_Approval', '', true, true)]
+    procedure RunWorkflowOnSend_PayrollStatApproval(var PayrollRec: Record "Payroll Statement")
     begin
-        WFMngt.HandleEvent(RunWorkflowOnSend_LeaveCancelApprovalCode, LeaveCancelReq);
+        WFMngt.HandleEvent(RunWorkflowOnSend_PayrollStatApprovalCode, PayrollRec);
     end;
     // End
 
     //Cancel For Approval Event************************************************************************************ End
-    procedure RunWorkflowOnCancel_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnCancel_PayrollStatApprovalCode(): Code[128]
     begin
-        exit('RunWorkflowOnCancel_NEW_LeaveCancelApproval');
+        exit('RunWorkflowOnCancel_NEW_PayrollStatApproval');
     end;
 
-    [EventSubscriber(ObjectType::Codeunit, Codeunit::InitCU_LeaveCancelReq, 'OnCancelLeaveCancel_Approval', '', true, true)]
-    procedure RunWorkflowOnCancel_LeaveCancelApproval(var LeaveCancelReq: Record "Cancel Leave Request")
+    [EventSubscriber(ObjectType::Codeunit, Codeunit::InitCodeunit_Payroll, 'OnCancelPayrollStat_Approval', '', true, true)]
+    procedure RunWorkflowOnCancel_PayrollStatApproval(var PayrollRec: Record "Payroll Statement")
     begin
-        WFMngt.HandleEvent(RunWorkflowOnCancel_LeaveCancelApprovalCode, LeaveCancelReq);
+        WFMngt.HandleEvent(RunWorkflowOnCancel_PayrollStatApprovalCode, PayrollRec);
     end;
     //End
 
     //Approve Approval reques Event************************************************************************************ End
-    procedure RunWorkflowOnApprove_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnApprove_PayrollStatApprovalCode(): Code[128]
     begin
-        exit(UpperCase('RunWorkflowOnApprove_NEW_LeaveCancelApproval'))
+        exit(UpperCase('RunWorkflowOnApprove_NEW_PayrollStatApproval'))
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnApproveApprovalRequest', '', true, true)]
-    procedure RunWorkflowOnApprove_LeaveCancelApproval(var ApprovalEntry: Record "Approval Entry")
+    procedure RunWorkflowOnApprove_PayrollStatApproval(var ApprovalEntry: Record "Approval Entry")
     var
-        RequisitionRequestsRec: Record "Cancel Leave Request";
+        RequisitionRequestsRec: Record "Payroll Statement";
         l_ApprovalEntry: Record "Approval Entry";
     begin
         l_ApprovalEntry.Reset;
@@ -79,127 +79,123 @@ codeunit 60028 WFCode_LeaveCancelReq
         l_ApprovalEntry.SetFilter(Status, '%1|%2', l_ApprovalEntry.Status::Open, l_ApprovalEntry.Status::Created);
         if not l_ApprovalEntry.FindLast then begin
             RequisitionRequestsRec.Reset();
-            RequisitionRequestsRec.SetRange("Leave Request ID", ApprovalEntry."Document No.");
+            RequisitionRequestsRec.SetRange("Payroll Statement ID", ApprovalEntry."Document No.");
             if RequisitionRequestsRec.FindFirst() then begin
                 RequisitionRequestsRec."WorkFlow Status" := RequisitionRequestsRec."WorkFlow Status"::Approved;
                 RequisitionRequestsRec.Modify(true);
-                //To Post Cancel Approval document after approval
-                RequisitionRequestsRec.PostLeaveCancel(RequisitionRequestsRec);
             end;
         end;
-        WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnApprove_LeaveCancelApprovalCode(), ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
+        WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnApprove_PayrollStatApprovalCode(), ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
     end;
     //End
     //Reject Approval reques Event************************************************************************************ End
-    procedure RunWorkflowOnReject_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnReject_PayrollStatApprovalCode(): Code[128]
     begin
-        exit(UpperCase('RunWorkflowOnReject_NEW_LeaveCancelApproval'))
+        exit(UpperCase('RunWorkflowOnReject_NEW_PayrollStatApproval'))
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnRejectApprovalRequest', '', true, true)]
-    procedure RunWorkflowOnReject_LeaveCancelApproval(var ApprovalEntry: Record "Approval Entry")
+    procedure RunWorkflowOnReject_PayrollStatApproval(var ApprovalEntry: Record "Approval Entry")
     var
-        CanLeavRecRec: Record "Cancel Leave Request";
+        PayrollRecRec: Record "Payroll Statement";
         l_ApprovalEntry: Record "Approval Entry";
-
     begin
-        // WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnReject_LeaveCancelApprovalCode, ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
-        // Sathish Reject
+        // WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnReject_PayrollStatApprovalCode, ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
+        // Avinash Reject
 
         l_ApprovalEntry.Reset;
         l_ApprovalEntry.SetRange("Table ID", ApprovalEntry."Table ID");
         l_ApprovalEntry.SetRange("Document No.", ApprovalEntry."Document No.");
         l_ApprovalEntry.SetFilter(Status, '%1|%2', l_ApprovalEntry.Status::Open, l_ApprovalEntry.Status::Created);
         if l_ApprovalEntry.FindFirst() then begin
-            CanLeavRecRec.Reset();
-            CanLeavRecRec.SetRange(RecID, ApprovalEntry."Record ID to Approve");
-            if CanLeavRecRec.FindFirst() then begin
-                CanLeavRecRec."WorkFlow Status" := CanLeavRecRec."WorkFlow Status"::Rejected;
-                CanLeavRecRec.Modify(true);
-
+            PayrollRecRec.Reset();
+            PayrollRecRec.SetRange(RecID, ApprovalEntry."Record ID to Approve");
+            if PayrollRecRec.FindFirst() then begin
+                PayrollRecRec."WorkFlow Status" := PayrollRecRec."WorkFlow Status"::Rejected;
+                PayrollRecRec.Modify(true);
             end;
         end;
-        WFMngt.HandleEventOnKnownWorkflowInstance(SetStatusToReject_LT_Code_LeaveCancel(), ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
-        // Sathish Reject
+        WFMngt.HandleEventOnKnownWorkflowInstance(SetStatusToReject_LT_Code_PayrollStat(), ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
+        // Avinash Reject
     end;
     //End
     //Delegate Approval reques Event************************************************************************************ End
-    procedure RunWorkflowOnDelegate_LeaveCancelApprovalCode(): Code[128]
+    procedure RunWorkflowOnDelegate_PayrollStatApprovalCode(): Code[128]
     begin
-        exit(UpperCase('RunWorkflowOnDelegate_LeaveCancelApproval'))
+        exit(UpperCase('RunWorkflowOnDelegate_PayrollStatApproval'))
     end;
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnDelegateApprovalRequest', '', true, true)]
-    procedure RunWorkflowOnDelegate_LeaveCancelApproval(var ApprovalEntry: Record "Approval Entry")
+    procedure RunWorkflowOnDelegate_PayrollStatApproval(var ApprovalEntry: Record "Approval Entry")
     begin
-        WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnDelegate_LeaveCancelApprovalCode, ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
+        WFMngt.HandleEventOnKnownWorkflowInstance(RunWorkflowOnDelegate_PayrollStatApprovalCode, ApprovalEntry, ApprovalEntry."Workflow Step Instance ID");
     end;
     //End
     //Events Subscribe End
 
 
     //Code for changeing approval status Pending approval in Transfer Orders
-    procedure SetStatusToPendingApprovalCode_LeaveCancel(): Code[128] // Done
+    procedure SetStatusToPendingApprovalCode_PayrollStat(): Code[128] // Done
     begin
-        exit(UpperCase('SetStatusToPendingApproval_NEW_LeaveCancel'));
+        exit(UpperCase('SetStatusToPendingApproval_NEW_PayrollStat'));
     end;
-    // Sathish Reject
-    procedure SetStatusToReject_LT_Code_LeaveCancel(): Code[128]
+    // Avinash Reject
+    procedure SetStatusToReject_LT_Code_PayrollStat(): Code[128]
     begin
-        exit(UpperCase('SetStatusToReject_LT__NEW_LeaveCancel'));
+        exit(UpperCase('SetStatusToReject_LT__NEW_PayrollStat'));
     end;
-    // Sathish Reject
+    // Avinash Reject
 
 
-    procedure SetStatusToPendingApproval_LeaveCancel(var Variant: Variant)
+    procedure SetStatusToPendingApproval_PayrollStat(var Variant: Variant)
     var
         RecRef: RecordRef;
-        CanLeavRec: Record "Cancel Leave Request";
+        PayrollRec: Record "Payroll Statement";
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Payroll Statement":
                 begin
-                    RecRef.SetTable(CanLeavRec);
-                    CanLeavRec.Validate("WorkFlow Status", CanLeavRec."WorkFlow Status"::"Pending For Approval");
-                    CanLeavRec.Modify();
-                    Variant := CanLeavRec;
+                    RecRef.SetTable(PayrollRec);
+                    PayrollRec.Validate("WorkFlow Status", PayrollRec."WorkFlow Status"::"Pending Approval");
+                    PayrollRec.Modify();
+                    Variant := PayrollRec;
                 end;
         end;
     end;
 
-    // Sathish Reject Funcation
-    procedure SetStatusToReject_LT_LeaveCancel(var Variant: Variant)
+    // Avinash Reject Funcation
+    procedure SetStatusToReject_LT_PayrollStat(var Variant: Variant)
     var
         RecRef: RecordRef;
-        CanLeavRec: Record "Cancel Leave Request";
+        PayrollRec: Record "Payroll Statement";
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Payroll Statement":
                 begin
                     Message('Reject');
-                    RecRef.SetTable(CanLeavRec);
-                    CanLeavRec.Validate("WorkFlow Status", CanLeavRec."WorkFlow Status"::Rejected);
-                    CanLeavRec.Modify();
-                    Variant := CanLeavRec;
+                    RecRef.SetTable(PayrollRec);
+                    PayrollRec.Validate("WorkFlow Status", PayrollRec."WorkFlow Status"::Rejected);
+                    PayrollRec.Modify();
+                    Variant := PayrollRec;
                 end;
         end;
     end;
-    // Sathish Reject Fucnaion
+    // Avinash Reject Fucnaion
 
     //Code for approval status changes to Released in Transfer Order
-    procedure Release_LeaveCancelCode(): Code[128]
+    procedure Release_PayrollStatCode(): Code[128]
     begin
-        exit(UpperCase('Release_NEW_LeaveCancel'));
+        exit(UpperCase('Release_NEW_PayrollStat'));
     end;
 
-    procedure Release_LeaveCancel(var Variant: Variant)
+    procedure Release_PayrollStat(var Variant: Variant)
     var
         RecRef: RecordRef;
         TargetRecRef: RecordRef;
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        PayrollRec: Record "Payroll Statement";
     begin
         RecRef.GetTable(Variant);
         ///  InsertEmailNotification(Variant);
@@ -211,33 +207,32 @@ codeunit 60028 WFCode_LeaveCancelReq
                     TargetRecRef.Get(ApprovalEntry."Record ID to Approve");
                     Variant := TargetRecRef;
 
-                    Release_LeaveCancel(Variant);
+                    Release_PayrollStat(Variant);
                 end;
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Payroll Statement":
                 begin
 
-                    RecRef.SetTable(CanLeavRec);
-                    CanLeavRec.Validate("WorkFlow Status", CanLeavRec."WorkFlow Status"::Approved);
-                    CanLeavRec.Modify();
-                    Variant := CanLeavRec;
-                    //To Post Cancel Approval document after approval
-                    CanLeavRec.PostLeaveCancel(CanLeavRec);
+                    RecRef.SetTable(PayrollRec);
+                    PayrollRec.Validate("WorkFlow Status", PayrollRec."WorkFlow Status"::Approved);
+                    PayrollRec.Modify();
+                    Variant := PayrollRec;
+
                 end;
         end;
     end;
 
     //Code for approval status changes to Open When Cancel or Reopen
-    procedure ReOpen_LeaveCancelCode(): Code[128]
+    procedure ReOpen_PayrollStatCode(): Code[128]
     begin
-        exit(UpperCase('ReOpen_NEW_LeaveCancel'));
+        exit(UpperCase('ReOpen_NEW_PayrollStat'));
     end;
 
-    procedure ReOpen_LeaveCancel(var Variant: Variant)
+    procedure ReOpen_PayrollStat(var Variant: Variant)
     var
         RecRef: RecordRef;
         TargetRecRef: RecordRef;
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        PayrollRec: Record "Payroll Statement";
     begin
         RecRef.GetTable(Variant);
         //  InsertEmailNotification(Variant);
@@ -247,62 +242,62 @@ codeunit 60028 WFCode_LeaveCancelReq
                     ApprovalEntry := Variant;
                     TargetRecRef.Get(ApprovalEntry."Record ID to Approve");
                     Variant := TargetRecRef;
-                    ReOpen_LeaveCancel(Variant);
+                    ReOpen_PayrollStat(Variant);
 
                 end;
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Payroll Statement":
                 begin
-                    RecRef.SetTable(CanLeavRec);
-                    CanLeavRec.Validate("WorkFlow Status", CanLeavRec."WorkFlow Status"::Open);
-                    CanLeavRec.Modify();
-                    Variant := CanLeavRec;
+                    RecRef.SetTable(PayrollRec);
+                    PayrollRec.Validate("WorkFlow Status", PayrollRec."WorkFlow Status"::Open);
+                    PayrollRec.Modify();
+                    Variant := PayrollRec;
                 end;
         end;
     end;
 
     //Code For MEssage Notification start
-    procedure LeaveCancelMessageCode(): Code[128]
+    procedure PayrollStatMessageCode(): Code[128]
     begin
-        exit(UpperCase('LeaveCancel_NEW_Message'));
+        exit(UpperCase('PayrollStat_NEW_Message'));
     end;
 
-    procedure LeaveCancelMessage(var Variant: Variant)
+    procedure PayrollStatMessage(var Variant: Variant)
     var
         RecRef: RecordRef;
         TargetRecRef: RecordRef;
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        PayrollRec: Record "Payroll Statement";
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Payroll Statement":
                 begin
-                    RecRef.SetTable(CanLeavRec);
+                    RecRef.SetTable(PayrollRec);
                     Message('The approval request for the record has been canceled.');
-                    Variant := CanLeavRec;
+                    Variant := PayrollRec;
                 end;
         end;
     end;
 
-    procedure LeaveCancelSendMessageCode(): Code[128]
+    procedure PayrollStatSendMessageCode(): Code[128]
     begin
-        exit(UpperCase('LeaveCancel_NEW_SendMessage'));
+        exit(UpperCase('PayrollStat_NEW_SendMessage'));
     end;
 
-    procedure LeaveCancelSendMessage(var Variant: Variant)
+    procedure PayrollStatSendMessage(var Variant: Variant)
     var
         RecRef: RecordRef;
         TargetRecRef: RecordRef;
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        PayrollRec: Record "Payroll Statement";
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Payroll Statement":
                 begin
-                    RecRef.SetTable(CanLeavRec);
+                    RecRef.SetTable(PayrollRec);
                     Message('The approval request for the record has been sent.');
-                    Variant := CanLeavRec;
+                    Variant := PayrollRec;
                 end;
         end;
     end;
@@ -312,17 +307,17 @@ codeunit 60028 WFCode_LeaveCancelReq
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Approvals Mgmt.", 'OnPopulateApprovalEntryArgument', '', true, true)]
     local procedure OnPopulateApprovalEntryArgument(var RecRef: RecordRef; var ApprovalEntryArgument: Record "Approval Entry"; WorkflowStepInstance: Record "Workflow Step Instance")
     var
-        CanLeavRec: Record "Cancel Leave Request";
+        PayrollRec: Record "Payroll Statement";
     begin
         case RecRef.Number of
-            database::"Cancel Leave Request":
+            database::"Payroll Statement":
                 begin
-                    RecRef.SetTable(CanLeavRec);
+                    RecRef.SetTable(PayrollRec);
                     ApprovalEntryArgument."Table ID" := RecRef.Number;
-                    ApprovalEntryArgument."Document No." := CanLeavRec."Leave Request ID";
-                    // // // CanLeavRec.CalcFields("Total Amount ");
-                    // // // ApprovalEntryArgument.Amount := CanLeavRec."Total Amount ";
-                    // // // ApprovalEntryArgument."Amount (LCY)" := CanLeavRec."Total Amount ";
+                    ApprovalEntryArgument."Document No." := PayrollRec."Payroll Statement ID";
+                    // // // PayrollRec.CalcFields("Total Amount ");
+                    // // // ApprovalEntryArgument.Amount := PayrollRec."Total Amount ";
+                    // // // ApprovalEntryArgument."Amount (LCY)" := PayrollRec."Total Amount ";
                     //ApprovalEntryArgument."Document Type" := ApprovalEntryArgument."Document Type"::Quote;
                 end;
         end;
@@ -334,14 +329,14 @@ codeunit 60028 WFCode_LeaveCancelReq
     procedure OnAddWorkflowEventsToLibrary()
     begin
 
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnSend_LeaveCancelApprovalCode, Database::"Cancel Leave Request", Send_LeaveCancelReq, 0, false);
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnApprove_LeaveCancelApprovalCode, Database::"Approval Entry", AppReq_LeaveCancel, 0, false);
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnCancel_LeaveCancelApprovalCode, Database::"Cancel Leave Request", CancelForPendAppTxt, 0, false);
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnReject_LeaveCancelApprovalCode, Database::"Approval Entry", RejReq_LeaveCancel, 0, false);
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnDelegate_LeaveCancelApprovalCode, Database::"Approval Entry", DelReq_LeaveCancel, 0, false);
-        // Sathish Reject Code
-        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnSend_LeaveCancelRejectCode, Database::"Cancel Leave Request", Send_LeaveCancelReject_LeaveCancelReq, 0, false);
-        // Sathish Reject Code
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnSend_PayrollStatApprovalCode, Database::"Payroll Statement", Send_PayrollStatReq, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnApprove_PayrollStatApprovalCode, Database::"Approval Entry", AppReq_PayrollStat, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnCancel_PayrollStatApprovalCode, Database::"Payroll Statement", CancelForPendAppTxt, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnReject_PayrollStatApprovalCode, Database::"Approval Entry", RejReq_PayrollStat, 0, false);
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnDelegate_PayrollStatApprovalCode, Database::"Approval Entry", DelReq_PayrollStat, 0, false);
+        // Avinash Reject Code
+        WorkflowEventHandling.AddEventToLibrary(RunWorkflowOnSend_PayrollStatRejectCode, Database::"Payroll Statement", Send_PayrollStatReject_PayrollStatReq, 0, false);
+        // Avinash Reject Code
 
     end;
 
@@ -349,15 +344,15 @@ codeunit 60028 WFCode_LeaveCancelReq
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnAddWorkflowResponsesToLibrary', '', true, true)]
     procedure OnAddWorkflowResponsesToLibrary()
     begin
-        WorkflowResponseHandling.AddResponseToLibrary(SetStatusToPendingApprovalCode_LeaveCancel, 0, SendForPendAppTxt, 'GROUP 0');
-        WorkflowResponseHandling.AddResponseToLibrary(Release_LeaveCancelCode, 0, Release_LeaveCancelTxt, 'GROUP 0');
-        WorkflowResponseHandling.AddResponseToLibrary(ReOpen_LeaveCancelCode, 0, ReOpen_LeaveCancelTxt, 'GROUP 0');
-        //WorkflowResponseHandling.AddResponseToLibrary(SendEmailCodeLeaveCancel, 0, '', 'GROUP 0');
-        WorkflowResponseHandling.AddResponseToLibrary(LeaveCancelMessageCode, 0, LeaveCancel_Message, 'GROUP 0');
-        WorkflowResponseHandling.AddResponseToLibrary(LeaveCancelSendMessageCode, 0, LeaveCancelSend_Message, 'GROUP 0');
-        // Sathish Reject Code
-        WorkflowResponseHandling.AddResponseToLibrary(SetStatusToReject_LT_Code_LeaveCancel, 0, SendForRejectTxt, 'GROUP 0');
-        // Sathish Reject Code 
+        WorkflowResponseHandling.AddResponseToLibrary(SetStatusToPendingApprovalCode_PayrollStat, 0, SendForPendAppTxt, 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(Release_PayrollStatCode, 0, Release_PayrollStatTxt, 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(ReOpen_PayrollStatCode, 0, ReOpen_PayrollStatTxt, 'GROUP 0');
+        //WorkflowResponseHandling.AddResponseToLibrary(SendEmailCodePayrollStat, 0, '', 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(PayrollStatMessageCode, 0, PayrollStat_Message, 'GROUP 0');
+        WorkflowResponseHandling.AddResponseToLibrary(PayrollStatSendMessageCode, 0, PayrollStatSend_Message, 'GROUP 0');
+        // Avinash Reject Code
+        WorkflowResponseHandling.AddResponseToLibrary(SetStatusToReject_LT_Code_PayrollStat, 0, SendForRejectTxt, 'GROUP 0');
+        // Avinash Reject Code 
 
 
 
@@ -368,13 +363,13 @@ codeunit 60028 WFCode_LeaveCancelReq
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnAddWorkflowResponsePredecessorsToLibrary', '', true, true)]
     procedure OnAddWorkflowResponsePredecessorsToLibrary(ResponseFunctionName: Code[128])
     var
-        WorkflowEventHandling: Codeunit InitCU_LeaveCancelReq;
+        WorkflowEventHandling: Codeunit InitCodeunit_Payroll;
     begin
         case ResponseFunctionName of
             //WorkFlowResponseHandling.SetStatusToPendingApprovalCode:
             //  WorkFlowResponseHandling.AddResponsePredecessor(WorkFlowResponseHandling.SetStatusToPendingApproval, WorkFlowEventHandlingExtCust.RunWorkFlowOnApproveApprovalRequestForRequisitionCode);
             WorkFlowResponseHandling.SendApprovalRequestForApprovalCode:
-                WorkFlowResponseHandling.AddResponsePredecessor(WorkFlowResponseHandling.SendApprovalRequestForApprovalCode, RunWorkflowOnApprove_LeaveCancelApprovalCode());
+                WorkFlowResponseHandling.AddResponsePredecessor(WorkFlowResponseHandling.SendApprovalRequestForApprovalCode, RunWorkflowOnApprove_PayrollStatApprovalCode());
         //WorkFlowResponseHandling.CancelAllApprovalRequestsCode;
         //WorkFlowResponseHandling.AddResponsePredecessor(WorkFlowResponseHandling.CancelAllApprovalRequestsCode,WorkFlowEventHandlingExtCust.run);
         //WorkFlowResponseHandling.OpenDocumentCode;
@@ -386,57 +381,57 @@ codeunit 60028 WFCode_LeaveCancelReq
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnExecuteWorkflowResponse', '', false, false)]
-    procedure ExeRespForLeaveCancel(var ResponseExecuted: Boolean; Variant: Variant; xVariant: Variant; ResponseWorkflowStepInstance: Record "Workflow Step Instance")
+    procedure ExeRespForPayrollStat(var ResponseExecuted: Boolean; Variant: Variant; xVariant: Variant; ResponseWorkflowStepInstance: Record "Workflow Step Instance")
     var
         WorkflowResponse: Record "Workflow Response";
     begin
         IF WorkflowResponse.GET(ResponseWorkflowStepInstance."Function Name") THEN
             case WorkflowResponse."Function Name" of
 
-                SetStatusToPendingApprovalCode_LeaveCancel():
+                SetStatusToPendingApprovalCode_PayrollStat():
                     begin
-                        SetStatusToPendingApproval_LeaveCancel(Variant);
+                        SetStatusToPendingApproval_PayrollStat(Variant);
                         ResponseExecuted := true;
                     end;
-                Release_LeaveCancelCode():
+                Release_PayrollStatCode():
                     begin
-                        Release_LeaveCancel(Variant);
+                        Release_PayrollStat(Variant);
                         ResponseExecuted := true;
                     end;
-                ReOpen_LeaveCancelCode():
+                ReOpen_PayrollStatCode():
                     begin
-                        ReOpen_LeaveCancel(Variant);
+                        ReOpen_PayrollStat(Variant);
                         ResponseExecuted := true;
                     end;
-                SendEmailCodeLeaveCancel():
+                SendEmailCodePayrollStat():
                     begin
                         SendEmailRFQ(Variant);
                         ResponseExecuted := true;
                     end;
-                LeaveCancelMessageCode():
+                PayrollStatMessageCode():
                     begin
-                        LeaveCancelMessage(Variant);
+                        PayrollStatMessage(Variant);
                         ResponseExecuted := true;
                     end;
-                LeaveCancelSendMessageCode():
+                PayrollStatSendMessageCode():
                     begin
-                        LeaveCancelSendMessage(Variant);
+                        PayrollStatSendMessage(Variant);
                         ResponseExecuted := true;
                     end;
-                // Sathish Reject Code
-                SetStatusToReject_LT_Code_LeaveCancel():
+                // Avinash Reject Code
+                SetStatusToReject_LT_Code_PayrollStat():
                     begin
                         Message('Workflow');
-                        SetStatusToReject_LT_LeaveCancel(Variant);
+                        SetStatusToReject_LT_PayrollStat(Variant);
                         ResponseExecuted := true;
                     end;
-            // Sathish Reject Code
+            // Avinash Reject Code
 
             end;
     end;
-    // Sathish
+    // Avinash
 
-    // Sathish 
+    // Avinash 
 
     //Approver Chain Setup
     procedure IsRFQSufficeintApprover(UserSetup: Record "User Setup"; ApprovalAmountLCY: Decimal): Boolean
@@ -455,7 +450,7 @@ codeunit 60028 WFCode_LeaveCancelReq
     local procedure OnAfterIsSufficientApprover(UserSetup: Record "User Setup"; ApprovalEntryArgument: Record "Approval Entry"; var IsSufficient: Boolean)
     begin
         case ApprovalEntryArgument."Table ID" of
-            database::"Cancel Leave Request":
+            database::"Payroll Statement":
                 IsSufficient := IsRFQSufficeintApprover(UserSetup, ApprovalEntryArgument."Amount (LCY)");
         end;
     end;
@@ -463,15 +458,15 @@ codeunit 60028 WFCode_LeaveCancelReq
 
     // Emial Notificaion Creation 05DEC2019 Start
 
-    procedure SendEmailCodeLeaveCancel(): Code[128]
+    procedure SendEmailCodePayrollStat(): Code[128]
     begin
-        exit(UpperCase('SendEmail_NEW_LeaveCancel'));
+        exit(UpperCase('SendEmail_NEW_PayrollStat'));
     end;
 
     procedure SendEmailRFQ(var Variant: Variant)
     var
         RecRef: RecordRef;
-        RFQHeader: Record "Cancel Leave Request";
+        RFQHeader: Record "Payroll Statement";
         SmtpMailSetup: Record "SMTP Mail Setup";
         SmtpMail: Codeunit "SMTP Mail";
         ComapnyInfo: Record "Company Information";
@@ -487,13 +482,13 @@ codeunit 60028 WFCode_LeaveCancelReq
     begin
         RecRef.GetTable(Variant);
         case RecRef.Number() of
-            DATABASE::"Cancel Leave Request":
+            DATABASE::"Payroll Statement":
                 begin
                     TableId := RecRef.Number;
                     RecRef.SetTable(RFQHeader);
                     ApprovalEntry.Reset();
                     ApprovalEntry.SetRange("Table ID", TableId);
-                    ApprovalEntry.SetRange("Document No.", RFQHeader."Leave Request ID");
+                    ApprovalEntry.SetRange("Document No.", RFQHeader."Payroll Statement ID");
                     if ApprovalEntry.FindSet then begin
                         repeat
                             if (ApprovalEntry.Status = ApprovalEntry.Status::Open) or (ApprovalEntry.Status = ApprovalEntry.Status::Created) then begin
@@ -516,7 +511,7 @@ codeunit 60028 WFCode_LeaveCancelReq
         // InsertEmailNotficationEntries: Record "Email Notification Entries";
         // EmailNotificationRec: Record "Email Notification Entries";
         ApprovalEntry: Record "Approval Entry";
-        CanLeavRec: Record "Cancel Leave Request";
+        PayrollRec: Record "Payroll Statement";
         l_ApprovalEntry: Record "Approval Entry";
         Recref: RecordRef;
     begin
@@ -536,13 +531,13 @@ codeunit 60028 WFCode_LeaveCancelReq
                        InsertEmailNotficationEntries.Insert(true);
 
             END; */
-            Database::"Cancel Leave Request":
+            Database::"Payroll Statement":
                 begin
-                    // This is Commented By Sathish
-                    // // // // Recref.SetTable(CanLeavRec);
+                    // This is Commented By Avinash
+                    // // // // Recref.SetTable(PayrollRec);
                     // // // // l_ApprovalEntry.Reset();
                     // // // // l_ApprovalEntry.SetRange("Table ID", Recref.Number);
-                    // // // // l_ApprovalEntry.SetRange("Document No.", CanLeavRec."Requisition No.");
+                    // // // // l_ApprovalEntry.SetRange("Document No.", PayrollRec."Requisition No.");
                     // // // // if l_ApprovalEntry.FindLast() then begin
                     // // // //     InsertEmailNotficationEntries.Init;
                     // // // //     EmailNotificationRec.Reset;
@@ -554,7 +549,7 @@ codeunit 60028 WFCode_LeaveCancelReq
                     // // // //     InsertEmailNotficationEntries.UserID := l_ApprovalEntry."Approver ID";
                     // // // //     InsertEmailNotficationEntries.Insert(true);
                     // // // // end;
-                    // This is Commented By Sathish
+                    // This is Commented By Avinash
 
                 end;
 

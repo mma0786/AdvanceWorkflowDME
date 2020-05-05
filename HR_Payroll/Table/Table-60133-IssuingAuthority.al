@@ -19,6 +19,11 @@ table 60133 "Issuing Authority"
         {
             Clustered = true;
         }
+        key(Key2; Description)
+        {
+
+        }
+
     }
 
     fieldgroups

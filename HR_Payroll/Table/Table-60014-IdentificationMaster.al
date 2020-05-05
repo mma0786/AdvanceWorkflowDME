@@ -142,6 +142,15 @@ table 60014 "Identification Master"
         field(14; "Issuing Authority"; Code[20])
         {
             TableRelation = "Issuing Authority";
+
+            trigger OnValidate()
+            var
+                RecIssuAuthority: Record "Issuing Authority";
+            begin
+                RecIssuAuthority.SetRange(Code, "Issuing Authority");
+                IF RecIssuAuthority.FINDFIRST THEN
+                    "Issuing Authority Description" := RecIssuAuthority.Description;
+            end;
         }
         field(15; "Issue Date (Hijiri)"; Text[30])
         {
@@ -192,6 +201,24 @@ table 60014 "Identification Master"
                         end;
                     end;
                 end;
+            end;
+        }
+
+        //
+        field(20; "Issuing Authority Description"; Text[150])
+        {
+            DataClassification = ToBeClassified;
+            TableRelation = "Issuing Authority";
+            ValidateTableRelation = false;
+            trigger OnValidate()
+            var
+                RecIssuAuthority: Record "Issuing Authority";
+            begin
+                Clear(RecIssuAuthority);
+                RecIssuAuthority.SETFILTER(Code, "Issuing Authority Description");
+                RecIssuAuthority.FINDFIRST;
+                "Issuing Authority" := RecIssuAuthority.Code;
+                "Issuing Authority Description" := RecIssuAuthority.Description;
             end;
         }
     }

@@ -16,6 +16,7 @@ page 60149 "Asset Return"
                 {
                     Caption = 'Document No.';
                     Editable = false;
+                    ApplicationArea = All;
 
                     trigger OnValidate();
                     begin
@@ -29,30 +30,36 @@ page 60149 "Asset Return"
                 {
                     Caption = 'Document Date';
                     Editable = Edit;
+                    ApplicationArea = All;
                 }
                 field("Transaction Type"; "Transaction Type")
                 {
                     Enabled = false;
+                    ApplicationArea = All;
                 }
                 field("Asset Custody Type"; "Asset Custody Type")
                 {
                     Caption = 'Return Type';
                     Editable = Edit;
+                    ApplicationArea = All;
                 }
                 field("Issue to/Return by"; "Issue to/Return by")
                 {
                     Caption = 'Return By';
                     Editable = Edit;
                     ShowMandatory = true;
+                    ApplicationArea = All;
                 }
                 field("Sub Department"; "Sub Department")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field("Issue Document Reference"; "Issue Document Reference")
                 {
                     Editable = Edit;
                     ShowMandatory = true;
+                    ApplicationArea = All;
 
                     trigger OnValidate();
                     begin
@@ -80,41 +87,51 @@ page 60149 "Asset Return"
                 field("Issue Date"; "Issue Date")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field("Return Date"; "Return Date")
                 {
                     Editable = Edit;
+                    ApplicationArea = All;
                 }
                 field("FA No"; "FA No")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field(Name; Name)
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field("FA Description"; "FA Description")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field("Asset Owner"; "Asset Owner")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field("Asset Owner Name"; "Asset Owner Name")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field("Company Name"; "Company Name")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field("WorkFlow Status"; "WorkFlow Status")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field(Posted; Posted)
                 {
+                    ApplicationArea = All;
                 }
             }
         }

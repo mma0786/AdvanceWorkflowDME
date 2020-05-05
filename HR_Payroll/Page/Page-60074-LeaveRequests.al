@@ -55,10 +55,12 @@ page 60074 "Leave Requests"
                     Visible = false;
                     ApplicationArea = All;
                 }
+
                 field("End Date"; "End Date")
                 {
                     ApplicationArea = All;
                 }
+
                 field("Leave Days"; "Leave Days")
                 {
                     ApplicationArea = All;

@@ -97,7 +97,7 @@ page 60151 "Full and Final Settlement"
                 ApplicationArea = All;
                 trigger OnAction()
                 begin
-                    if Rec."Workflow Status" = Rec."Workflow Status"::"Pending for Approval" then
+                    if Rec."Workflow Status" = Rec."Workflow Status"::"Pending Approval" then
                         ERROR(Text001);
 
                     //Reopen(Rec);

@@ -48,6 +48,7 @@ report 60013 "Employee Termination"
                     field("Unsatisfactory Grade"; NoofYearswithUnsatisfactoryGrade)
                     {
                         Caption = 'No of Years with Unsatisfactory Grade';
+                        Visible = false;
                     }
                     field("Termination Date"; TerminationDate)
                     {

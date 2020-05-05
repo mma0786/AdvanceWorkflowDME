@@ -48,10 +48,8 @@ table 60049 "Cancel Leave Request"
         field(15; "Leave Remarks"; Text[100])
         {
         }
-        field(16; RecID; RecordId)
-
+        field(51; RecId; RecordId)
         { }
-
         field(17; "Submission Date"; Date)
         {
         }
@@ -128,13 +126,14 @@ table 60049 "Cancel Leave Request"
     // Commented By Avinash [Scope('Internal')]
     procedure PostLeaveCancel(var CancelLeave: Record "Cancel Leave Request")
     var
-    // Commented By Avinash AccrualCompCalc: Codeunit "Accrual Component Calculate";
+        // Commented By Avinash 
+        AccrualCompCalc: Codeunit "Accrual Component Calculate";
     begin
         Employee.GET("Personnel Number");
         UpdateEmployeeWorkDate;
-        // Commented By Avinash
-        // AccrualCompCalc.ValidateAccrualLeaves("Personnel Number", "Leave Type", "Start Date", "End Date", "Earning Code Group", LeaveType."Accrual ID", "Leave Days");
-        // AccrualCompCalc.OnAfterValidateAccrualLeaves("Personnel Number", "Start Date", "Leave Type", "Earning Code Group");
+        //Commented By Avinash
+        AccrualCompCalc.ValidateAccrualLeaves("Personnel Number", "Leave Type", "Start Date", "End Date", "Earning Code Group", LeaveType."Accrual ID", "Leave Days");
+        AccrualCompCalc.OnAfterValidateAccrualLeaves("Personnel Number", "Start Date", "Leave Type", "Earning Code Group");
         // Commented By Avinash
         "Leave Cancelled" := true;
         MODIFY;

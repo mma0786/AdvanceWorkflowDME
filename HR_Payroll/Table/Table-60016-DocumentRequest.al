@@ -117,8 +117,8 @@ table 60016 "Document Request"
         {
             Caption = 'WorkFlow Status';
             Editable = false;
-            OptionCaption = 'Open,Released,Pending Approval';
-            OptionMembers = Open,Released,"Pending Approval";
+            OptionCaption = 'Open,Approved,Send for Approval,Rejected';
+            OptionMembers = Open,Released,"Pending Approval",Rejected;
         }
         field(11; "Certificate For Dependent"; Code[20])
         {
@@ -143,6 +143,8 @@ table 60016 "Document Request"
         field(12; "Dependent Name"; Text[100])
         {
         }
+        field(13; RecId; RecordId)
+        { }
     }
 
     keys
@@ -164,9 +166,11 @@ table 60016 "Document Request"
 
     trigger OnInsert()
     begin
+
         INITINSERT();
         "Request Date" := TODAY;
         "Document Date" := TODAY;
+        RecId := RecId;
     end;
 
     trigger OnRename()

@@ -7,6 +7,10 @@ tableextension 60014 EmployeeExt extends Employee
         modify(Initials)
         {
             TableRelation = Initials;
+            trigger OnAfterValidate()
+            begin
+                "Search Name" := Initials + ' ' + "First Name" + ' ' + "Middle Name" + ' ' + "Last Name";
+            end;
         }
 
         field(60000; "Earning Code Group"; Code[20])
@@ -291,7 +295,23 @@ tableextension 60014 EmployeeExt extends Employee
 
             Editable = false;
         }
+        modify("First Name")
+        {
+            trigger OnAfterValidate()
+            begin
+                "Search Name" := Initials + ' ' + "First Name" + ' ' + "Middle Name" + ' ' + "Last Name";
+            end;
+        }
+        modify("Last Name")
+        {
+            trigger OnAfterValidate()
+            begin
+                "Search Name" := Initials + ' ' + "First Name" + ' ' + "Middle Name" + ' ' + "Last Name";
+            end;
+        }
     }
+
+
 
     local procedure DeleteEarningGroupsData(ErngGrp_p: Code[20])
     var

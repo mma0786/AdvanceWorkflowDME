@@ -181,6 +181,8 @@ page 60084 "Payroll Statements"
                 ApplicationArea = All;
 
                 trigger OnAction()
+                var
+                    wfcode: Codeunit InitCodeunit_Payroll;
                 begin
                     //
                     if not CONFIRM('Do you want to Submit the Payroll Statement?') then
@@ -191,6 +193,9 @@ page 60084 "Payroll Statements"
                         //SubmitLeave(FullandFinalCalculation);
                         //commented By Avinash    if ApprovalsMgmt.CheckPayrollStatementRequestApprovalPossible(PayrollStatement) then
                         //commented By Avinash   ApprovalsMgmt.OnSendPayrollStatementRequestForApproval(PayrollStatement);
+
+                        wfcode.IsPayrollStat_Enabled(rec);
+                        wfcode.IsPayrollStatApprovalWorkflowEnabled(Rec);
                     end;
                     CurrPage.UPDATE;
                 end;
@@ -205,12 +210,15 @@ page 60084 "Payroll Statements"
                 PromotedCategory = Process;
 
                 trigger OnAction()
+                var
+                    wfcode: Codeunit InitCodeunit_Payroll;
                 begin
                     //
                     CurrPage.SETSELECTIONFILTER(PayrollStatement);
                     if PayrollStatement.FINDFIRST then begin
                         PayrollStatement.TESTFIELD("Workflow Status", PayrollStatement."Workflow Status"::"Pending Approval");
                         //commented By Avinash    ApprovalsMgmt.OnCancelPayrollStatementApprovalRequest(Rec);
+                        wfcode.OnCancelPayrollStat_Approval(Rec);
                     end;
                     CurrPage.UPDATE;
                 end;
