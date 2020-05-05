@@ -114,10 +114,10 @@ report 60012 "Generate Full and Final Calc"
         FormulaForPackage: Text;
         FormulaForAttendance: Text;
         FormulaForDays: Text;
-        BenefitColumn: DotNet "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumn";
-        BenefitColumnCollection: DotNet "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataColumnCollection";
-        BenefitRow: DotNet "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRow";
-        BenefitRowCollection: DotNet "'System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.Data.DataRowCollection";
+        BenefitColumn: DotNet BenefitColumn;
+        BenefitColumnCollection: DotNet BenefitColumnCollection;
+        BenefitRow: DotNet BenefitRow;
+        BenefitRowCollection: DotNet BenefitRowCollection;
         LoanInstallmentGeneration: Record "Loan Installment Generation";
         LoanSetup: Record "Loan Type Setup";
         FSEarningCodes2: Record "FS - Earning Code";
@@ -130,8 +130,6 @@ report 60012 "Generate Full and Final Calc"
             CLEAR(PayComponentTable);
             CLEAR(BenefitTable);
             CLEAR(ResultTable);
-            //GetParameterKeyValues(ParameterTable,HcmWorkerRecId."No.",FromDate,ToDate);
-            //>>>Parameter System Data Table
             ParameterTable := ParameterTable.DataTable('Table1');
             ParameterColumnCollection := ParameterTable.Columns;
             ParameterRowCollection := ParameterTable.Rows;
@@ -1139,7 +1137,7 @@ report 60012 "Generate Full and Final Calc"
                         ResultContainer[1] := FORMAT(PayrollFormulaKeyWord.P_ServiceDays(l_Worker."No.", NORMALDATE(l_ToDate)));
                         ResultContainer[2] := '#NumericDataType';
                     end;
-                'P_DAYSINPERIOD':
+                'P_DAYSINPERIOD_1':
                     begin
                         ResultContainer[1] := FORMAT(PayrollFormulaKeyWord.P_DaysInPeriod(l_Worker."No.", PayPeriod."Period Start Date", PayPeriod."Period End Date"));
                         ResultContainer[2] := '#NumericDataType';
