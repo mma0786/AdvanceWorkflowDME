@@ -34,6 +34,6 @@
   ],
   "contextSensitiveHelpUrl": "https://Payroll_Hr.com/help/",
   "showMyCode": true,
-  "runtime": "4.0",
- "target": "Internal"
+  "runtime": "4.0"
+ 
 }

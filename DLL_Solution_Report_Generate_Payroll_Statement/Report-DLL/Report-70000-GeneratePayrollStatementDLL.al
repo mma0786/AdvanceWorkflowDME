@@ -264,7 +264,7 @@ report 70000 "Generate Payroll Statement DLL"
         EmployeeLeaveTypes: Record "HCM Leave Types Wrkr";
         EmployeeBenefits: Record "HCM Benefit Wrkr";
         PayrollStatementTransLines2: Record "Payroll Statement Emp Trans.";
-        LevHREvaluation: DotNet LevHREvaluation; //"'LevhrEvaluation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.APIClientConsole.HrmPlus" RUNONCLIENT;
+        //LevHREvaluation: DotNet LevHREvaluation; //"'LevhrEvaluation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.APIClientConsole.HrmPlus" RUNONCLIENT;
         ResultContainer: array[2] of Text;
         EmployeeWorkDate: Record EmployeeWorkDate_GCC;
         TempDataTable: Record "Temp Datatable Data";
@@ -287,8 +287,8 @@ report 70000 "Generate Payroll Statement DLL"
         FormulaForPackage: Text;
         FormulaForAttendance: Text;
         FormulaForDays: Text;
-        ResultTable: DotNet ResultTable;
-        RowResultData: DotNet RowResultData;
+        //ResultTable: DotNet ResultTable;
+        //RowResultData: DotNet RowResultData;
         Value: Variant;
         PayrollFormulaKeyWords: Record "Payroll Formula";
         EmployeeLeaveTypes: Record "HCM Leave Types Wrkr";
@@ -1284,22 +1284,22 @@ report 70000 "Generate Payroll Statement DLL"
     procedure STRREPLACE(String: Text; Old: Text; New: Text) NewString: Text;
     var
         Pos: Integer;
-        DotNetString: DotNet DotNetString;//"'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";
+    // DotNetString: DotNet DotNetString;//"'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";
     begin
-        /*
+
         Pos := STRPOS(String, Old);
-        WHILE Pos <> 0 DO
-        BEGIN
-           NewString += DELSTR(String,Pos) + New;
-           String := COPYSTR(String, Pos, STRLEN(Old));
-        //String := INSSTR(String, New, Pos);
-           Pos := STRPOS(String, Old);
+        WHILE Pos <> 0 DO BEGIN
+            NewString += DELSTR(String, Pos) + New;
+            String := COPYSTR(String, Pos, STRLEN(Old));
+            //String := INSSTR(String, New, Pos);
+            Pos := STRPOS(String, Old);
         END;
         NewString += String;
-        */
-        DotNetString := String;
-        DotNetString := DotNetString.Replace(Old, New);
-        NewString := FORMAT(DotNetString);
+
+
+        // // // // DotNetString := String;
+        // // // // DotNetString := DotNetString.Replace(Old, New);
+        // // // // NewString := FORMAT(DotNetString);
         exit(NewString);
 
     end;

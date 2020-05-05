@@ -117,9 +117,9 @@ page 60084 "Payroll Statements"
                         //<LT_Sathish_04Mar2020_Dll_Error>
                         // Comment - repports Contains of dll error
 
-                        CLEAR(GeneratePayrollStatement);
-                        GeneratePayrollStatement.SetValues(PayrollStatement);
-                        GeneratePayrollStatement.RUNMODAL;
+                        // // // CLEAR(GeneratePayrollStatement);
+                        // // // GeneratePayrollStatement.SetValues(PayrollStatement);
+                        // // // GeneratePayrollStatement.RUNMODAL;
 
                         //</LT_Sathish_04Mar2020_Dll_Error>
                     end;
@@ -440,7 +440,7 @@ page 60084 "Payroll Statements"
         PayrollStatement: Record "Payroll Statement";
         //<LT_Sathish_04Mar2020_Dll_Error>
         // Comment - repports Contains of dll error
-        GeneratePayrollStatement: Report "Generate Payroll Statements";
+        // GeneratePayrollStatement: Report "Generate Payroll Statements";
         //<LT_Sathish_04Mar2020_Dll_Error>
         Statement_No: Code[10];
         PayrollStatementJV: Codeunit "Payroll Statement JV";
