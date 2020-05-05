@@ -64,7 +64,7 @@ table 70022 "Emp. Benefits List FnFCalc"
     procedure SET_EBList__UnitFormula_Code(EBList__UnitFormulaP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
-        CurrentTable: Record "Emp. Benefits List Table";
+        CurrentTable: Record "Emp. Benefits List FnFCalc";
     begin
         CLEAR(EBList__UnitFormula);
         if EBList__UnitFormulaP = '' then
@@ -82,7 +82,7 @@ table 70022 "Emp. Benefits List FnFCalc"
     var
         TypeHelper: Codeunit "Type Helper";
         InStream: InStream;
-        CurrentTable: Record "Emp. Benefits List Table";
+        CurrentTable: Record "Emp. Benefits List FnFCalc";
     begin
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNo);
@@ -138,7 +138,7 @@ table 70022 "Emp. Benefits List FnFCalc"
     procedure SET_EBList__EncashmentFormula_Code(EBList__EncashmentFormulaP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
-        CurrentTable: Record "Emp. Benefits List Table";
+        CurrentTable: Record "Emp. Benefits List FnFCalc";
     begin
         CLEAR(EBList__EncashmentFormula);
         if EBList__EncashmentFormulaP = '' then
@@ -214,7 +214,7 @@ table 70022 "Emp. Benefits List FnFCalc"
     procedure SET_EBList__ValueFormula_Code(EBList__ValueFormulaP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
-        CurrentTable: Record "Emp. Benefits List Table";
+        CurrentTable: Record "Emp. Benefits List FnFCalc";
     begin
         CLEAR(EBList__ValueFormula);
         if EBList__ValueFormulaP = '' then

@@ -69,7 +69,7 @@ table 70021 "Emp. Earning Code List FnFCalc"
     procedure SETFormulaEECList__UnitFormula_Code(EECList__UnitFormulaP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
-        CurrentTable: Record "Emp. Earning Code  List Table";
+        CurrentTable: Record "Emp. Earning Code List FnFCalc";
 
     begin
         // Message('Inside Funcation %1', EECList__UnitFormulaP);
@@ -91,7 +91,7 @@ table 70021 "Emp. Earning Code List FnFCalc"
     var
         TypeHelper: Codeunit "Type Helper";
         InStream: InStream;
-        CurrentTable: Record "Emp. Earning Code  List Table";
+        CurrentTable: Record "Emp. Earning Code List FnFCalc";
     begin
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNo);
@@ -140,7 +140,7 @@ table 70021 "Emp. Earning Code List FnFCalc"
     procedure SETEECList__Formulaforattendance_Code(EECList__FormulaforattendanceP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
-        CurrentTable: Record "Emp. Earning Code  List Table";
+        CurrentTable: Record "Emp. Earning Code List FnFCalc";
     begin
         CLEAR(EECList__UnitFormula);
         if EECList__FormulaforattendanceP = '' then
@@ -158,7 +158,7 @@ table 70021 "Emp. Earning Code List FnFCalc"
     var
         TypeHelper: Codeunit "Type Helper";
         InStream: InStream;
-        CurrentTable: Record "Emp. Earning Code  List Table";
+        CurrentTable: Record "Emp. Earning Code List FnFCalc";
     begin
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNo);
@@ -206,7 +206,7 @@ table 70021 "Emp. Earning Code List FnFCalc"
     procedure SETEECList__Formulafordays_Code(EECList__FormulafordaysP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
-        CurrentTable: Record "Emp. Earning Code  List Table";
+        CurrentTable: Record "Emp. Earning Code List FnFCalc";
     begin
         CLEAR(EECList__Formulafordays);
         if EECList__FormulafordaysP = '' then
@@ -224,7 +224,7 @@ table 70021 "Emp. Earning Code List FnFCalc"
     var
         TypeHelper: Codeunit "Type Helper";
         InStream: InStream;
-        CurrentTable: Record "Emp. Earning Code  List Table";
+        CurrentTable: Record "Emp. Earning Code List FnFCalc";
     begin
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNo);

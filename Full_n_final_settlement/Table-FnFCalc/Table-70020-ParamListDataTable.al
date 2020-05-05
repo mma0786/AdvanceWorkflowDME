@@ -61,7 +61,7 @@ table 70020 "ParamList Data Table FnFCalc"
     procedure SET_ParamList__KeyValue_Code(ParamList__KeyValueP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
-        CurrentTable: Record "ParamList Data Table";
+        CurrentTable: Record "ParamList Data Table FnFCalc";
     begin
         CLEAR(ParamList__KeyValue);
         if ParamList__KeyValueP = '' then
@@ -79,7 +79,7 @@ table 70020 "ParamList Data Table FnFCalc"
     var
         TypeHelper: Codeunit "Type Helper";
         InStream: InStream;
-        CurrentTable: Record "ParamList Data Table";
+        CurrentTable: Record "ParamList Data Table FnFCalc";
     begin
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNo);

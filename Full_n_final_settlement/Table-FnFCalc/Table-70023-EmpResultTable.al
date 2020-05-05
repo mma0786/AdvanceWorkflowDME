@@ -88,7 +88,7 @@ table 70023 "Emp. Result Table FnFCalc"
     procedure SET_ErrorLog_Code(ErrorLogP: Text; EntryNoP: Integer)
     var
         OutStream: OutStream;
-        CurrentTable: Record "Emp. Result Table";
+        CurrentTable: Record "Emp. Result Table FnFCalc";
     begin
         CLEAR("Error Log");
         if ErrorLogP = '' then
