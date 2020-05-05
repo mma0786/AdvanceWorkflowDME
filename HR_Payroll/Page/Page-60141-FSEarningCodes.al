@@ -1,6 +1,6 @@
 page 60141 "FS Earning Codes"
 {
-    PageType = List;
+    PageType = ListPart;
     SourceTable = "FS - Earning Code";
     ApplicationArea = All;
     UsageCategory = Lists;

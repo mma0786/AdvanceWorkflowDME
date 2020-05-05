@@ -1,7 +1,7 @@
 page 60145 "FS Benefit Ledger"
 {
     ModifyAllowed = false;
-    PageType = List;
+    PageType = ListPart;
     SourceTable = "FS - Earning Code";
     SourceTableView = WHERE("Earning Code" = CONST('EOS'),
                             "Earning Code Amount" = FILTER(<> 0));

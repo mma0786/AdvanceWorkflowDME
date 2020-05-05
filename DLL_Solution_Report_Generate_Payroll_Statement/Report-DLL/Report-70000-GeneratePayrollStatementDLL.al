@@ -1281,10 +1281,13 @@ report 70000 "Generate Payroll Statement DLL"
         end;
     end;
 
-    procedure STRREPLACE(String: Text; Old: Text; New: Text) NewString: Text;
+    procedure STRREPLACE_LT(String: Text; Old: Text; New: Text) NewString: Text;
     var
         Pos: Integer;
-    // DotNetString: DotNet DotNetString;//"'mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.System.String";
+        OriginalString: Text;
+        FromChars: Text;
+        ToChars: Text;
+
     begin
 
         Pos := STRPOS(String, Old);
@@ -1296,13 +1299,66 @@ report 70000 "Generate Payroll Statement DLL"
         END;
         NewString += String;
 
-
         // // // // DotNetString := String;
         // // // // DotNetString := DotNetString.Replace(Old, New);
         // // // // NewString := FORMAT(DotNetString);
+
+
+
         exit(NewString);
 
     end;
+
+    //#####################3
+    Procedure STRREPLACE(String: Text; Old: Text; New: Text): Text;
+    var
+        stOrig: Text;
+        stOld: Text;
+        stNew: Text;
+        i: Integer;
+        len: Integer;
+        len2: Integer;
+        st: Text;
+
+    begin
+        Clear(stOrig);
+        Clear(stNew);
+        Clear(stOld);
+        Clear(i);
+        Clear(len);
+        Clear(len2);
+        Clear(st);
+
+        stOrig := String;
+        stNew := New;
+        stOld := Old;
+
+        IF stNew = stOld THEN
+            EXIT(stOrig);
+
+        i := 1;
+        len := STRLEN(stOrig);
+        len2 := STRLEN(stOld);
+        if len > 0 then
+            REPEAT
+                IF COPYSTR(stOrig, i, 1) = COPYSTR(stOld, 1, 1) THEN BEGIN
+                    IF COPYSTR(stOrig, i, len2) = stOld THEN BEGIN
+                        st := st + stNew;
+                        i := i + len2 - 1;
+                    END
+                    ELSE
+                        st := st + COPYSTR(stOrig, i, 1);
+                END
+                ELSE
+                    st := st + COPYSTR(stOrig, i, 1);
+                i := i + 1;
+            UNTIL i = len + 1;
+        EXIT(st);
+
+
+    end;
+
+    //#####################3
 
     procedure GetParameterKey(_FormulaKey: Code[100]; l_PayrollStatementEmployee: Record "Payroll Statement Employee");
     var

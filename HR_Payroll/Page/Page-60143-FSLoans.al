@@ -1,6 +1,6 @@
 page 60143 "FS Loans"
 {
-    PageType = List;
+    PageType = ListPart;
     SourceTable = "FS Loans";
     ApplicationArea = All;
     UsageCategory = Lists;

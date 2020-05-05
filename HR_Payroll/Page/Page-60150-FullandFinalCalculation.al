@@ -106,14 +106,14 @@ page 60150 "Full and Final Calculation"
                     begin
                         if not CONFIRM('Do you want to calculate the Full and Final Settlement ?', true) then
                             exit;
-                        CLEAR(FandFCalc);
-                        RecEmployee.RESET;
-                        RecEmployee.SETRANGE("No.", Worker);
-                        RecEmployee.FINDFIRST;
-                        ///////////// FandFCalc.SetValues(PayCycle);
-                        FandFCalc.SETTABLEVIEW(RecEmployee);
-                        FandFCalc.RUNMODAL;
-                        FandFCalc.RUNMODAL;
+                        // // // CLEAR(FandFCalc);
+                        // // // RecEmployee.RESET;
+                        // // // RecEmployee.SETRANGE("No.", Worker);
+                        // // // RecEmployee.FINDFIRST;
+                        // // // ///////////// FandFCalc.SetValues(PayCycle);
+                        // // // FandFCalc.SETTABLEVIEW(RecEmployee);
+                        // // // FandFCalc.RUNMODAL;
+                        // // // FandFCalc.RUNMODAL;
                     end;
                 }
             }
@@ -137,7 +137,7 @@ page 60150 "Full and Final Calculation"
         Calculated: Boolean;
         EmployeeEarningCodeGroups: Record "Employee Earning Code Groups";
         PayCycle: Code[20];
-        FandFCalc: Report "Generate Full and Final Calc";
+        // FandFCalc: Report "Generate Full and Final Calc";
         FSEarningCodes: Record "FS - Earning Code";
         FSBenefits: Record "FS Benefits";
         FSLoans: Record "FS Loans";

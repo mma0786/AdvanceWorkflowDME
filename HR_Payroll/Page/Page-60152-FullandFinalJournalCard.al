@@ -64,33 +64,34 @@ page 60152 "Full and Final Journal Card"
                 }
             }
             //commented By Avinash
-            // part("Payroll Calculations"; "FS Earning Codes")
-            // {
-            //     Caption = 'Payroll Calculations';
-            //     Editable = false;
-            //     SubPageLink = "Journal ID" = FIELD("Journal ID"),
-            //                   "Employee No." = FIELD("Employee No.");
-            // }
-            // part("Employee Benefits"; "FS Benefit Ledger")
-            // {
-            //     Caption = 'Employee Benefits';
-            //     SubPageLink = "Journal ID" = FIELD("Journal ID"),
-            //                   "Employee No." = FIELD("Employee No.");
-            //     UpdatePropagation = Both;
-            // }
-            // part(Control19; "Leave Encashments")
-            // {
-            //     Editable = false;
-            //     SubPageLink = "Journal ID" = FIELD("Journal ID"),
-            //                   "Employee No." = FIELD("Employee No.");
-            // }
-            // part("Recovery of Advances"; "FS Loans")
-            // {
-            //     Caption = 'Recovery of Advances';
-            //     SubPageLink = "Journal ID" = FIELD("Journal ID"),
-            //                   "Employee No." = FIELD("Employee No.");
-            //     UpdatePropagation = Both;
-            // }
+            part("Payroll Calculations"; "FS Earning Codes")
+            {
+                Caption = 'Payroll Calculations';
+                Editable = false;
+                SubPageLink = "Journal ID" = FIELD("Journal ID"), "Employee No." = FIELD("Employee No.");
+                ApplicationArea = All;
+            }
+            part("Employee Benefits"; "FS Benefit Ledger")
+            {
+                Caption = 'Employee Benefits';
+                SubPageLink = "Journal ID" = FIELD("Journal ID"),
+                              "Employee No." = FIELD("Employee No.");
+                UpdatePropagation = Both;
+                ApplicationArea = All;
+            }
+            part("Leave Encashments"; "Leave Encashments")
+            {
+                Editable = false;
+                SubPageLink = "Journal ID" = FIELD("Journal ID"),
+                              "Employee No." = FIELD("Employee No.");
+            }
+            part("Recovery of Advances"; "FS Loans")
+            {
+                Caption = 'Recovery of Advances';
+                SubPageLink = "Journal ID" = FIELD("Journal ID"),
+                              "Employee No." = FIELD("Employee No.");
+                UpdatePropagation = Both;
+            }
             //commented By Avinash
             group(Summarry)
             {
@@ -150,13 +151,13 @@ page 60152 "Full and Final Journal Card"
                     FSLoans.SETRANGE("Journal ID", Rec."Journal ID");
                     FSLoans.DELETEALL;
 
-                    //commented By Avinash  CLEAR(FandFCalc);
-                    RecEmployee.RESET;
-                    RecEmployee.SETRANGE("No.", "Employee No.");
-                    RecEmployee.FINDFIRST;
-                    //commented By Avinash  FandFCalc.SetValues("Pay Cycle", "Pay Period Start Date", "Pay Period End Date", Rec);
-                    //commented By Avinash  FandFCalc.SETTABLEVIEW(RecEmployee);
-                    //commented By Avinash  FandFCalc.RUNMODAL;
+                    // // // // // CLEAR(FandFCalc);
+                    // // // // // RecEmployee.RESET;
+                    // // // // // RecEmployee.SETRANGE("No.", "Employee No.");
+                    // // // // // RecEmployee.FINDFIRST;
+                    // // // // // FandFCalc.SetValues("Pay Cycle", "Pay Period Start Date", "Pay Period End Date", Rec);
+                    // // // // // FandFCalc.SETTABLEVIEW(RecEmployee);
+                    // // // // // FandFCalc.RUNMODAL;
                 end;
             }
             action("Submit For Approval")
@@ -334,7 +335,7 @@ page 60152 "Full and Final Journal Card"
     end;
 
     var
-        //commented By Avinash   FandFCalc: Report "Generate Full and Final Calc";
+        //FandFCalc: Report "Generate Full and Final Calc";
         FSEarningCodes: Record "FS - Earning Code";
         FSBenefits: Record "FS Benefits";
         FSLoans: Record "FS Loans";

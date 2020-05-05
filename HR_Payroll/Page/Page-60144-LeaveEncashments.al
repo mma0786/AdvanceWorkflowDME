@@ -1,7 +1,7 @@
 page 60144 "Leave Encashments"
 {
     Editable = false;
-    PageType = List;
+    PageType = ListPart;
     SourceTable = "Leave Encashment";
     ApplicationArea = All;
     UsageCategory = Lists;
