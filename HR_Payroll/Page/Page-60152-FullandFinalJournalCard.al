@@ -180,17 +180,16 @@ page 60152 "Full and Final Journal Card"
                     WfCode: Codeunit InitCodeunit_Final_Sett;
                 begin
                     //
-                    if not CONFIRM('Do you want to Submit the leave request?') then
-                        exit;
+
 
                     CurrPage.SETSELECTIONFILTER(FullandFinalCalculation);
                     if FullandFinalCalculation.FINDFIRST then begin
-                        //SubmitLeave(FullandFinalCalculation);
-                        //commented By Avinash  if ApprovalsMgmt.CheckFandFRequestApprovalPossible(FullandFinalCalculation) then
-                        //commented By Avinash     ApprovalsMgmt.OnSendFandFRequestForApproval(FullandFinalCalculation);
-                        WfCode.IsF_And_F_Enabled(rec);
-                        WfCode.OnSendF_And_F_Approval(rec);
 
+                        if WfCode.IsF_And_F_Enabled(rec) then begin
+                            if not CONFIRM('Do you want to Submit the Full and Final settlement ?') then
+                                exit;
+                            WfCode.OnSendF_And_F_Approval(rec);
+                        end;
                     end;
                 end;
             }
