@@ -63,6 +63,11 @@ page 60152 "Full and Final Journal Card"
                     Editable = false;
                     ApplicationArea = All;
                 }
+                field("Workflow Status"; "Workflow Status")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
             //commented By Avinash
             part("Payroll Calculations"; "FS Earning Codes")

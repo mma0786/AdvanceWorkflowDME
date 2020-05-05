@@ -1,3 +1,55 @@
+dotnet
+{
+    assembly(mscorlib)
+    {
+        type(System.DateTime; MyDateTime) { }
+        type(System.String; DotNetString) { }
+    }
+}
+
+dotnet
+{
+    assembly(LevhrEvaluation)
+    {
+        type(APIClientConsole.HrmPlus; LevhrEvaluation) { }
+    }
+}
+dotnet
+{
+    assembly(System.Data)
+    {
+        type(System.Data.DataTable; PayComponentTable) { }
+        type(System.Data.DataTable; ParameterTable) { }
+        type(System.Data.DataTable; BenefitTable) { }
+        type(System.Data.DataTable; ResultTable) { }
+
+        type(System.Data.DataColumn; PayComponentColumn) { }
+        type(System.Data.DataColumn; ParameterColumn) { }
+        type(System.Data.DataColumn; BenefitColumn) { }
+
+
+        type(System.Data.DataColumnCollection; PayComponentColumnCollection) { }
+        type(System.Data.DataColumnCollection; BenefitColumnCollection) { }
+        type(System.Data.DataColumnCollection; ParameterColumnCollection) { }
+
+        type(System.Data.DataRowCollection; PayComponentRowCollection) { }
+        type(System.Data.DataRowCollection; ParameterRowCollection) { }
+        type(System.Data.DataRowCollection; BenefitRowCollection) { }
+        type(System.Data.DataRowCollection; ResultRowCollection) { }
+
+        type(System.Data.DataRow; PayComponentRow) { }
+        type(System.Data.DataRow; RowResultData) { }
+        type(System.Data.DataRow; ParameterRow) { }
+        type(System.Data.DataRow; BenefitRow) { }
+        type(System.Data.DataRow; dotNetDataRow) { }
+
+    }
+
+}
+
+
+
+///#######$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%^^^^^^^^^^^^^^^^^^^^^
 report 60012 "Generate Full and Final Calc"
 {
     // version LT_Payroll
