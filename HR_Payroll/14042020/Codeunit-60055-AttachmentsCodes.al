@@ -26,11 +26,25 @@ codeunit 60055 "File Attachments Codes"
                         LineNo += DocumentAttachmentRecL."Line No." + 1000
                     else
                         LineNo := 1000;
-
                     DocumentAttachment.Validate("Line No.", LineNo);
-
                 end;
+            // Start 05.05.2020 "Loan Request"            
+            DATABASE::"Loan Request":
+                begin
+                    FieldRef := RecRef.Field(1);
+                    RecNo := FieldRef.Value;
+                    DocumentAttachment.Validate("No.", RecNo);
 
+                    DocumentAttachmentRecL.Reset();
+                    DocumentAttachmentRecL.SetRange("No.", RecNo);
+                    DocumentAttachmentRecL.SetRange("Table ID", Database::"Loan Request");
+                    if LeaveRequestHeaderRecL.FindLast() then
+                        LineNo += DocumentAttachmentRecL."Line No." + 1000
+                    else
+                        LineNo := 1000;
+                    DocumentAttachment.Validate("Line No.", LineNo);
+                end;
+        // Stop 05.05.2020 "Loan Request"  
         end;
     end;
 
@@ -49,13 +63,16 @@ codeunit 60055 "File Attachments Codes"
                     RecNo := FieldRef.Value;
                     DocumentAttachment.SetRange("No.", RecNo);
                     DocumentAttachment.SetRange("Table ID", Database::"Leave Request Header");
-
-                    // // FieldRef := RecRef.Field(4);
-                    // // LineNo := FieldRef.Value;
-                    // // DocumentAttachment.SetRange("Line No.", LineNo);
-
-                    // // DocumentAttachment.FlowFieldsEditable := false;
                 end;
+            // Start 05.05.2020 "Loan Request"
+            DATABASE::"Loan Request":
+                begin
+                    FieldRef := RecRef.Field(1);
+                    RecNo := FieldRef.Value;
+                    DocumentAttachment.SetRange("No.", RecNo);
+                    DocumentAttachment.SetRange("Table ID", Database::"Loan Request");
+                end;
+        // Stop 05.05.2020 "Loan Request"  
         end;
     end;
 }
