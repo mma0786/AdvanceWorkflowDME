@@ -215,14 +215,13 @@ page 60064 "Leave Request Card"
                         if WfInitCode.Is_LeaveReq_Enabled(Rec) then begin
                             // Start #Levtech  WF
                             LoopOfSeq_LT("Personnel Number", "Leave Request ID");
+
                             // Stop #Levtech WF
                             WfInitCode.OnSend_LeaveReq_Approval(Rec);
                             // Start  21.04.2020 Advance Workflow
-                            ///AdvanceWorkflowCUL.DeleteExtraLine_ApprovalEntry_LT(Rec.RecordId);
-
+                            AdvanceWorkflowCUL.DeleteExtraLine_ApprovalEntry_LT(Rec.RecordId);
                             AdvanceWorkflowCUL.LeaveRequest_SwapApprovalUser_Advance_LT(Rec.RecordId);
-
-                            ///AdvanceWorkflowCUL.DeleteExtraLine_ApprovalEntry_LT(Rec.RecordId);
+                            AdvanceWorkflowCUL.DeleteExtraLine_ApprovalEntry_LT(Rec.RecordId);
                             // Stop 21.04.2020 Advance Workflow
 
                         end;
@@ -711,6 +710,7 @@ page 60064 "Leave Request Card"
         ApprovalEntrtyTranscationRec_L."Document RecordsID" := Rec.RecordId;
         // Stop 21.04.2020
         ApprovalEntrtyTranscationRec_L.INSERT;
+        //Message('  SenderID - %1    ReportingID - %2    DelegateID - %3', SenderID, ReportingID, DelegateID);
     end;
 
     //commented By Avinash  [Scope('Internal')]
@@ -728,6 +728,7 @@ page 60064 "Leave Request Card"
         CountForLoop_L: Integer;
         Delegate_L: Code[80];
         SeqNo_L: Integer;
+        IsFinalPos: Boolean;
     begin
         CLEAR(SenderID_L);
         CLEAR(ReportingID_L);
@@ -735,6 +736,7 @@ page 60064 "Leave Request Card"
         CLEAR(TwoEmpID);
         CLEAR(ThreeEmpID);
         CLEAR(Delegate_L);
+        IsFinalPos := false;
 
         ApprovalLevelSetupRec_L.RESET;
         ApprovalLevelSetupRec_L.SETRANGE("Advance Payrolll Type", ApprovalLevelSetupRec_L."Advance Payrolll Type"::Leaves);
@@ -750,6 +752,7 @@ page 60064 "Leave Request Card"
                 if GetEmployeePostionEmployeeID_FinalPosituion_LT(SenderID_L) then begin
                     if (ReportingID_L = '') then begin//(i = 1) AND
                         ReportingID_L := SenderID_L;
+                        IsFinalPos := true;
                         // MESSAGE('dele');
                     end;
                     i := ApprovalLevelSetupRec_L.Level + 1;
@@ -792,6 +795,8 @@ page 60064 "Leave Request Card"
                                                       UserSetupRec2_L."User ID",
                                                       Delegate_L,
                                                       SeqNo_L);
+                        IsFinalPos := true;
+
                         // Message(' Final i %1 Sender %2   App %3  Delegate_L %4', i, UserSetupRec_L."User ID", UserSetupRec2_L."User ID", Delegate_L);
                     end;
 
@@ -800,8 +805,66 @@ page 60064 "Leave Request Card"
                 SenderID_L := ReportingID_L;
 
             end;
+            // Start At Last for Finance Approve 
+            if not IsFinalPos then
+                IF ApprovalLevelSetupRec_L."Direct Approve By Finance" THEN BEGIN
+                    IF ApprovalLevelSetupRec_L."Finance User ID" <> '' THEN BEGIN
+                        CLEAR(Delegate_L);
+                        IF CheckDelegateForEmployee_LT2(ApprovalLevelSetupRec_L."Finance User ID", 2) <> '' THEN
+                            Delegate_L := CheckDelegateForEmployee_LT2(ApprovalLevelSetupRec_L."Finance User ID", 2)
+                        ELSE
+                            CLEAR(Delegate_L);
+
+                        InsertApprovalEntryTrans_LT(TransID, UserSetupRec2_L."User ID", ApprovalLevelSetupRec_L."Finance User ID", Delegate_L, (SeqNo_L + 1));
+
+                    END ELSE
+                        IF ApprovalLevelSetupRec_L."Finance User ID 2" <> '' THEN BEGIN
+                            CLEAR(Delegate_L);
+                            IF CheckDelegateForEmployee_LT2(ApprovalLevelSetupRec_L."Finance User ID 2", 2) <> '' THEN
+                                Delegate_L := CheckDelegateForEmployee_LT2(ApprovalLevelSetupRec_L."Finance User ID 2", 2)
+                            ELSE
+                                CLEAR(Delegate_L);
+
+                            InsertApprovalEntryTrans_LT(TransID, UserSetupRec2_L."User ID", ApprovalLevelSetupRec_L."Finance User ID 2", Delegate_L, (SeqNo_L + 2));
+                        END;
+                END;
+            // Stop At Last for Finance Approve
         end;
+
     end;
+    //###########################
+    procedure CheckDelegateForEmployee_LT2(checkDelegateInfo_P: Code[150]; IsEmployeeOrUser: Integer): Code[80]
+    var
+        DelegateWFLTRec_L: Record "Delegate - WFLT";
+        UserSetupRecL: Record "User Setup";
+    begin
+        IF IsEmployeeOrUser = 1 THEN BEGIN
+            DelegateWFLTRec_L.RESET;
+            DelegateWFLTRec_L.SETRANGE("Employee Code", checkDelegateInfo_P);
+            IF DelegateWFLTRec_L.FINDFIRST THEN BEGIN
+                IF DelegateWFLTRec_L."Delegate ID" <> '' THEN
+                    IF (DelegateWFLTRec_L."From Date" >= TODAY) AND (DelegateWFLTRec_L."To Date" <= TODAY) THEN
+                        EXIT(DelegateWFLTRec_L."Delegate ID");
+            END;
+        END ELSE
+            IF IsEmployeeOrUser = 2 THEN BEGIN
+                UserSetupRecL.RESET;
+                UserSetupRecL.SETRANGE("User ID", checkDelegateInfo_P);
+                IF UserSetupRecL.FINDFIRST THEN
+                    UserSetupRecL.TESTFIELD("Employee Id");
+
+                DelegateWFLTRec_L.RESET;
+                DelegateWFLTRec_L.SETRANGE("Employee Code", UserSetupRecL."Employee Id");
+                IF DelegateWFLTRec_L.FINDFIRST THEN BEGIN
+                    IF DelegateWFLTRec_L."Delegate ID" <> '' THEN BEGIN
+                        IF (DelegateWFLTRec_L."From Date" <= TODAY) AND (DelegateWFLTRec_L."To Date" >= TODAY) THEN BEGIN
+                            EXIT(DelegateWFLTRec_L."Delegate ID");
+                        END
+                    END;
+                END;
+            END;
+    end;
+    //###########################
 
     //commented By Avinash  [Scope('Internal')]
     procedure CancelAndDeleteApprovalEntryTrans_LT(DocNo_P: RecordId)
@@ -833,7 +896,6 @@ page 60064 "Leave Request Card"
             IF (DelegateWFLTRec_L."From Date" <= TODAY) AND (DelegateWFLTRec_L."To Date" >= TODAY) THEN begin
                 EXIT(DelegateWFLTRec_L."Delegate ID");
             end;
-
     end;
 
     //commented By Avinash  [Scope('Internal')]

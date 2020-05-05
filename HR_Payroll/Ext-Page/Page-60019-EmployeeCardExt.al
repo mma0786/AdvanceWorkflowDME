@@ -558,9 +558,9 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                         PromotedCategory = Process;
                         PromotedIsBig = true;
                         ApplicationArea = All;
-                        Visible = false;
-                        //RunObject = Page 60165;
-                        //RunPageLink = Employee Code=FIELD(No.);
+                        Visible = true;
+                        RunObject = Page "Employee Delegation List";
+                        RunPageLink = "Employee Code" = FIELD("No.");
 
                         trigger OnAction()
                         begin
