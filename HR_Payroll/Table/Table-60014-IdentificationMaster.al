@@ -86,16 +86,38 @@ table 60014 "Identification Master"
             trigger OnValidate()
             var
                 HIJIRIDATETEXT: Text;
+                IdentificationMasterREcL: Record "Identification Master";
+
             begin
                 //<LT>
                 if ("Expiry Date" < "Issue Date") and ("Expiry Date" <> 0D) then
                     ERROR('Expiry Date cannot be less than Issue date');
                 //</LT>
 
+                // Start 09.03.2020
+                IdentificationMasterREcL.RESET;
+                IdentificationMasterREcL.SETRANGE("Document Type", IdentificationMasterREcL."Document Type"::Employee);
+                IdentificationMasterREcL.SETRANGE("Identification Type", "Identification Type");
+                IdentificationMasterREcL.SETRANGE("Employee No.", "Employee No.");
+                IF IdentificationMasterREcL.FINDSET THEN BEGIN
+                    REPEAT
+                        IF ("Issue Date" <= IdentificationMasterREcL."Expiry Date") AND ("Issue Date" >= IdentificationMasterREcL."Issue Date") THEN
+                            ERROR('Issue Date overlaps with the existing record.');
+                    UNTIL IdentificationMasterREcL.NEXT = 0;
+                END;
 
+                IdentificationMasterREcL.RESET;
+                IdentificationMasterREcL.SETRANGE("Document Type", IdentificationMasterREcL."Document Type"::Dependent);
+                IdentificationMasterREcL.SETRANGE("Identification Type", "Identification Type");
+                IdentificationMasterREcL.SETRANGE("Dependent No", "Dependent No");
+                IF IdentificationMasterREcL.FINDSET THEN BEGIN
+                    REPEAT
+                        IF ("Issue Date" <= IdentificationMasterREcL."Expiry Date") AND ("Issue Date" >= IdentificationMasterREcL."Issue Date") THEN
+                            ERROR('Issue Date overlaps with the existing record.');
+                    UNTIL IdentificationMasterREcL.NEXT = 0;
+                END;
+                // Stop 09.03.2020
 
-                // Commented By Avinash   Hijiri_Date_Converter_Dll_G := Hijiri_Date_Converter_Dll_G.Class1();
-                // Commented By Avinash  "Issue Date (Hijiri)" := Hijiri_Date_Converter_Dll_G.GregToHijri(FORMAT("Issue Date", 10, '<Year4>/<Month,2>/<Day,2>'));
             end;
         }
         field(9; "Expiry Date"; Date)
@@ -103,14 +125,37 @@ table 60014 "Identification Master"
             Caption = 'Expiry Date';
 
             trigger OnValidate()
+            var
+                IdentificationMasterREcL: Record "Identification Master";
             begin
                 //<LT>
                 if "Expiry Date" < "Issue Date" then
                     ERROR('Expiry Date cannot be less than Issue date');
                 //</LT>
+                // Start 09.03.2020
+                IdentificationMasterREcL.RESET;
+                IdentificationMasterREcL.SETRANGE("Document Type", IdentificationMasterREcL."Document Type"::Employee);
+                IdentificationMasterREcL.SETRANGE("Identification Type", "Identification Type");
+                IdentificationMasterREcL.SETRANGE("Employee No.", "Employee No.");
+                IF IdentificationMasterREcL.FINDSET THEN BEGIN
+                    REPEAT
+                        IF ("Expiry Date" >= IdentificationMasterREcL."Expiry Date") AND ("Expiry Date" <= IdentificationMasterREcL."Issue Date") THEN
+                            ERROR('Expiry Date overlaps with the existing record.');
+                    UNTIL IdentificationMasterREcL.NEXT = 0;
+                END;
 
-                // Commented By Avinash   Hijiri_Date_Converter_Dll_G := Hijiri_Date_Converter_Dll_G.Class1();
-                // Commented By Avinash "Expiry Date (Hijiri)" := Hijiri_Date_Converter_Dll_G.GregToHijri(FORMAT("Expiry Date", 10, '<Year4>/<Month,2>/<Day,2>'));
+                IdentificationMasterREcL.RESET;
+                IdentificationMasterREcL.SETRANGE("Document Type", IdentificationMasterREcL."Document Type"::Dependent);
+                IdentificationMasterREcL.SETRANGE("Identification Type", "Identification Type");
+                IdentificationMasterREcL.SETRANGE("Dependent No", "Dependent No");
+                IF IdentificationMasterREcL.FINDSET THEN BEGIN
+                    REPEAT
+                        IF ("Expiry Date" >= IdentificationMasterREcL."Expiry Date") AND ("Expiry Date" <= IdentificationMasterREcL."Issue Date") THEN
+                            ERROR('Expiry Date overlaps with the existing record.');
+                    UNTIL IdentificationMasterREcL.NEXT = 0;
+                END;
+                // Stop 09.03.2020
+
             end;
         }
         field(10; "No. Series"; Code[20])

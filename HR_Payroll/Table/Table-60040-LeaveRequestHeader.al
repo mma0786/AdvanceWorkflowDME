@@ -141,45 +141,45 @@ table 60040 "Leave Request Header"
                     EmployeeWorkCalcRecL.SetRange("First Half Leave Type", LeaveTypeRecL."Short Name");
                     EmployeeWorkCalcRecL.SetRange("Second Half Leave Type", LeaveTypeRecL."Short Name");
                     if NOT EmployeeWorkCalcRecL.FindFirst() then
-                    error('Leave already Applied for a day.');
+                        error('Leave already Applied for a day.');
 
                 end;
 
-                    // Stop 06.05.2020
+                // Stop 06.05.2020
 
 
 
-                    IF "Start Date" <> 0D THEN BEGIN
-                        IF "End Date" <> 0D THEN
-                            IF "Start Date" > "End Date" THEN
-                                ERROR('Start Date Should not be after End Date ');
+                IF "Start Date" <> 0D THEN BEGIN
+                    IF "End Date" <> 0D THEN
+                        IF "Start Date" > "End Date" THEN
+                            ERROR('Start Date Should not be after End Date ');
 
-                        Employee.GET("Personnel Number");
-                        Employee.TESTFIELD("Joining Date");
-                        IF Employee."Joining Date" > Rec."Start Date" THEN
-                            ERROR('You cannot apply leaves before joining date %1', Employee."Joining Date");
-
-
-                        IF "End Date" <> 0D THEN
-                            ValidateEndDate;
-                    END;
-
-                    LeaveRequestHeader.RESET;
-                    LeaveRequestHeader.SETRANGE("Personnel Number", "Personnel Number");
-                    //LeaveRequestHeader.SETFILTER("Leave Request ID",'<>%1',"Leave Request ID");
-                    LeaveRequestHeader.SETFILTER("Start Date", '<=%1', "Start Date");
-                    LeaveRequestHeader.SETFILTER("End Date", '>=%1', "Start Date");
-                    LeaveRequestHeader.SETRANGE("Leave Cancelled", FALSE);
-                    LeaveRequestHeader.SETFILTER("Workflow Status", '<>%1', LeaveRequestHeader."Workflow Status"::Rejected);
-                    LeaveRequestHeader.SETFILTER("Resumption Type", '%1|%2|%3', LeaveRequestHeader."Resumption Type"::"Late Resumption", LeaveRequestHeader."Resumption Type"::"On Time Resumption",
-                                                 LeaveRequestHeader."Resumption Type"::" ");
-                    IF LeaveRequestHeader.FINDFIRST THEN BEGIN
-                        ERROR('Leave Period Overlaps with other leave request');
-                    END;
+                    Employee.GET("Personnel Number");
+                    Employee.TESTFIELD("Joining Date");
+                    IF Employee."Joining Date" > Rec."Start Date" THEN
+                        ERROR('You cannot apply leaves before joining date %1', Employee."Joining Date");
 
 
-                    CalCulateLeaveBalance();
-                end;
+                    IF "End Date" <> 0D THEN
+                        ValidateEndDate;
+                END;
+
+                LeaveRequestHeader.RESET;
+                LeaveRequestHeader.SETRANGE("Personnel Number", "Personnel Number");
+                //LeaveRequestHeader.SETFILTER("Leave Request ID",'<>%1',"Leave Request ID");
+                LeaveRequestHeader.SETFILTER("Start Date", '<=%1', "Start Date");
+                LeaveRequestHeader.SETFILTER("End Date", '>=%1', "Start Date");
+                LeaveRequestHeader.SETRANGE("Leave Cancelled", FALSE);
+                LeaveRequestHeader.SETFILTER("Workflow Status", '<>%1', LeaveRequestHeader."Workflow Status"::Rejected);
+                LeaveRequestHeader.SETFILTER("Resumption Type", '%1|%2|%3', LeaveRequestHeader."Resumption Type"::"Late Resumption", LeaveRequestHeader."Resumption Type"::"On Time Resumption",
+                                             LeaveRequestHeader."Resumption Type"::" ");
+                IF LeaveRequestHeader.FINDFIRST THEN BEGIN
+                    ERROR('Leave Period Overlaps with other leave request');
+                END;
+
+
+                CalCulateLeaveBalance();
+            end;
         }
         field(8; "Alternative Start Date"; Date)
         {
@@ -198,7 +198,25 @@ table 60040 "Leave Request Header"
         {
 
             trigger OnValidate()
+            var
+                EmployeeWorkCalcRecL: Record EmployeeWorkDate_GCC;
+                LeaveTypeRecL: Record "HCM Leave Types";
             begin
+                // Sart 06.05.2020
+                LeaveTypeRecL.Reset();
+                LeaveTypeRecL.SetRange("Is System Defined", true);
+                if LeaveTypeRecL.FindFirst() then begin
+                    EmployeeWorkCalcRecL.Reset();
+                    EmployeeWorkCalcRecL.SetRange("Employee Code", "Personnel Number");
+                    EmployeeWorkCalcRecL.SetRange("Trans Date", "Start Date");
+                    EmployeeWorkCalcRecL.SetRange("First Half Leave Type", LeaveTypeRecL."Short Name");
+                    EmployeeWorkCalcRecL.SetRange("Second Half Leave Type", LeaveTypeRecL."Short Name");
+                    if NOT EmployeeWorkCalcRecL.FindFirst() then
+                        error('Leave already Applied for a day.');
+
+                end;
+
+                // Stop 06.05.2020
                 ValidateEndDate;
 
                 CalCulateLeaveBalance();

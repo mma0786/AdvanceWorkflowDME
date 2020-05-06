@@ -64,6 +64,11 @@ page 60023 "Employee Dependent Card1"
 
                     trigger OnValidate()
                     begin
+                        if Rec.Relationship <> Relationship::Child then begin
+                            Clear("Child with Special needs");
+                            Clear("Full Time Student");
+                            Clear("Child Educational Level");
+                        end;
                         ChildControle;
                         CurrPage.UPDATE;
                     end;
@@ -386,6 +391,7 @@ page 60023 "Employee Dependent Card1"
     trigger OnModifyRecord(): Boolean
     begin
         Edit;
+        ChildControle
         //CurrPage.UPDATE;
     end;
 
@@ -419,40 +425,36 @@ page 60023 "Employee Dependent Card1"
         HrSetup: Record "Human Resources Setup";
         NoseriesMgt: Codeunit NoSeriesManagement;
         RecEmpIdent: Record "Identification Master";
-        [InDataSet]
         EditField: Boolean;
         EmployeeDependentsMaster: Record "Employee Dependents Master";
-        [InDataSet]
         ChildBool: Boolean;
 
     local procedure SetControlVisibility()
     var
         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
     begin
-        /*OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(RECORDID);
+        OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(RECORDID);
         OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(RECORDID);
         CanCancelApprovalForRecord := ApprovalsMgmt.CanCancelApprovalForRecord(RECORDID);
-        */
 
+        ChildControle;
     end;
 
     local procedure Edit()
     begin
-        /*IF "Workflow Status" <> "Workflow Status"::Open THEN
-          EditField := FALSE
-        ELSE*/
-        //commented By Avinash  "Workflow Status" := "Workflow Status"::"2"; // Back end fields
-        //commented By Avinash   Status := Status::"1"; // Back end fields
-        //commented By Avinash  EditField := TRUE;
+        // "Workflow Status" := "Workflow Status"::Released; // Back end fields
+        // Status := Status::Active; // Back end fields
         EditField := TRUE;
 
     end;
 
     local procedure ChildControle()
     begin
-        ChildBool := true;
-        //commented By Avinash    IF Relationship = Relationship::"1" THEN
-        //commented By Avinash   ChildBool := TRUE;
+        //ChildBool := true;
+        IF Relationship = Relationship::Child THEN
+            ChildBool := TRUE
+        else
+            ChildBool := false;
     end;
 }
 
