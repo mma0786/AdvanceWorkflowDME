@@ -75,27 +75,26 @@ page 60152 "Full and Final Journal Card"
                 Caption = 'Payroll Calculations';
                 Editable = false;
                 SubPageLink = "Journal ID" = FIELD("Journal ID"), "Employee No." = FIELD("Employee No.");
+                UpdatePropagation = Both;
                 ApplicationArea = All;
             }
             part("Employee Benefits"; "FS Benefit Ledger")
             {
                 Caption = 'Employee Benefits';
-                SubPageLink = "Journal ID" = FIELD("Journal ID"),
-                              "Employee No." = FIELD("Employee No.");
+                SubPageLink = "Journal ID" = FIELD("Journal ID"), "Employee No." = FIELD("Employee No.");
                 UpdatePropagation = Both;
                 ApplicationArea = All;
             }
             part("Leave Encashments"; "Leave Encashments")
             {
                 Editable = false;
-                SubPageLink = "Journal ID" = FIELD("Journal ID"),
-                              "Employee No." = FIELD("Employee No.");
+                SubPageLink = "Journal ID" = FIELD("Journal ID"), "Employee No." = FIELD("Employee No.");
+                UpdatePropagation = Both;
             }
             part("Recovery of Advances"; "FS Loans")
             {
                 Caption = 'Recovery of Advances';
-                SubPageLink = "Journal ID" = FIELD("Journal ID"),
-                              "Employee No." = FIELD("Employee No.");
+                SubPageLink = "Journal ID" = FIELD("Journal ID"), "Employee No." = FIELD("Employee No.");
                 UpdatePropagation = Both;
             }
             //commented By Avinash

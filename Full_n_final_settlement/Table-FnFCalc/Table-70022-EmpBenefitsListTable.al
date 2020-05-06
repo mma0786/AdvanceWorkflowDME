@@ -156,7 +156,7 @@ table 70022 "Emp. Benefits List FnFCalc"
     var
         TypeHelper: Codeunit "Type Helper";
         InStream: InStream;
-        CurrentTable: Record "Emp. Benefits List Table";
+        CurrentTable: Record "Emp. Benefits List FnFCalc";
     begin
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNo);
@@ -232,7 +232,7 @@ table 70022 "Emp. Benefits List FnFCalc"
     var
         TypeHelper: Codeunit "Type Helper";
         InStream: InStream;
-        CurrentTable: Record "Emp. Benefits List Table";
+        CurrentTable: Record "Emp. Benefits List FnFCalc";
     begin
         CurrentTable.Reset();
         CurrentTable.SetRange("Entry No.", EntryNo);

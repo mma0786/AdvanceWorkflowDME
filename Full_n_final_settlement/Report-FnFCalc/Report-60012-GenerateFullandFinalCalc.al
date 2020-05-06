@@ -650,14 +650,16 @@ report 60012 "Generate Full and Final Calc"
                         EncashmentFormula := STRREPLACE(EncashmentFormula, ']', '])');
                         //BenefitTable.Rows.Clear();
                         // Start @Avinash Dll Solution
+                        Message('%2 UnitFormula   %1', UnitFormula, EmployeeBenefits."Short Name");
+                        Message('AmountCalcFormula   %1 ', AmountCalcFormula);
 
                         BenefitNavRecL.Init();
                         BenefitNavRecL."Entry No." := 0;
                         BenefitNavRecL.Insert();
                         BenefitNavRecL.EBList__Benefitcode := EmployeeBenefits."Short Name";
-                        BenefitNavRecL.SET_EBList__UnitFormula_Code(UnitFormula, BenefitNavRecL."Entry No.");
+                        BenefitNavRecL.SET_EBList__UnitFormula_Code(Format(UnitFormula), BenefitNavRecL."Entry No.");
                         BenefitNavRecL.SET_EBList__ValueFormula_Code(AmountCalcFormula, BenefitNavRecL."Entry No.");
-                        BenefitNavRecL.SET_EBList__EncashmentFormula_Code(EncashmentFormula, BenefitNavRecL."Entry No.");
+                        BenefitNavRecL.SET_EBList__EncashmentFormula_Code(Format(EncashmentFormula), BenefitNavRecL."Entry No.");
                         BenefitNavRecL.Modify();
 
                         // Stop  @Avinash Dll Solution
@@ -677,7 +679,10 @@ report 60012 "Generate Full and Final Calc"
             // Start @Avinash Dll Solution
 
             ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableNavRecL, PayComponentNavRecL, BenefitNavRecL);
+            Message('ReturnJsonStringTxtL  --------  %1', ReturnJsonStringTxtL);
+
             ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
+            Message('ReturnJsonResponse    ------ %1', ReturnJsonResponse);
 
             ResultNavRecL.DeleteAll();
             Clear(ResultNavRecL);
@@ -1309,6 +1314,15 @@ report 60012 "Generate Full and Final Calc"
                         ResultContainer[1] := FORMAT(PayrollFormulaKeyWord.P_SeparationReason(l_Worker."No."));
                         ResultContainer[2] := '#NumericDataType';
                     end;
+                // Avinash 18.04.2020
+                'P_EMPLOYEENATIONALITY':
+                    begin
+                        ResultContainer[1] := FORMAT(PayrollFormulaKeyWord.P_EMPLOYEENATIONALITY(l_Worker."No."));
+                        ResultContainer[2] := '#TextDataType';
+                        // Message('Emp NAt. Code %1', ResultContainer[1]);
+                    end;
+            // Avinash 18.04.2020
+
             end;
         end;
     end;

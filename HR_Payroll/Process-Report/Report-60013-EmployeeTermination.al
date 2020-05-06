@@ -32,18 +32,22 @@ report 60013 "Employee Termination"
                     }
                     field("Worker Name"; WorkerName)
                     {
+                        ApplicationArea = all;
                         Editable = false;
                     }
                     field("Notice Period Start"; NoticePeriodStartDate)
                     {
+                        ApplicationArea = all;
                     }
                     field("Notice Period End"; NoticePeriodEndDate)
                     {
+                        ApplicationArea = all;
                     }
                     field("Termination Reason"; TerminationReason)
                     {
                         ShowMandatory = true;
                         TableRelation = "Seperation Master";
+                        ApplicationArea = all;
                     }
                     field("Unsatisfactory Grade"; NoofYearswithUnsatisfactoryGrade)
                     {
@@ -53,6 +57,7 @@ report 60013 "Employee Termination"
                     field("Termination Date"; TerminationDate)
                     {
                         ShowMandatory = true;
+                        ApplicationArea = all;
 
                         trigger OnValidate();
                         begin
@@ -62,6 +67,7 @@ report 60013 "Employee Termination"
                     }
                     field("Hold Payment"; HoldPayment)
                     {
+                        ApplicationArea = all;
 
                         trigger OnValidate();
                         begin
@@ -73,12 +79,14 @@ report 60013 "Employee Termination"
                     }
                     field("Pay Cycle"; PayCycleID)
                     {
+                        ApplicationArea = all;
                         Editable = EditHoldPayrollFrom;
                         TableRelation = "Pay Cycles";
                     }
                     field("Hold Payment From"; HoldPayrollFrom)
                     {
                         Editable = EditHoldPayrollFrom;
+                        ApplicationArea = all;
 
                         trigger OnLookup(var Text: Text): Boolean
                         begin
