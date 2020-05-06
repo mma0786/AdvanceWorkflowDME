@@ -73,7 +73,7 @@ page 60062 "Duty Resumption"
                 field("Workflow Status"; "Workflow Status")
                 {
                     ApplicationArea = All;
-                    Editable = false;
+                    Editable = true;
                 }
             }
             part("Leave Extension"; "Leave Extension Lines")
