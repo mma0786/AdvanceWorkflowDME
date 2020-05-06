@@ -7,6 +7,7 @@ page 70020 "Parameter List FnFCalc"
     DeleteAllowed = false;
     ModifyAllowed = false;
     InsertAllowed = false;
+    Caption = 'FnF Calc Parameter';
 
     layout
     {

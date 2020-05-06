@@ -157,13 +157,13 @@ page 60152 "Full and Final Journal Card"
                     FSLoans.SETRANGE("Journal ID", Rec."Journal ID");
                     FSLoans.DELETEALL;
 
-                    // // // // // CLEAR(FandFCalc);
-                    // // // // // RecEmployee.RESET;
-                    // // // // // RecEmployee.SETRANGE("No.", "Employee No.");
-                    // // // // // RecEmployee.FINDFIRST;
-                    // // // // // FandFCalc.SetValues("Pay Cycle", "Pay Period Start Date", "Pay Period End Date", Rec);
-                    // // // // // FandFCalc.SETTABLEVIEW(RecEmployee);
-                    // // // // // FandFCalc.RUNMODAL;
+                    CLEAR(FandFCalc);
+                    RecEmployee.RESET;
+                    RecEmployee.SETRANGE("No.", "Employee No.");
+                    RecEmployee.FINDFIRST;
+                    FandFCalc.SetValues("Pay Cycle", "Pay Period Start Date", "Pay Period End Date", Rec);
+                    FandFCalc.SETTABLEVIEW(RecEmployee);
+                    FandFCalc.RUNMODAL;
                 end;
             }
             action("Submit For Approval")
@@ -362,7 +362,7 @@ page 60152 "Full and Final Journal Card"
     end;
 
     var
-        //FandFCalc: Report "Generate Full and Final Calc";
+        FandFCalc: Report "Generate Full and Final Calc";
         FSEarningCodes: Record "FS - Earning Code";
         FSBenefits: Record "FS Benefits";
         FSLoans: Record "FS Loans";

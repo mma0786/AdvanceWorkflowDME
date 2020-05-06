@@ -7,6 +7,7 @@ page 70023 "Emp. Result Table FnFCalc"
     InsertAllowed = false;
     DeleteAllowed = false;
     ModifyAllowed = false;
+    Caption = 'FnF Calc Emp. Result Table';
 
     layout
     {

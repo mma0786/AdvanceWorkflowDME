@@ -7,6 +7,7 @@ page 70021 "Emp. Earning Code List FnFCalc"
     DeleteAllowed = false;
     ModifyAllowed = false;
     InsertAllowed = false;
+    Caption = 'FnF Calc Emp. Earning Code List';
 
     layout
     {
