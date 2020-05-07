@@ -204,6 +204,7 @@ page 60074 "Leave Requests"
                 Image = ReOpen;
                 Promoted = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 ApplicationArea = All;
 
                 trigger OnAction()
@@ -224,6 +225,7 @@ page 60074 "Leave Requests"
                 Enabled = EnableLeavePost;
                 ApplicationArea = All;
                 Image = Post;
+                PromotedOnly = true;
                 Promoted = true;
                 PromotedCategory = Process;
 
@@ -309,7 +311,7 @@ page 60074 "Leave Requests"
                     PromotedCategory = Category4;
                     PromotedIsBig = true;
                     ToolTip = 'Approve the requested changes.';
-                    Visible = OpenApprovalEntriesExistForCurrUser;
+                    Enabled = OpenApprovalEntriesExistForCurrUser;
 
                     trigger OnAction()
                     var

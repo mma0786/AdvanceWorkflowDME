@@ -59,8 +59,8 @@ table 60016 "Document Request"
         field(5; "Document format ID"; Option)
         {
             Caption = 'Document format';
-            OptionCaption = ' ,Bank Transfer,US Consulate,Administrative Certificate,Administrative Certificate Arabic';
-            OptionMembers = " ","Bank Transfer","US Consulate","Administrative Certificate","Administrative Certificate Arabic";
+            OptionCaption = ' ,Bank Transfer,US Consulate,Administrative Certificate,Administrative Certificate Arabic,Leave Analysis';
+            OptionMembers = " ","Bank Transfer","US Consulate","Administrative Certificate","Administrative Certificate Arabic","Leave Analysis";
 
             trigger OnValidate()
             begin

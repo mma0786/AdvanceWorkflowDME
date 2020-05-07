@@ -192,10 +192,18 @@ table 60112 "Loan Type Setup"
     end;
 
     local procedure existLoanRequest()
+    var
+        RecHcmLoanGccErngrp: Record "HCM Loan Table GCC ErnGrp";
     begin
         LoanRequest.SETRANGE("Loan Type", "Loan Code");
         if LoanRequest.FINDFIRST then
             ERROR(Text50001, "Loan Code");
+        //Do not delete if Earning group code exits//Krishna
+        Clear(RecHcmLoanGccErngrp);
+        RecHcmLoanGccErngrp.SetRange("Loan Code", Rec."Loan Code");
+        if RecHcmLoanGccErngrp.FindFirst() then
+            Error('You cannot delete this Loan Code as it is assigned to Earning Group Code %1', RecHcmLoanGccErngrp."Earning Code Group");
+
     end;
 }
 

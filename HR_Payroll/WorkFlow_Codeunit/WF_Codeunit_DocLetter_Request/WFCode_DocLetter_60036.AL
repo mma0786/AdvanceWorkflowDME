@@ -111,9 +111,10 @@ codeunit 60036 WFCode_DocLetter
         l_ApprovalEntry.SetFilter(Status, '%1|%2', l_ApprovalEntry.Status::Open, l_ApprovalEntry.Status::Created);
         if l_ApprovalEntry.FindFirst() then begin
             DocLetterRecRec.Reset();
-            DocLetterRecRec.SetRange(RecID, ApprovalEntry."Record ID to Approve");
+            //DocLetterRecRec.SetRange(RecID, ApprovalEntry."Record ID to Approve");
+            DocLetterRecRec.SetRange("Document Request ID", ApprovalEntry."Document No.");
             if DocLetterRecRec.FindFirst() then begin
-                DocLetterRecRec."WorkFlow Status" := DocLetterRecRec."WorkFlow Status"::Rejected;
+                DocLetterRecRec."WorkFlow Status" := DocLetterRecRec."WorkFlow Status"::Open;
                 DocLetterRecRec.Modify(true);
             end;
         end;
@@ -176,8 +177,8 @@ codeunit 60036 WFCode_DocLetter
         case RecRef.Number() of
             DATABASE::"Document Request":
                 begin
-                    Message('Reject');
-                    RecRef.SetTable(DocLetterRec);
+                    //RecRef.SetTable(DocLetterRec);
+                    DocLetterRec := Variant;
                     DocLetterRec.Validate("WorkFlow Status", DocLetterRec."WorkFlow Status"::Rejected);
                     DocLetterRec.Modify();
                     Variant := DocLetterRec;
@@ -249,7 +250,8 @@ codeunit 60036 WFCode_DocLetter
                 end;
             DATABASE::"Document Request":
                 begin
-                    RecRef.SetTable(DocLetterRec);
+                    //RecRef.SetTable(DocLetterRec);
+                    DocLetterRec := Variant;
                     DocLetterRec.Validate("WorkFlow Status", DocLetterRec."WorkFlow Status"::Open);
                     DocLetterRec.Modify();
                     Variant := DocLetterRec;
@@ -383,11 +385,11 @@ codeunit 60036 WFCode_DocLetter
 
 
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Workflow Response Handling", 'OnExecuteWorkflowResponse', '', false, false)]
-    procedure ExeRespForDocLetter(var ResponseExecuted: Boolean; Variant: Variant; xVariant: Variant; ResponseWorkflowStepInstance: Record "Workflow Step Instance")
+    procedure ExeRespForDocLetter(var ResponseExecuted: Boolean; var Variant: Variant; xVariant: Variant; ResponseWorkflowStepInstance: Record "Workflow Step Instance")
     var
         WorkflowResponse: Record "Workflow Response";
     begin
-        IF WorkflowResponse.GET(ResponseWorkflowStepInstance."Function Name") THEN
+        IF WorkflowResponse.GET(ResponseWorkflowStepInstance."Function Name") THEN//Document Request
             case WorkflowResponse."Function Name" of
 
                 SetStatusToPendingApprovalCode_DocLetter():
@@ -400,7 +402,7 @@ codeunit 60036 WFCode_DocLetter
                         Release_DocLetter(Variant);
                         ResponseExecuted := true;
                     end;
-                ReOpen_DocLetterCode():
+                ReOpen_DocLetterCode()://Reject
                     begin
                         ReOpen_DocLetter(Variant);
                         ResponseExecuted := true;
@@ -423,7 +425,6 @@ codeunit 60036 WFCode_DocLetter
                 // Avinash Reject Code
                 SetStatusToReject_LT_Code_DocLetter():
                     begin
-                        Message('Workflow');
                         SetStatusToReject_LT_DocLetter(Variant);
                         ResponseExecuted := true;
                     end;

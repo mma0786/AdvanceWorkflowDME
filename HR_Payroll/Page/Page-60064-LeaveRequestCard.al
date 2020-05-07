@@ -140,7 +140,7 @@ page 60064 "Leave Request Card"
                 }
                 field("Workflow Status"; "Workflow Status")
                 {
-                    Editable = true;
+                    Editable = false;
                     ApplicationArea = All;
                 }
                 group("Resumption Details")
@@ -176,7 +176,7 @@ page 60064 "Leave Request Card"
     {
         area(processing)
         {
-            group(Approvals_1)
+            group("Request Approval")
             {
                 Caption = 'Approvals';
 
@@ -320,6 +320,7 @@ page 60064 "Leave Request Card"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
+                PromotedOnly = true;
                 Image = SaveView;
                 Visible = false;
                 trigger OnAction()
@@ -339,6 +340,7 @@ page 60064 "Leave Request Card"
                 Promoted = true;
                 PromotedCategory = Process;
                 Visible = false;
+                PromotedOnly = true;
 
                 trigger OnAction()
                 begin
@@ -354,7 +356,7 @@ page 60064 "Leave Request Card"
                 Image = Attachments;
                 Promoted = true;
                 Caption = 'Attachment';
-                //PromotedCategory = Category8;
+                PromotedCategory = Process;
                 ToolTip = 'Add a file as an attachment. You can attach images as well as documents.';
                 trigger
                 OnAction()
@@ -551,6 +553,8 @@ page 60064 "Leave Request Card"
                 AccessByPermission = TableData "Approval Entry" = R;
                 ApplicationArea = Suite;
                 Caption = 'Approvals';
+                Promoted = true;
+                PromotedCategory = Category4;
                 Image = Approvals;
                 ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
 

@@ -333,6 +333,16 @@ table 60005 "HCM Leave Types"
     fieldgroups
     {
     }
+    //Krishna
+    trigger OnDelete()
+    var
+        RecLeaveTypeErnGrp: Record "HCM Leave Types ErnGrp";
+    begin
+        Clear(RecLeaveTypeErnGrp);
+        RecLeaveTypeErnGrp.SetRange("Leave Type Id", Rec."Leave Type Id");
+        if RecLeaveTypeErnGrp.FindFirst() then
+            Error('You cannot delete this Leave Type as it is assigned to Earning Group Code %1', RecLeaveTypeErnGrp."Earning Code Group");
+    end;
 
     var
         PayrollFormula: Record "Payroll Formula";

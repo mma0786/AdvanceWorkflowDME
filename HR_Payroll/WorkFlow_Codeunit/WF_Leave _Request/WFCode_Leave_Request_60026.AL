@@ -527,7 +527,7 @@ codeunit 60026 WFCode_Leave_Request
     // // // // // //Insert Email Notification Entries End
 
 
-    //Code to Open Record from Request to Appprove page
+    //Code to Open Record from Request to Appprove page//Krishna
     [EventSubscriber(ObjectType::Codeunit, Codeunit::"Page Management", 'OnConditionalCardPageIDNotFound', '', false, false)]
     local procedure OnConditionalCardPageIDNotFound(RecordRef: RecordRef; VAR CardPageID: Integer)
     begin
@@ -536,6 +536,12 @@ codeunit 60026 WFCode_Leave_Request
                 CardPageID := Page::"Leave Request Card";
             Database::"Cancel Leave Request":
                 CardPageID := Page::"Cancel Leave Requests";
+            Database::"Duty Resumption":
+                CardPageID := Page::"Duty Resumption";
+            Database::"Document Request":
+                CardPageID := Page::"Document request Card";
+            Database::"Asset Assignment Register":
+                CardPageID := Page::"Asset Issue";
         end;
     end;
 

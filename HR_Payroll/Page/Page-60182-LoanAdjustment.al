@@ -7,6 +7,7 @@ page 60182 "Loan Adjustment"
                       ORDER(Ascending);
     ApplicationArea = All;
     UsageCategory = Documents;
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)
@@ -56,17 +57,22 @@ page 60182 "Loan Adjustment"
                     ApplicationArea = All;
                 }
             }
-
-
-            part("Loan Adjustment  Lines"; "Loan Adjustment  Lines")
+            //commented By Avinash 
+            //commented By Avinash 
+            /*
+            part(Control10; "Loan Adjustment  Lines-Old")
             {
                 Editable = "Workflow Status" = "Workflow Status"::Open;
-                SubPageLink = "Employee ID" = FIELD("Employee ID"), Loan = FIELD("Loan ID"), "Loan Request ID" = FIELD("Loan Request ID"), "Loan Adjustment ID" = FIELD("Loan Adjustment ID");
-                SubPageView = SORTING("Entry No.") ORDER(Ascending);
+                SubPageLink = Field5 = FIELD ("Employee ID"),
+                              Field3 = FIELD ("Loan ID"),
+                              Field2 = FIELD ("Loan Request ID"),
+                              Field13 = FIELD ("Loan Adjustment ID");
+                SubPageView = SORTING (Field1)
+                              ORDER(Ascending);
             }
-
-
-
+            */
+            //commented By Avinash 
+            //commented By Avinash 
         }
     }
 
@@ -139,151 +145,239 @@ page 60182 "Loan Adjustment"
 
                 end;
             }
-            action("Submit For Approval")
+            group("Request Approval")
             {
-                Caption = 'Submit For Approval';
-                Image = ReleaseDoc;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                ApplicationArea = All;
-                trigger OnAction()
-                var
-                    LoanAdjustmentHeader: Record "Loan Adjustment Header";
-                    LoanLineAmountTotalL: Decimal;
-                begin
-                    TESTFIELD("Workflow Status", "Workflow Status"::Open);
-                    TESTFIELD("Employee ID");
-                    TESTFIELD("Loan ID");
-                    TESTFIELD("Loan Request ID");
+                action("Submit For Approval")
+                {
+                    Caption = 'Submit For Approval';
+                    Image = ReleaseDoc;
+                    Promoted = true;
+                    PromotedCategory = Category9;
+                    PromotedIsBig = true;
+                    ApplicationArea = All;
+                    trigger OnAction()
+                    var
+                        LoanAdjustmentHeader: Record "Loan Adjustment Header";
+                        LoanLineAmountTotalL: Decimal;
+                    begin
+                        TESTFIELD("Workflow Status", "Workflow Status"::Open);
+                        TESTFIELD("Employee ID");
+                        TESTFIELD("Loan ID");
+                        TESTFIELD("Loan Request ID");
 
-                    CLEAR(LoanLineAmountTotalL);
-                    LoanAdjustmentLinesRecG.RESET;
-                    LoanAdjustmentLinesRecG.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
-                    LoanAdjustmentLinesRecG.SETRANGE("Loan Request ID", "Loan Request ID");
-                    LoanAdjustmentLinesRecG.SETRANGE(Loan, "Loan ID");
-                    LoanAdjustmentLinesRecG.SETRANGE("Employee ID", "Employee ID");
-                    if LoanAdjustmentLinesRecG.FINDSET then
-                        repeat
-                            LoanAdjustmentLinesRecG.TESTFIELD("Installament Date");
-                            LoanLineAmountTotalL += LoanAdjustmentLinesRecG."Principal Installment Amount";
-                        until LoanAdjustmentLinesRecG.NEXT = 0;
+                        CLEAR(LoanLineAmountTotalL);
+                        LoanAdjustmentLinesRecG.RESET;
+                        LoanAdjustmentLinesRecG.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
+                        LoanAdjustmentLinesRecG.SETRANGE("Loan Request ID", "Loan Request ID");
+                        LoanAdjustmentLinesRecG.SETRANGE(Loan, "Loan ID");
+                        LoanAdjustmentLinesRecG.SETRANGE("Employee ID", "Employee ID");
+                        if LoanAdjustmentLinesRecG.FINDSET then
+                            repeat
+                                LoanAdjustmentLinesRecG.TESTFIELD("Installament Date");
+                                LoanLineAmountTotalL += LoanAdjustmentLinesRecG."Principal Installment Amount";
+                            until LoanAdjustmentLinesRecG.NEXT = 0;
 
-                    if LoanLineAmountTotalL <> "Loan Request Amount" then
-                        ERROR('Sum of Installment Amounts %1 must be equal to Loan Amount requested %2.', LoanLineAmountTotalL, "Loan Request Amount");
+                        if LoanLineAmountTotalL <> "Loan Request Amount" then
+                            ERROR('Sum of Installment Amounts %1 must be equal to Loan Amount requested %2.', LoanLineAmountTotalL, "Loan Request Amount");
 
-                    LoanAdjustmentLines.RESET;
-                    LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
-                    LoanAdjustmentLines.SETRANGE("Loan Request ID", "Loan Request ID");
-                    LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
-                    LoanAdjustmentLines.SETRANGE("Employee ID", "Employee ID");
-                    if LoanAdjustmentLines.ISEMPTY then
-                        ERROR(Text50002);
+                        LoanAdjustmentLines.RESET;
+                        LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
+                        LoanAdjustmentLines.SETRANGE("Loan Request ID", "Loan Request ID");
+                        LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
+                        LoanAdjustmentLines.SETRANGE("Employee ID", "Employee ID");
+                        if LoanAdjustmentLines.ISEMPTY then
+                            ERROR(Text50002);
 
-                    PrincipalAmnt := 0;
-                    Installemtamnt := 0;
+                        PrincipalAmnt := 0;
+                        Installemtamnt := 0;
 
-                    LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
-                    LoanAdjustmentLines.SETRANGE("Employee ID", "Employee ID");
-                    LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
-                    LoanAdjustmentLines.SETRANGE("Loan Request ID", "Loan Request ID");
-                    if LoanAdjustmentLines.FINDSET then
-                        repeat
-                            PrincipalAmnt := PrincipalAmnt + LoanAdjustmentLines."Principal Installment Amount";
-                            Installemtamnt := Installemtamnt + LoanAdjustmentLines."Interest Installment Amount";
+                        LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
+                        LoanAdjustmentLines.SETRANGE("Employee ID", "Employee ID");
+                        LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
+                        LoanAdjustmentLines.SETRANGE("Loan Request ID", "Loan Request ID");
+                        if LoanAdjustmentLines.FINDSET then
+                            repeat
+                                PrincipalAmnt := PrincipalAmnt + LoanAdjustmentLines."Principal Installment Amount";
+                                Installemtamnt := Installemtamnt + LoanAdjustmentLines."Interest Installment Amount";
 
-                        until LoanAdjustmentLines.NEXT = 0;
+                            until LoanAdjustmentLines.NEXT = 0;
 
 
-                    LoanRequest.SETRANGE("Employee ID", "Employee ID");
-                    LoanRequest.SETRANGE("Loan Type", "Loan ID");
-                    LoanRequest.SETRANGE("Loan Request ID", "Loan Request ID");
-                    if LoanRequest.FINDFIRST then;
+                        LoanRequest.SETRANGE("Employee ID", "Employee ID");
+                        LoanRequest.SETRANGE("Loan Type", "Loan ID");
+                        LoanRequest.SETRANGE("Loan Request ID", "Loan Request ID");
+                        if LoanRequest.FINDFIRST then;
 
-                    PrincipalDiff := 0;
-                    if LoanRequest."Request Amount" <> PrincipalAmnt then begin
-                        PrincipalDiff := LoanRequest."Request Amount" - ABS(PrincipalAmnt);
-                        if ABS(PrincipalDiff) > 1 then
-                            ERROR(Text50001, LoanRequest."Request Amount", PrincipalAmnt);
+                        PrincipalDiff := 0;
+                        if LoanRequest."Request Amount" <> PrincipalAmnt then begin
+                            PrincipalDiff := LoanRequest."Request Amount" - ABS(PrincipalAmnt);
+                            if ABS(PrincipalDiff) > 1 then
+                                ERROR(Text50001, LoanRequest."Request Amount", PrincipalAmnt);
 
+                        end;
+
+                        InstDiff := 0;
+                        if LoanRequest."Total Installment Amount" <> Installemtamnt then begin
+                            InstDiff := LoanRequest."Total Installment Amount" - ABS(Installemtamnt);
+                            if ABS(InstDiff) > 1 then
+                                ERROR(Text50005, Installemtamnt, LoanRequest."Total Installment Amount");
+
+                        end;
+
+
+                        //commented By Avinash  ApprovalsMgmt.OnSendLoanAdjRequestForApproval(Rec);
+                        /*
+                        IF UserSetup.GET(USERID) THEN BEGIN
+                          ApprovalEntry.SETRANGE("Table ID",55006);
+                          ApprovalEntry.SETRANGE("Document No.","Loan Adjustment ID");
+                          ApprovalEntry.SETFILTER(Status,'%1',ApprovalEntry.Status::Approved);
+                          IF ApprovalEntry.FINDFIRST THEN BEGIN
+                             IF UserSetup."Approval Administrator" = TRUE THEN
+                                LoanAdjustmentHeader.SETRANGE("Loan Adjustment ID","Loan Adjustment ID");
+                                LoanAdjustmentHeader.SETRANGE("Loan ID","Loan ID");
+                                IF LoanAdjustmentHeader.FINDFIRST THEN BEGIN
+                                    LoanAdjustmentHeader."Workflow Status" := LoanAdjustmentHeader."Workflow Status"::Approved ;
+                                     LoanAdjustmentHeader.MODIFY;
+                                END;
+                            END;
+                          END
+                          */
+                        WFCode.IsLoan_Adj_Enabled(Rec);
+                        WFCode.OnSendLoan_Adj_Approval(Rec);
                     end;
-
-                    InstDiff := 0;
-                    if LoanRequest."Total Installment Amount" <> Installemtamnt then begin
-                        InstDiff := LoanRequest."Total Installment Amount" - ABS(Installemtamnt);
-                        if ABS(InstDiff) > 1 then
-                            ERROR(Text50005, Installemtamnt, LoanRequest."Total Installment Amount");
-
+                }
+                action("Cancel Approval Request")
+                {
+                    Caption = 'Cancel Approval Request';
+                    Image = CancelApprovalRequest;
+                    Promoted = true;
+                    PromotedCategory = Category9;
+                    ApplicationArea = All;
+                    trigger OnAction()
+                    begin
+                        TESTFIELD("Workflow Status", "Workflow Status"::"Pending For Approval");
+                        //commented By Avinash  ApprovalsMgmt.OnCancelLoanAdjApprovalRequest(Rec);
+                        WFCode.OnCancelLoan_Adj_Approval(Rec);
                     end;
-                    WFCode.IsLoan_Adj_Enabled(Rec);
-                    WFCode.OnSendLoan_Adj_Approval(Rec);
-                end;
-            }
-            action("Cancel Approval Request")
-            {
-                Caption = 'Cancel Approval Request';
-                Image = CancelApprovalRequest;
-                Promoted = true;
-                PromotedCategory = Process;
-                ApplicationArea = All;
-                trigger OnAction()
-                begin
-                    TESTFIELD("Workflow Status", "Workflow Status"::"Pending For Approval");
-                    WFCode.OnCancelLoan_Adj_Approval(Rec);
-                end;
-            }
-            action(Approvals)
-            {
-                AccessByPermission = TableData "Approval Entry" = R;
-                ApplicationArea = Suite;
-                Caption = 'Approvals';
-                Image = Approvals;
-                ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
+                }
 
-                trigger OnAction()
-                var
-                    GenJournalLine: Record "Gen. Journal Line";
-                    ApprovalsMgmt: Codeunit "Approvals Mgmt.";
-                begin
-                    ApprovalEntry.SETRANGE("Table ID", DATABASE::"Loan Adjustment Header");
-                    ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RECORDID);
-                    ApprovalEntry.SETRANGE("Related to Change", FALSE);
-                    PAGE.RUN(PAGE::"Approval Entries", ApprovalEntry);
-                end;
             }
-            action(Comments)
-            {
-                ApplicationArea = Suite;
-                Caption = 'Comments';
-                Image = ViewComments;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                Scope = Repeater;
-                ToolTip = 'View or add comments.';
 
-                trigger OnAction()
-                var
-                    ApprovalsMgmt: Codeunit "Approvals Mgmt.";
-                    RecRef: RecordRef;
-                    ApprovalEntry: Record "Approval Entry";
-                    RecID: RecordID;
-                begin
-                    RecRef.GET(Rec.RECORDID);
-                    RecID := RecRef.RECORDID;
-                    CLEAR(ApprovalsMgmt);
-                    ApprovalEntry.RESET;
-                    ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
-                    ApprovalEntry.SETRANGE("Record ID to Approve", RecRef.RECORDID);
-                    ApprovalEntry.SETRANGE("Related to Change", false);
-                    if ApprovalEntry.FINDFIRST then
-                        ApprovalsMgmt.GetApprovalCommentForWorkflowStepInstanceID(RecRef, ApprovalEntry."Workflow Step Instance ID");
-                end;
+            group(Approval)
+            {
+                Caption = 'Approval';
+                action(Approve)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Approve';
+                    Image = Approve;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    ToolTip = 'Approve the requested changes.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.ApproveRecordApprovalRequest(RECORDID);
+                    end;
+                }
+                action(Reject)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Reject';
+                    // Enabled = OpenApprovalEntriesExistForCurrUser;
+                    Image = Reject;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    ToolTip = 'Reject the approval request.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.RejectRecordApprovalRequest(RECORDID);
+                    end;
+                }
+                action(Delegate)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Delegate';
+                    // Enabled = OpenApprovalEntriesExistForCurrUser;
+                    Image = Delegate;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    ToolTip = 'Delegate the approval to a substitute approver.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.DelegateRecordApprovalRequest(RECORDID);
+                    end;
+                }
+
+                action(Approvals)
+                {
+                    AccessByPermission = TableData "Approval Entry" = R;
+                    ApplicationArea = Suite;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    Caption = 'Approvals';
+                    Image = Approvals;
+                    ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalEntry: Record "Approval Entry";
+                    begin
+                        ApprovalEntry.RESET;
+                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
+                        ApprovalEntry.SetRange("Record ID to Approve", Rec.RecID);
+                        if ApprovalEntry.FindSet() then begin
+                            PAGE.RUNMODAL(658, ApprovalEntry);
+                        end;
+                    end;
+                }
+                action(Comments)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Comments';
+                    Image = ViewComments;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    Scope = Repeater;
+                    ToolTip = 'View or add comments.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        RecRef: RecordRef;
+                        ApprovalEntry: Record "Approval Entry";
+                        RecID: RecordID;
+                    begin
+                        RecRef.GET(Rec.RECORDID);
+                        RecID := RecRef.RECORDID;
+                        CLEAR(ApprovalsMgmt);
+                        ApprovalEntry.RESET;
+                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
+                        ApprovalEntry.SETRANGE("Record ID to Approve", RecRef.RECORDID);
+                        //ApprovalEntry.SETRANGE(Status,ApprovalEntry.Status::Open);
+                        //ApprovalEntry.SETRANGE("Approver ID",USERID);
+                        ApprovalEntry.SETRANGE("Related to Change", false);
+                        if ApprovalEntry.FINDFIRST then
+                            ApprovalsMgmt.GetApprovalCommentForWorkflowStepInstanceID(RecRef, ApprovalEntry."Workflow Step Instance ID");
+                    end;
+                }
             }
             action(Reopen)
             {
                 Image = ReOpen;
                 Promoted = true;
+                PromotedOnly = true;
                 PromotedCategory = Process;
                 ApplicationArea = All;
                 trigger OnAction()
@@ -302,6 +396,7 @@ page 60182 "Loan Adjustment"
                         ERROR(Text001)
                     else
                         Rec."Workflow Status" := Rec."Workflow Status"::Open;
+                    //commented By Avinash   Reopen(Rec);
                 end;
             }
             action("Loan Request Card")
@@ -311,9 +406,10 @@ page 60182 "Loan Adjustment"
                 PromotedCategory = Process;
                 PromotedIsBig = true;
                 ApplicationArea = All;
-                RunObject = Page "Loan Request";
-                RunPageLink = "Loan Request ID" = FIELD("Loan Request ID");
-                RunPageView = SORTING("Entry No.", "Loan Request ID") ORDER(Ascending);
+                //commented By Avinash  RunObject = Page "Loan Request-Old";
+                //commented By Avinash  RunPageLink = Field2 = FIELD("Loan Request ID");
+                //commented By Avinash RunPageView = SORTING(Field1, Field2)
+                //commented By Avinash              ORDER(Ascending);
             }
         }
     }

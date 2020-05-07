@@ -5,7 +5,7 @@ page 60084 "Payroll Statements"
     SourceTable = "Payroll Statement";
     ApplicationArea = All;
     UsageCategory = Lists;
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','',Report,'',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)
@@ -108,6 +108,7 @@ page 60084 "Payroll Statements"
                 Image = Calculate;
                 Promoted = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 ApplicationArea = All;
 
                 trigger OnAction()
@@ -133,6 +134,7 @@ page 60084 "Payroll Statements"
                 Promoted = true;
                 PromotedCategory = Process;
                 ApplicationArea = All;
+                PromotedOnly = true;
 
                 trigger OnAction()
                 var
@@ -155,6 +157,7 @@ page 60084 "Payroll Statements"
                 Image = PaymentJournal;
                 ApplicationArea = All;
                 Promoted = true;
+                PromotedOnly = true;
                 PromotedCategory = Process;
                 RunObject = Page "Payroll Statement Employees";
                 RunPageLink = "Payroll Statement ID" = FIELD("Payroll Statement ID");
@@ -165,117 +168,188 @@ page 60084 "Payroll Statements"
             {
                 Image = ErrorLog;
                 Promoted = true;
+                PromotedOnly = true;
                 PromotedCategory = Process;
                 RunObject = Page "Payroll Error Log";
                 RunPageLink = "Payroll Statement ID" = FIELD("Payroll Statement ID");
                 RunPageView = SORTING("Entry No.");
                 ApplicationArea = All;
             }
-            action("Submit For Approval")
+            group("Request Approval")
             {
-                Caption = 'Submit For Approval';
-                Enabled = "Workflow Status" = "Workflow Status"::Open;
-                Image = SendApprovalRequest;
-                Promoted = true;
-                PromotedCategory = Process;
-                ApplicationArea = All;
+                action("Submit For Approval")
+                {
+                    Caption = 'Submit For Approval';
+                    Enabled = "Workflow Status" = "Workflow Status"::Open;
+                    Image = SendApprovalRequest;
+                    Promoted = true;
+                    PromotedCategory = Category9;
+                    ApplicationArea = All;
 
-                trigger OnAction()
-                var
-                    wfcode: Codeunit InitCodeunit_Payroll;
-                begin
-                    //
-                    if not CONFIRM('Do you want to Submit the Payroll Statement?') then
-                        exit;
+                    trigger OnAction()
+                    var
+                        wfcode: Codeunit InitCodeunit_Payroll;
+                    begin
+                        //
+                        if not CONFIRM('Do you want to Submit the Payroll Statement?') then
+                            exit;
 
-                    CurrPage.SETSELECTIONFILTER(PayrollStatement);
-                    if PayrollStatement.FINDFIRST then begin
-                        //SubmitLeave(FullandFinalCalculation);
-                        //commented By Avinash    if ApprovalsMgmt.CheckPayrollStatementRequestApprovalPossible(PayrollStatement) then
-                        //commented By Avinash   ApprovalsMgmt.OnSendPayrollStatementRequestForApproval(PayrollStatement);
+                        CurrPage.SETSELECTIONFILTER(PayrollStatement);
+                        if PayrollStatement.FINDFIRST then begin
+                            //SubmitLeave(FullandFinalCalculation);
+                            //commented By Avinash    if ApprovalsMgmt.CheckPayrollStatementRequestApprovalPossible(PayrollStatement) then
+                            //commented By Avinash   ApprovalsMgmt.OnSendPayrollStatementRequestForApproval(PayrollStatement);
 
-                        wfcode.IsPayrollStat_Enabled(rec);
-                        wfcode.IsPayrollStatApprovalWorkflowEnabled(Rec);
+                            wfcode.IsPayrollStat_Enabled(rec);
+                            wfcode.IsPayrollStatApprovalWorkflowEnabled(Rec);
+                        end;
+                        CurrPage.UPDATE;
                     end;
-                    CurrPage.UPDATE;
-                end;
-            }
-            action("Cancel Approval Request")
-            {
-                Caption = 'Cancel Approval Request';
-                Enabled = "Workflow Status" = "Workflow Status"::"Pending Approval";
-                Image = CancelApprovalRequest;
-                ApplicationArea = All;
-                Promoted = true;
-                PromotedCategory = Process;
+                }
+                action("Cancel Approval Request")
+                {
+                    Caption = 'Cancel Approval Request';
+                    Enabled = "Workflow Status" = "Workflow Status"::"Pending Approval";
+                    Image = CancelApprovalRequest;
+                    ApplicationArea = All;
+                    Promoted = true;
+                    PromotedCategory = Category9;
 
-                trigger OnAction()
-                var
-                    wfcode: Codeunit InitCodeunit_Payroll;
-                begin
-                    //
-                    CurrPage.SETSELECTIONFILTER(PayrollStatement);
-                    if PayrollStatement.FINDFIRST then begin
-                        PayrollStatement.TESTFIELD("Workflow Status", PayrollStatement."Workflow Status"::"Pending Approval");
-                        //commented By Avinash    ApprovalsMgmt.OnCancelPayrollStatementApprovalRequest(Rec);
-                        wfcode.OnCancelPayrollStat_Approval(Rec);
+                    trigger OnAction()
+                    var
+                        wfcode: Codeunit InitCodeunit_Payroll;
+                    begin
+                        //
+                        CurrPage.SETSELECTIONFILTER(PayrollStatement);
+                        if PayrollStatement.FINDFIRST then begin
+                            PayrollStatement.TESTFIELD("Workflow Status", PayrollStatement."Workflow Status"::"Pending Approval");
+                            //commented By Avinash    ApprovalsMgmt.OnCancelPayrollStatementApprovalRequest(Rec);
+                            wfcode.OnCancelPayrollStat_Approval(Rec);
+                        end;
+                        CurrPage.UPDATE;
                     end;
-                    CurrPage.UPDATE;
-                end;
+                }
             }
-            action(Approvals)
-            {
-                AccessByPermission = TableData "Approval Entry" = R;
-                ApplicationArea = Suite;
-                Caption = 'Approvals';
-                Image = Approvals;
-                ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
 
-                trigger OnAction()
-                var
-                    GenJournalLine: Record "Gen. Journal Line";
-                    ApprovalsMgmt: Codeunit "Approvals Mgmt.";
-                begin
-                    //commented By Avinash  ApprovalsMgmt.ShowPayrollStatementApprovalEntries(Rec);
-                end;
-            }
-            action(Comments)
+            group("Appr&oval")
             {
-                ApplicationArea = Suite;
-                Caption = 'Comments';
-                Image = ViewComments;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                Scope = Repeater;
-                ToolTip = 'View or add comments.';
+                Caption = 'Approval';
+                action(Approve)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Approve';
+                    Image = Approve;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    ToolTip = 'Approve the requested changes.';
 
-                trigger OnAction()
-                var
-                    ApprovalsMgmt: Codeunit "Approvals Mgmt.";
-                    RecRef: RecordRef;
-                    ApprovalEntry: Record "Approval Entry";
-                    RecID: RecordID;
-                begin
-                    RecRef.GET(Rec.RECORDID);
-                    RecID := RecRef.RECORDID;
-                    CLEAR(ApprovalsMgmt);
-                    ApprovalEntry.RESET;
-                    ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
-                    ApprovalEntry.SETRANGE("Record ID to Approve", RecRef.RECORDID);
-                    //ApprovalEntry.SETRANGE(Status,ApprovalEntry.Status::Open);
-                    //ApprovalEntry.SETRANGE("Approver ID",USERID);
-                    ApprovalEntry.SETRANGE("Related to Change", false);
-                    if ApprovalEntry.FINDFIRST then
-                        ApprovalsMgmt.GetApprovalCommentForWorkflowStepInstanceID(RecRef, ApprovalEntry."Workflow Step Instance ID");
-                end;
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.ApproveRecordApprovalRequest(RECORDID);
+                    end;
+                }
+                action(Reject)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Reject';
+                    // Enabled = OpenApprovalEntriesExistForCurrUser;
+                    Image = Reject;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    ToolTip = 'Reject the approval request.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.RejectRecordApprovalRequest(RECORDID);
+                    end;
+                }
+                action(Delegate)
+                {
+                    ApplicationArea = All;
+                    Caption = 'Delegate';
+                    // Enabled = OpenApprovalEntriesExistForCurrUser;
+                    Image = Delegate;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    ToolTip = 'Delegate the approval to a substitute approver.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    begin
+                        ApprovalsMgmt.DelegateRecordApprovalRequest(RECORDID);
+                    end;
+                }
+
+                action(Approvals)
+                {
+                    AccessByPermission = TableData "Approval Entry" = R;
+                    ApplicationArea = Suite;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    Caption = 'Approvals';
+                    Image = Approvals;
+                    ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalEntry: Record "Approval Entry";
+                    begin
+                        ApprovalEntry.RESET;
+                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
+                        ApprovalEntry.SetRange("Record ID to Approve", Rec.RecID);
+                        if ApprovalEntry.FindSet() then begin
+                            PAGE.RUNMODAL(658, ApprovalEntry);
+                        end;
+                    end;
+                }
+                action(Comments)
+                {
+                    ApplicationArea = Suite;
+                    Caption = 'Comments';
+                    Image = ViewComments;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    PromotedIsBig = true;
+                    Scope = Repeater;
+                    ToolTip = 'View or add comments.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        RecRef: RecordRef;
+                        ApprovalEntry: Record "Approval Entry";
+                        RecID: RecordID;
+                    begin
+                        RecRef.GET(Rec.RECORDID);
+                        RecID := RecRef.RECORDID;
+                        CLEAR(ApprovalsMgmt);
+                        ApprovalEntry.RESET;
+                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
+                        ApprovalEntry.SETRANGE("Record ID to Approve", RecRef.RECORDID);
+                        //ApprovalEntry.SETRANGE(Status,ApprovalEntry.Status::Open);
+                        //ApprovalEntry.SETRANGE("Approver ID",USERID);
+                        ApprovalEntry.SETRANGE("Related to Change", false);
+                        if ApprovalEntry.FINDFIRST then
+                            ApprovalsMgmt.GetApprovalCommentForWorkflowStepInstanceID(RecRef, ApprovalEntry."Workflow Step Instance ID");
+                    end;
+                }
             }
+
+
             action(Reopen)
             {
                 Enabled = EiditPostBool;
                 Image = ReOpen;
                 Promoted = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 ApplicationArea = All;
                 trigger OnAction()
                 begin
@@ -293,6 +367,7 @@ page 60084 "Payroll Statements"
                 Enabled = "Workflow Status" = "Workflow Status"::Approved;
                 Image = Confirm;
                 Promoted = true;
+                PromotedOnly = true;
                 PromotedCategory = Process;
                 ApplicationArea = All;
 
@@ -323,6 +398,7 @@ page 60084 "Payroll Statements"
                 Enabled = Status = Status::Confirmed;
                 Image = Post;
                 Promoted = true;
+                PromotedOnly = true;
                 PromotedCategory = Process;
                 ApplicationArea = All;
 
@@ -349,7 +425,7 @@ page 60084 "Payroll Statements"
                 Promoted = true;
                 PromotedCategory = Process;
                 ApplicationArea = All;
-
+                PromotedOnly = true;
                 trigger OnAction()
                 begin
                     //
@@ -359,8 +435,9 @@ page 60084 "Payroll Statements"
             {
                 Image = Print;
                 Promoted = true;
-                PromotedCategory = Category7;
+                PromotedCategory = Report;
                 PromotedIsBig = true;
+                PromotedOnly = true;
                 ApplicationArea = All;
 
                 trigger OnAction()
@@ -440,7 +517,7 @@ page 60084 "Payroll Statements"
         PayrollStatement: Record "Payroll Statement";
         //<LT_Sathish_04Mar2020_Dll_Error>
         // Comment - repports Contains of dll error
-        // GeneratePayrollStatement: Report "Generate Payroll Statements";
+        ////GeneratePayrollStatement: Report "Generate Payroll Statements";
         //<LT_Sathish_04Mar2020_Dll_Error>
         Statement_No: Code[10];
         PayrollStatementJV: Codeunit "Payroll Statement JV";

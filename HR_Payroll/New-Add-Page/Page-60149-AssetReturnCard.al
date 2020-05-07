@@ -1,7 +1,7 @@
 page 60149 "Asset Return"
 {
     // version LT_HRMS-P1-008,LT
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     PageType = Card;
     SourceTable = "Asset Assignment Register";
     SourceTableView = WHERE("Transaction Type" = FILTER(Return));
@@ -244,7 +244,6 @@ page 60149 "Asset Return"
                     Image = SendApprovalRequest;
                     Promoted = true;
                     PromotedCategory = Category9;
-                    PromotedOnly = true;
                     ToolTip = 'Send an approval request.';
 
                     trigger OnAction();
@@ -310,7 +309,6 @@ page 60149 "Asset Return"
                     Image = CancelApprovalRequest;
                     Promoted = true;
                     PromotedCategory = Category9;
-                    PromotedOnly = true;
                     ToolTip = 'Cancel the approval request.';
 
                     trigger OnAction();
@@ -332,16 +330,22 @@ page 60149 "Asset Return"
                 {
                     AccessByPermission = TableData "Approval Entry" = R;
                     ApplicationArea = Suite;
+                    Promoted = true;
+                    PromotedCategory = Category4;
                     Caption = 'Approvals';
                     Image = Approvals;
                     ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
 
-                    trigger OnAction();
+                    trigger OnAction()
                     var
-                        GenJournalLine: Record "Gen. Journal Line";
-                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        ApprovalEntry: Record "Approval Entry";
                     begin
-                        // // // // ApprovalsMgmt.ShowAssetReturnApprovalEntries(Rec);
+                        ApprovalEntry.RESET;
+                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
+                        ApprovalEntry.SetRange("Record ID to Approve", Rec.RecID);
+                        if ApprovalEntry.FindSet() then begin
+                            PAGE.RUNMODAL(658, ApprovalEntry);
+                        end;
                     end;
                 }
                 action(Comments)
@@ -349,10 +353,6 @@ page 60149 "Asset Return"
                     ApplicationArea = Suite;
                     Caption = 'Comments';
                     Image = ViewComments;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
-                    Scope = Repeater;
                     ToolTip = 'View or add comments.';
 
                     trigger OnAction();

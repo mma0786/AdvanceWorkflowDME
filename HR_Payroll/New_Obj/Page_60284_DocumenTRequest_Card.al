@@ -5,7 +5,7 @@ page 60284 "Document request Card"
     Caption = 'Document request Card';
     PageType = Card;
     SourceTable = "Document Request";
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)
@@ -15,6 +15,8 @@ page 60284 "Document request Card"
                 field("Document Request ID"; "Document Request ID")
                 {
 
+                    ApplicationArea = All;
+                    ShowMandatory = true;
                     trigger OnAssistEdit();
                     begin
                         if AssistEdit(xRec) then
@@ -23,37 +25,52 @@ page 60284 "Document request Card"
                 }
                 field("Employee ID"; "Employee ID")
                 {
+                    ApplicationArea = All;
+                    ShowMandatory = true;
                 }
                 field("Employee Name"; "Employee Name")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field(Addressee; Addressee)
                 {
+                    ApplicationArea = All;
+                    ShowMandatory = true;
                 }
                 field("Document format ID"; "Document format ID")
                 {
+                    ApplicationArea = All;
+                    ShowMandatory = true;
                 }
                 field("Certificate For Dependent"; "Certificate For Dependent")
                 {
+                    ApplicationArea = All;
                     Enabled = "Document format ID" = "Document format ID"::"Administrative Certificate";
                 }
                 field("Dependent Name"; "Dependent Name")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field("Document Title"; "Document Title")
                 {
                     Editable = false;
+                    ApplicationArea = All;
                 }
                 field("Request Date"; "Request Date")
                 {
+                    ApplicationArea = All;
+                    ShowMandatory = true;
                 }
                 field("Document Date"; "Document Date")
                 {
+                    ApplicationArea = All;
+                    ShowMandatory = true;
                 }
                 field("WorkFlow Status"; "WorkFlow Status")
                 {
+                    ApplicationArea = All;
                 }
             }
         }
@@ -63,23 +80,21 @@ page 60284 "Document request Card"
     {
         area(processing)
         {
-            group(Approval)
+            action(Completed)
             {
-                Caption = 'Approval';
-                action(Completed)
-                {
-                    Caption = 'Completed';
-                    Image = Email;
-                    Promoted = true;
+                Caption = 'Completed';
+                Image = Email;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedOnly = true;
 
-                    trigger OnAction();
-                    begin
-                        if "WorkFlow Status" = "WorkFlow Status"::Released then begin
-                            // Email_Confirmation.Document_Request(Rec);
-                        end else
-                            ERROR('WorkFlow status should be Approved for reopen');
-                    end;
-                }
+                trigger OnAction();
+                begin
+                    if "WorkFlow Status" = "WorkFlow Status"::Released then begin
+                        // Email_Confirmation.Document_Request(Rec);
+                    end else
+                        ERROR('WorkFlow status should be Approved for reopen');
+                end;
             }
             group(ActionGroup11)
             {
@@ -93,7 +108,6 @@ page 60284 "Document request Card"
                     PromotedCategory = Category4;
                     PromotedIsBig = true;
                     ToolTip = 'Approve the requested changes.';
-                    Visible = OpenApprovalEntriesExistForCurrUser;
 
                     trigger OnAction();
                     var
@@ -112,7 +126,6 @@ page 60284 "Document request Card"
                     PromotedCategory = Category4;
                     PromotedIsBig = true;
                     ToolTip = 'Reject the approval request.';
-                    Visible = OpenApprovalEntriesExistForCurrUser;
 
                     trigger OnAction();
                     var
@@ -130,7 +143,6 @@ page 60284 "Document request Card"
                     Promoted = true;
                     PromotedCategory = Category4;
                     ToolTip = 'Delegate the approval to a substitute approver.';
-                    Visible = OpenApprovalEntriesExistForCurrUser;
 
                     trigger OnAction();
                     var
@@ -206,11 +218,12 @@ page 60284 "Document request Card"
                     trigger OnAction();
                     var
                         ReleaseSalesDoc: Codeunit "Release Sales Document";
+                        pa: page "Requests to Approve";
                     begin
                         if "WorkFlow Status" = "WorkFlow Status"::"Pending Approval" then
-                            ERROR('WorkFlow status should be Approved for reopen');
+                            //  ERROR('WorkFlow status should be Approved for reopen');/////////
 
-                        "WorkFlow Status" := "WorkFlow Status"::Open;
+                            "WorkFlow Status" := "WorkFlow Status"::Open;
                     end;
                 }
                 action(Approvals)
@@ -225,8 +238,15 @@ page 60284 "Document request Card"
                     var
                         GenJournalLine: Record "Gen. Journal Line";
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        ApprovalEntry: Record "Approval Entry";
                     begin
-                        //   ApprovalsMgmt.ShowDocRequestApprovalEntries(Rec);
+                        // ApprovalsMgmt.ShowDocRequestApprovalEntries(Rec);
+                        //Krishna
+                        ApprovalEntry.Reset();
+                        ApprovalEntry.SETRANGE("Table ID", DATABASE::"Document Request");
+                        ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RecordId);
+                        ApprovalEntry.SETRANGE("Related to Change", FALSE);
+                        PAGE.RUN(70010, ApprovalEntry);
                     end;
                 }
                 action(Comments)
@@ -273,15 +293,23 @@ page 60284 "Document request Card"
                     Promoted = true;
 
                     trigger OnAction();
+                    var
+                        LeaveAnalysis: Report "Leave Analysis";
                     begin
-                        /*TESTFIELD("Employee ID");
+                        TESTFIELD("Employee ID");
                         TESTFIELD(Addressee);
                         TESTFIELD("Request Date");
-                        TESTFIELD("WorkFlow Status","WorkFlow Status"::Released);
-                        
+                        TESTFIELD("WorkFlow Status", "WorkFlow Status"::Released);
+
                         IF "Document format ID" = "Document format ID"::" " THEN
-                          ERROR('Select the Document format ID');
-                        */
+                            ERROR('Select the Document format ID');
+
+
+
+                        if "Document format ID" = "Document format ID"::"Leave Analysis" then begin
+                            CLEAR(LeaveAnalysis);
+                            LeaveAnalysis.Run();
+                        end;
                         /*if "Document format ID" = "Document format ID"::"Bank Transfer" then begin
                           CLEAR(Trans_SalaryRep);
                           Rec2 := Rec;

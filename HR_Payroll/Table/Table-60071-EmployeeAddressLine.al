@@ -26,12 +26,17 @@ table 60071 "Employee Address Line"
             TableRelation = "Country/Region";
 
             trigger OnValidate()
+            var
+                RecCountry: Record "Country/Region";
             begin
                 if (xRec."Country/Region Code" <> Rec."Country/Region Code") or ("Country/Region Code" = '') then begin
                     CLEAR(City);
                     CLEAR("Post Code");
                     CLEAR(State);
-
+                    //Krishna
+                    Clear(RecCountry);
+                    RecCountry.GET("Country/Region Code");
+                    "Country/Region" := RecCountry.Name;
                 end;
             end;
         }
@@ -65,7 +70,7 @@ table 60071 "Employee Address Line"
             TableRelation = IF ("Country/Region Code" = FILTER(<> '')) "Post Code" WHERE("Country/Region Code" = FIELD("Country/Region Code"));
             //This property is currently not supported
             //TestTableRelation = false;
-            ValidateTableRelation = false;
+            ValidateTableRelation = true;//Krishna//Enabled as per Issue Tracker 
 
             trigger OnValidate()
             begin
@@ -92,6 +97,22 @@ table 60071 "Employee Address Line"
         {
             Caption = 'Dependent ID';
             Editable = false;
+        }
+        //Krishna
+        field(50000; "Country/Region"; Text[50])
+        {
+            DataClassification = ToBeClassified;
+            TableRelation = "Country/Region";
+            ValidateTableRelation = false;
+            trigger OnValidate()
+            var
+                RecCountry: Record "Country/Region";
+            begin
+                Clear(RecCountry);
+                RecCountry.GET("Country/Region");
+                Validate("Country/Region Code", RecCountry.Code);
+                "Country/Region" := RecCountry.Name;
+            end;
         }
     }
 

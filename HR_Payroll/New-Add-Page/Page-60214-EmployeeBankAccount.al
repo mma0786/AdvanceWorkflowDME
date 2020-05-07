@@ -30,9 +30,9 @@ page 60214 "Employee Bank Account"
                     Visible = false;
                 }
             }
-            group("Bank Account details ")
+            group("Bank Account details")
             {
-                Caption = '"Bank Account details "';
+                Caption = 'Bank Account details';//Krishna
                 field("Routing Number Type"; "Routing Number Type")
                 {
                     ApplicationArea = ALL;

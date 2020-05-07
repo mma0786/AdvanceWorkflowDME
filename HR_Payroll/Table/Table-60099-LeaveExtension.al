@@ -429,7 +429,7 @@ table 60099 "Leave Extension"
         EmployeeInterimAccrualLines: Record "Employee Interim Accurals";
     begin
         TESTFIELD("Leave Type");
-        //TESTFIELD("Workflow Status", "Workflow Status"::Open);
+        TESTFIELD("Workflow Status", "Workflow Status"::Open);
 
         Employee.GET("Personnel Number");
 

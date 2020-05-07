@@ -127,6 +127,29 @@ page 60002 "Asset Return List"
                         ApprovalsMgmt.RejectRecordApprovalRequest(RECORDID);
                     end;
                 }
+
+                action(Approvals)
+                {
+                    AccessByPermission = TableData "Approval Entry" = R;
+                    ApplicationArea = Suite;
+                    Promoted = true;
+                    PromotedCategory = Category4;
+                    Caption = 'Approvals';
+                    Image = Approvals;
+                    ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
+
+                    trigger OnAction()
+                    var
+                        ApprovalEntry: Record "Approval Entry";
+                    begin
+                        ApprovalEntry.RESET;
+                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
+                        ApprovalEntry.SetRange("Record ID to Approve", Rec.RecID);
+                        if ApprovalEntry.FindSet() then begin
+                            PAGE.RUNMODAL(658, ApprovalEntry);
+                        end;
+                    end;
+                }
                 action(Delegate)
                 {
                     ApplicationArea = All;

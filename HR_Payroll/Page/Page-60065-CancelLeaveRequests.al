@@ -135,6 +135,7 @@ page 60065 "Cancel Leave Requests"
                 Image = ReOpen;
                 Promoted = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 ApplicationArea = All;
                 Visible = false;
 
@@ -150,6 +151,7 @@ page 60065 "Cancel Leave Requests"
                 Image = Post;
                 Promoted = true;
                 PromotedCategory = Process;
+                PromotedOnly = true;
                 ApplicationArea = All;
 
                 trigger OnAction()
@@ -168,8 +170,9 @@ page 60065 "Cancel Leave Requests"
                     Caption = 'Approve';
                     Image = Approve;
                     ToolTip = 'Approve the requested changes.';
-                    Visible = OpenApprovalEntriesExistForCurrUser;
-
+                    Enabled = OpenApprovalEntriesExistForCurrUser;
+                    Promoted = true;
+                    PromotedCategory = Category4;
                     trigger OnAction()
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
@@ -184,8 +187,8 @@ page 60065 "Cancel Leave Requests"
                     Enabled = OpenApprovalEntriesExistForCurrUser;
                     Image = Reject;
                     ToolTip = 'Reject the approval request.';
-                    Visible = OpenApprovalEntriesExistForCurrUser;
-
+                    Promoted = true;
+                    PromotedCategory = Category4;
                     trigger OnAction()
                     var
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
@@ -200,7 +203,8 @@ page 60065 "Cancel Leave Requests"
                     Enabled = OpenApprovalEntriesExistForCurrUser;
                     Image = Delegate;
                     ToolTip = 'Delegate the approval to a substitute approver.';
-                    Visible = OpenApprovalEntriesExistForCurrUser;
+                    Promoted = true;
+                    PromotedCategory = Category4;
 
                     trigger OnAction()
                     var
@@ -216,6 +220,8 @@ page 60065 "Cancel Leave Requests"
                 ApplicationArea = Suite;
                 Caption = 'Approvals';
                 Image = Approvals;
+                Promoted = true;
+                PromotedCategory = Category4;
                 ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
 
                 trigger OnAction()

@@ -21,6 +21,12 @@ page 60217 "Employee Address ListPart"
                 field("Country/Region Code"; "Country/Region Code")
                 {
                     ApplicationArea = All;
+                    Visible = false;
+                }
+                field("Country/Region"; "Country/Region")
+                {
+                    ApplicationArea = All;
+                    Caption = 'Country/Region Code';
                 }
                 field("Post Code"; "Post Code")
                 {

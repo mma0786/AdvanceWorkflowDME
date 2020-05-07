@@ -291,7 +291,7 @@ page 60147 "Asset Issue"
                     Enabled = "WorkFlow Status" = "WorkFlow Status"::Open;
                     Image = SendApprovalRequest;
                     Promoted = true;
-                    PromotedCategory = Process;
+                    PromotedCategory = Category9;
                     PromotedOnly = true;
                     ToolTip = 'Send an approval request.';
 
@@ -396,6 +396,8 @@ page 60147 "Asset Issue"
                     AccessByPermission = TableData "Approval Entry" = R;
                     ApplicationArea = Suite;
                     Caption = 'Approvals';
+                    Promoted = true;
+                    PromotedCategory = Category4;
                     Image = Approvals;
                     ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
 
@@ -420,7 +422,7 @@ page 60147 "Asset Issue"
                     ApplicationArea = Suite;
                     Caption = 'Approvals Delete';
                     Image = Delete;
-                    Visible = true;
+                    Visible = false;
 
                     trigger OnAction()
                     var
@@ -443,7 +445,7 @@ page 60147 "Asset Issue"
                     Caption = 'Comments';
                     Image = ViewComments;
                     Promoted = true;
-                    PromotedCategory = Process;
+                    PromotedCategory = Category4;
                     PromotedIsBig = true;
                     Scope = Repeater;
                     ToolTip = 'View or add comments.';

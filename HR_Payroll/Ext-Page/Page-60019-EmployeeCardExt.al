@@ -100,6 +100,7 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
             field("Employment Type"; "Employment Type")
             {
                 ApplicationArea = All;
+                ShowMandatory = true;//Krishna
             }
             field("Seperation Reason"; "Seperation Reason")
             {
@@ -191,6 +192,7 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                 field("Increment step"; "Increment step")
                 {
                     ApplicationArea = All;
+                    Visible = false;//Krishna
                 }
             }
             group(Identification)
@@ -219,6 +221,7 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
             }
             group(Contract_)
             {
+                Visible = false;//Krishna
                 Caption = 'Contract';
                 field("Contract No"; "Contract No")
                 {
@@ -686,6 +689,7 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
         TestField("Joining Date");
         TestField("Employee Religion");
         TestField(Nationality);
+        TestField("Employment Type");//Krishna
     end;
 
     trigger OnClosePage()
