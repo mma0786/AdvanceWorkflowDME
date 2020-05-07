@@ -56,22 +56,17 @@ page 60182 "Loan Adjustment"
                     ApplicationArea = All;
                 }
             }
-            //commented By Avinash 
-            //commented By Avinash 
-            /*
-            part(Control10; "Loan Adjustment  Lines-Old")
+
+
+            part("Loan Adjustment  Lines"; "Loan Adjustment  Lines")
             {
                 Editable = "Workflow Status" = "Workflow Status"::Open;
-                SubPageLink = Field5 = FIELD ("Employee ID"),
-                              Field3 = FIELD ("Loan ID"),
-                              Field2 = FIELD ("Loan Request ID"),
-                              Field13 = FIELD ("Loan Adjustment ID");
-                SubPageView = SORTING (Field1)
-                              ORDER(Ascending);
+                SubPageLink = "Employee ID" = FIELD("Employee ID"), Loan = FIELD("Loan ID"), "Loan Request ID" = FIELD("Loan Request ID"), "Loan Adjustment ID" = FIELD("Loan Adjustment ID");
+                SubPageView = SORTING("Entry No.") ORDER(Ascending);
             }
-            */
-            //commented By Avinash 
-            //commented By Avinash 
+
+
+
         }
     }
 
@@ -220,25 +215,6 @@ page 60182 "Loan Adjustment"
                             ERROR(Text50005, Installemtamnt, LoanRequest."Total Installment Amount");
 
                     end;
-
-
-                    //commented By Avinash  ApprovalsMgmt.OnSendLoanAdjRequestForApproval(Rec);
-                    /*
-                    IF UserSetup.GET(USERID) THEN BEGIN
-                      ApprovalEntry.SETRANGE("Table ID",55006);
-                      ApprovalEntry.SETRANGE("Document No.","Loan Adjustment ID");
-                      ApprovalEntry.SETFILTER(Status,'%1',ApprovalEntry.Status::Approved);
-                      IF ApprovalEntry.FINDFIRST THEN BEGIN
-                         IF UserSetup."Approval Administrator" = TRUE THEN
-                            LoanAdjustmentHeader.SETRANGE("Loan Adjustment ID","Loan Adjustment ID");
-                            LoanAdjustmentHeader.SETRANGE("Loan ID","Loan ID");
-                            IF LoanAdjustmentHeader.FINDFIRST THEN BEGIN
-                                LoanAdjustmentHeader."Workflow Status" := LoanAdjustmentHeader."Workflow Status"::Approved ;
-                                 LoanAdjustmentHeader.MODIFY;
-                            END;
-                        END;
-                      END
-                      */
                     WFCode.IsLoan_Adj_Enabled(Rec);
                     WFCode.OnSendLoan_Adj_Approval(Rec);
                 end;
@@ -253,7 +229,6 @@ page 60182 "Loan Adjustment"
                 trigger OnAction()
                 begin
                     TESTFIELD("Workflow Status", "Workflow Status"::"Pending For Approval");
-                    //commented By Avinash  ApprovalsMgmt.OnCancelLoanAdjApprovalRequest(Rec);
                     WFCode.OnCancelLoan_Adj_Approval(Rec);
                 end;
             }
@@ -270,7 +245,10 @@ page 60182 "Loan Adjustment"
                     GenJournalLine: Record "Gen. Journal Line";
                     ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                 begin
-                    //commented By Avinash  ApprovalsMgmt.ShowLoanAdjApprovalEntries(Rec);
+                    ApprovalEntry.SETRANGE("Table ID", DATABASE::"Loan Adjustment Header");
+                    ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RECORDID);
+                    ApprovalEntry.SETRANGE("Related to Change", FALSE);
+                    PAGE.RUN(PAGE::"Approval Entries", ApprovalEntry);
                 end;
             }
             action(Comments)
@@ -297,8 +275,6 @@ page 60182 "Loan Adjustment"
                     ApprovalEntry.RESET;
                     ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
                     ApprovalEntry.SETRANGE("Record ID to Approve", RecRef.RECORDID);
-                    //ApprovalEntry.SETRANGE(Status,ApprovalEntry.Status::Open);
-                    //ApprovalEntry.SETRANGE("Approver ID",USERID);
                     ApprovalEntry.SETRANGE("Related to Change", false);
                     if ApprovalEntry.FINDFIRST then
                         ApprovalsMgmt.GetApprovalCommentForWorkflowStepInstanceID(RecRef, ApprovalEntry."Workflow Step Instance ID");
@@ -326,7 +302,6 @@ page 60182 "Loan Adjustment"
                         ERROR(Text001)
                     else
                         Rec."Workflow Status" := Rec."Workflow Status"::Open;
-                    //commented By Avinash   Reopen(Rec);
                 end;
             }
             action("Loan Request Card")
@@ -336,10 +311,9 @@ page 60182 "Loan Adjustment"
                 PromotedCategory = Process;
                 PromotedIsBig = true;
                 ApplicationArea = All;
-                //commented By Avinash  RunObject = Page "Loan Request-Old";
-                //commented By Avinash  RunPageLink = Field2 = FIELD("Loan Request ID");
-                //commented By Avinash RunPageView = SORTING(Field1, Field2)
-                //commented By Avinash              ORDER(Ascending);
+                RunObject = Page "Loan Request";
+                RunPageLink = "Loan Request ID" = FIELD("Loan Request ID");
+                RunPageView = SORTING("Entry No.", "Loan Request ID") ORDER(Ascending);
             }
         }
     }

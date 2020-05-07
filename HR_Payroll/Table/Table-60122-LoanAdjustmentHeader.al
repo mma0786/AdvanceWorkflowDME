@@ -17,16 +17,7 @@ table 60122 "Loan Adjustment Header"
                     IF PAGE.RUNMODAL(0, Employee) = ACTION::LookupOK THEN BEGIN
                         "Employee ID" := Employee."No.";
                         "Employee Name" := Employee."First Name" + Employee."Middle Name" + Employee."Last Name";
-                    end
-
-                    /*
-
-                    IF PAGE.RUNMODAL(0,Employee) = ACTION::LookupOK THEN BEGIN
-                       "Employee ID" := Employee."No.";
-                       "Employee Name" := Employee."First Name" + Employee."Middle Name" + Employee."Last Name";
-                      END
-
-                    */
+                    end;
 
                 end;
             end;

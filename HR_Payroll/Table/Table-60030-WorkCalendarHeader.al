@@ -201,6 +201,7 @@ table 60030 "Work Calendar Header"
                 if EmployeeWorkDate_GCC.FINDFIRST then
                     repeat
                         EmployeeWorkDate_GCC."Calculation Type" := WorkCalendarDate."Calculation Type";
+                        EmployeeWorkDate_GCC.Remarks := WorkCalendarDate.Remarks;
                         EmployeeWorkDate_GCC.MODIFY;
                     until EmployeeWorkDate_GCC.NEXT = 0;
                 WorkCalendarDate."Has Changed" := false;

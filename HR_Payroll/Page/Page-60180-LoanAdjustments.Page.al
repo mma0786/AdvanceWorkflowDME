@@ -1,15 +1,15 @@
 page 60180 "Loan Adjustments"
 {
-    //commented By Avinash   CardPageID = "Loan Adjustment-Old";
+    CardPageID = "Loan Adjustment";
     Caption = 'Loan Adjustment';
-    //Editable = false;
+    Editable = false;
     PageType = List;
     RefreshOnActivate = true;
     SourceTable = "Loan Adjustment Header";
     SourceTableView = SORTING("Loan Adjustment ID") ORDER(Ascending);
     ApplicationArea = All;
     UsageCategory = Lists;
-    CardPageId = "Loan Adjustment";
+
     layout
     {
         area(content)

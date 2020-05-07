@@ -53,6 +53,9 @@ table 60033 EmployeeWorkDate_GCC
         {
             TableRelation = "Work Calendar Header";
         }
+        field(131; Remarks; Text[100])
+        {
+        }
     }
 
     keys

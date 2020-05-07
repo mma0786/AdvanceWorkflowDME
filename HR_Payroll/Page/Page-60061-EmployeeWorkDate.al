@@ -84,6 +84,12 @@ page 60061 "Employee Work Dates" //commented By Avinash
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field(Remarks; Remarks)
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
+
             }
         }
     }
