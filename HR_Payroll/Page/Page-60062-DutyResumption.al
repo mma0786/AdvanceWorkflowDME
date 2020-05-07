@@ -43,8 +43,9 @@ page 60062 "Duty Resumption"
                         if LeaveReqLines.FINDSET then
                             LeaveReqLines.DELETEALL;
 
-                        if "Resumption Date" = 0D then
+                        if "Resumption Date" = 0D then begin
                             ExtensionLineVisible := false;
+                        end;
 
                         if "Resumption Date" >= "End Date" + 2 then begin
                             ExtensionLineVisible := true;
@@ -52,7 +53,6 @@ page 60062 "Duty Resumption"
                             LeaveReqLines.VALIDATE("Leave Request ID", "Leave Request ID");
                             LeaveReqLines."Line No" += LeaveReqLines."Line No" + 1000;
                             LeaveReqLines.VALIDATE("Personnel Number", "Personnel Number");
-
                             LeaveReqLines.VALIDATE("Start Date", Rec."End Date" + 1);
                             LeaveReqLines.VALIDATE("End Date", Rec."Resumption Date" - 1);
                             LeaveReqLines."Created By" := USERID;
@@ -60,7 +60,7 @@ page 60062 "Duty Resumption"
                             LeaveReqLines."Created Date" := TODAY;
                             LeaveReqLines."Submission Date" := TODAY;
                             LeaveReqLines."Workflow Status" := LeaveReqLines."Workflow Status"::Open;
-                            LeaveReqLines.INSERT;
+                            LeaveReqLines.INSERT(true);
                         end else
                             ExtensionLineVisible := false;
                     end;
@@ -82,7 +82,7 @@ page 60062 "Duty Resumption"
                 ApplicationArea = All;
                 SubPageLink = "Leave Request ID" = FIELD("Leave Request ID"), "Personnel Number" = field("Personnel Number");
                 SubPageView = SORTING("Leave Request ID", "Line No") ORDER(Ascending);
-                // Visible = ExtensionLineVisible;
+                Visible = ExtensionLineVisible;
             }
         }
         area(factboxes)
@@ -216,6 +216,8 @@ page 60062 "Duty Resumption"
 
     trigger OnOpenPage()
     begin
+
+
         SetControlVisibility;
     end;
 

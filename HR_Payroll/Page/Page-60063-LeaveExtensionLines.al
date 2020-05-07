@@ -32,6 +32,11 @@ page 60063 "Leave Extension Lines"
                     ApplicationArea = All;
                     Editable = false;
                 }
+                field("Workflow Status"; "Workflow Status")
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
                 field("Leave Type"; "Leave Type")
                 {
                     ApplicationArea = All;

@@ -5,6 +5,12 @@ page 60005 "Earning Code Groups"
     SourceTable = "Earning Code Groups";
     UsageCategory = Administration;
     ApplicationArea = All;
+    // Start 07.05.2020 @Avinash
+    // Editable = false;
+    // DeleteAllowed = false;
+    // InsertAllowed = false;
+    // ModifyAllowed = false;
+    // Stop 07.05.2020 @Avinash
 
     layout
     {
@@ -48,6 +54,7 @@ page 60005 "Earning Code Groups"
                 {
                     ApplicationArea = All;
                 }
+
             }
         }
     }

@@ -400,6 +400,26 @@ table 60015 "Employee Dependents Master"
         {
             Description = 'P_2';
         }
+        field(34; "Religion"; Code[20])
+        {
+            TableRelation = "Payroll Religion";
+            trigger OnValidate()
+            var
+                ReliginRec: Record "Payroll Religion";
+            begin
+                if (Religion = '') and (xRec.Religion <> Rec.Religion) then
+                    Clear("Religion Desciption");
+
+                ReliginRec.Reset();
+                if ReliginRec.Get(Religion) then
+                    "Religion Desciption" := ReliginRec.Description;
+
+            end;
+        }
+        field(35; "Religion Desciption"; Text[120])
+        {
+            Editable = false;
+        }
     }
 
     keys

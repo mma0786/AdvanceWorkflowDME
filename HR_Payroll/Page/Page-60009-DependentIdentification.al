@@ -63,6 +63,7 @@ page 60009 "Dependent Identification"
                 field("Issue Date (Hijiri)"; "Issue Date (Hijiri)")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Expiry Date"; "Expiry Date")
                 {
@@ -72,6 +73,7 @@ page 60009 "Dependent Identification"
                 field("Expiry Date (Hijiri)"; "Expiry Date (Hijiri)")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
             }
         }

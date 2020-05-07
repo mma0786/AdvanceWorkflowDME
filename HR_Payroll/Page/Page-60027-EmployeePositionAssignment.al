@@ -37,7 +37,10 @@ page 60027 "Employee Position Assignments"//commented By Avinash
                     Editable = false;
 
                     trigger OnValidate()
+
                     begin
+
+
                         if "Is Primary Position" then begin
                             EmployeePostionAssingment.RESET;
                             EmployeePostionAssingment.SETRANGE("Position ID", Rec."Position ID");
@@ -94,7 +97,15 @@ page 60027 "Employee Position Assignments"//commented By Avinash
                 PromotedIsBig = true;
 
                 trigger OnAction()
+                var
+                    AdvacePayrollSetupRecL: Record "Advance Payroll Setup";
                 begin
+                    // Start 07.05.2020 @Avinash
+                    AdvacePayrollSetupRecL.Reset();
+                    AdvacePayrollSetupRecL.Get();
+                    AdvacePayrollSetupRecL.TestField("Accrual Effective Start Date");
+                    // Stop 07.05.2020 @Avinash
+
                     if not CONFIRM('Do you want to assign primary position ?') then
                         exit;
                     CurrPage.SETSELECTIONFILTER(PositionWorkerAssignment);

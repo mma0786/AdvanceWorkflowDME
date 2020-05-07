@@ -295,6 +295,10 @@ tableextension 60014 EmployeeExt extends Employee
 
             Editable = false;
         }
+        field(60052; "Blood Group"; Option)
+        {
+            OptionMembers = " ","O−","O+","A−","A+","B−","B+","AB−","AB+";
+        }
         modify("First Name")
         {
             trigger OnAfterValidate()
@@ -309,7 +313,28 @@ tableextension 60014 EmployeeExt extends Employee
                 "Search Name" := Initials + ' ' + "First Name" + ' ' + "Middle Name" + ' ' + "Last Name";
             end;
         }
+        modify("Birth Date")
+        {
+            trigger OnAfterValidate()
+            var
+            begin
+                CLEAR(Age);
+                Age := -("Birth Date" - TODAY);
+                VALIDATE("Age As Of Date", FORMAT(ROUND(Age / 365.27)));
+            end;
+        }
     }
+    trigger OnBeforeDelete()
+    var
+        EmpPos: Record "Payroll Job Pos. Worker Assign";
+    begin
+        EmpPos.Reset();
+        EmpPos.SetRange(Worker, "No.");
+        EmpPos.SetRange("Is Primary Position", true);
+        if EmpPos.FindFirst() then
+            Error('Primary Position already been assigned to the Employee, Cannot be deleted.');
+
+    end;
 
 
 

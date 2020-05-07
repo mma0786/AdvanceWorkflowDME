@@ -35,6 +35,10 @@ page 50050 "Employee Contacts SubPage"
                 {
                     ApplicationArea = All;
                 }
+                field("Emergency Contact"; "Emergency Contact")
+                {
+                    ApplicationArea = All;
+                }
             }
         }
     }

@@ -140,7 +140,7 @@ page 60064 "Leave Request Card"
                 }
                 field("Workflow Status"; "Workflow Status")
                 {
-                    Editable = false;
+                    Editable = true;
                     ApplicationArea = All;
                 }
                 group("Resumption Details")
@@ -242,17 +242,23 @@ page 60064 "Leave Request Card"
                     trigger OnAction()
                     var
                         INitWf: Codeunit InitCodeunit_Leave_Request;
+                        DutyResumption: Record "Duty Resumption";
                     begin
 
                         CurrPage.SETSELECTIONFILTER(LeaveRequestHeader);
                         if LeaveRequestHeader.FINDFIRST then begin
                             if LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved then
                                 ERROR('You cannot cancel approved leaves');
+
+                            DutyResumption.Reset();
+                            DutyResumption.SetRange("Leave Request ID", "Leave Request ID");
+                            if DutyResumption.FindFirst() then
+                                if (DutyResumption."Workflow Status" = DutyResumption."Workflow Status"::"Pending Approval") or (DutyResumption."Workflow Status" = DutyResumption."Workflow Status"::Released) then
+                                    Error('You cannot cancel approved leaves');
+
                             INitWf.OnCancel_LeaveReq_Approval(rec);
-                            //commented By Avinash    ApprovalsMgmt.OnCancelLeaveApprovalRequest(LeaveRequestHeader);
-                            // Start #Levtech WF
                             CancelAndDeleteApprovalEntryTrans_LT(Rec.RecordId);
-                            // Stop #Levtech WF
+
                         end;
                     end;
                 }

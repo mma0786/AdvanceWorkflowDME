@@ -44,6 +44,10 @@ table 60074 "Employee Contacts Line"
         {
             Caption = 'Dependent ID';
         }
+        field(12; "Emergency Contact"; Boolean)
+        {
+
+        }
     }
 
     keys

@@ -133,6 +133,14 @@ page 60023 "Employee Dependent Card1"
                     Editable = false;
                     Visible = false;
                 }
+                field(Religion; Religion)
+                {
+                    ApplicationArea = All;
+                }
+                field("Religion Desciption"; "Religion Desciption")
+                {
+                    ApplicationArea = All;
+                }
             }
             part("Dependent Address"; "Dependent Address ListPart1")
             {

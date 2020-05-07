@@ -104,6 +104,7 @@ page 60020 "Employee Identification Card"
                 field("Issue Date (Hijiri)"; "Issue Date (Hijiri)")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Expiry Date"; "Expiry Date")
                 {
@@ -116,6 +117,7 @@ page 60020 "Employee Identification Card"
                 field("Expiry Date (Hijiri)"; "Expiry Date (Hijiri)")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Active Document"; "Active Document")
                 {

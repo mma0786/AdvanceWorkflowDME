@@ -2,13 +2,8 @@ page 60021 "Dependent Identification Card1"
 {
     PageType = Card;
     SourceTable = "Identification Master";
-    //commented By Avinash
-    SourceTableView = SORTING("Employee No.")
-                      ORDER(Ascending)
-                      WHERE("Document Type" = CONST(Dependent));
-    //commented By Avinash
+    SourceTableView = SORTING("Employee No.") ORDER(Ascending) WHERE("Document Type" = CONST(Dependent));
     UsageCategory = Administration;
-    // ApplicationArea = All;
 
     layout
     {
@@ -104,6 +99,7 @@ page 60021 "Dependent Identification Card1"
                 field("Issue Date (Hijiri)"; "Issue Date (Hijiri)")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Expiry Date"; "Expiry Date")
                 {
@@ -117,10 +113,12 @@ page 60021 "Dependent Identification Card1"
                 field("Expiry Date (Hijiri)"; "Expiry Date (Hijiri)")
                 {
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Active Document"; "Active Document")
                 {
                     ApplicationArea = All;
+                    Editable = true;
                 }
             }
         }

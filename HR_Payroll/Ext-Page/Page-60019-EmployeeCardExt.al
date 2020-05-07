@@ -26,13 +26,15 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
 
             field("Joining Date"; "Joining Date")
             {
-                //Editable = EditAssignPosition;
+                Editable = EditAssignPosition;
                 ShowMandatory = true;
                 ApplicationArea = All;
+
             }
             field("Joining Date - Hijiri"; "D.O.J Hijiri")
             {
                 ApplicationArea = All;
+                Visible = false;
             }
             field("Probation Period"; "Probation Period")
             {
@@ -56,6 +58,10 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
             field(HOD; HOD)
             {
                 Editable = false;
+                ApplicationArea = All;
+            }
+            field("Blood Group"; "Blood Group")
+            {
                 ApplicationArea = All;
             }
 
@@ -120,6 +126,7 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
             field("Job Title as per Iqama"; "Job Title as per Iqama")
             {
                 ApplicationArea = All;
+
             }
             field("Sector ID"; "Sector ID")
             {
@@ -151,6 +158,7 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
             field("Birth Date - Hijiri"; "B.O.D Hijiri")
             {
                 ApplicationArea = All;
+                Visible = false;
             }
             field("Age As Of Date"; "Age As Of Date")
             {
@@ -230,6 +238,23 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
         {
             Visible = false;
         }
+        modify("Job Title")
+        {
+            Editable = false;
+        }
+        modify("Employment Date")
+        {
+            ShowMandatory = true;
+        }
+        modify(Gender)
+        {
+            ShowMandatory = true;
+        }
+        modify("Birth Date")
+        {
+            ShowMandatory = true;
+        }
+
 
 
     }
@@ -370,8 +395,8 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                         PromotedCategory = Process;
                         PromotedIsBig = true;
                         ApplicationArea = All;
-                        RunObject = Page "Earning Code Groups";
-                        RunPageLink = "Earning Code Group" = FIELD("Earning Code Group");
+                        RunObject = Page "Employee Earning Code Groups";
+                        RunPageLink = "Earning Code Group" = FIELD("Earning Code Group"), "Employee Code" = field("No.");
                     }
                     action("Earning Code")
                     {
@@ -625,6 +650,15 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
             COMMIT;
         END;
         //LT_05052019 <<
+        // Start 07.05.2020 @Avinash
+        CLEAR("Age As Of Date");
+        CLEAR(Age);
+        IF "Birth Date" <> 0D THEN BEGIN
+            Age := -("Birth Date" - TODAY);
+            IF Age <> 0 THEN
+                "Age As Of Date" := FORMAT(ROUND((Age / 365.27), 0.1));
+        END;
+        // Stop 07.05.2020 @Avinash
     end;
 
     trigger OnOpenPage()

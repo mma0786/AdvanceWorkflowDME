@@ -274,7 +274,7 @@ table 60040 "Leave Request Header"
         }
         field(18; "Workflow Status"; Option)
         {
-            Editable = false;
+            //Editable = false;
             OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
             OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
         }
@@ -615,6 +615,11 @@ table 60040 "Leave Request Header"
         l_LeaveType: Record "HCM Leave Types Wrkr";
         TotalLeaveDays: Decimal;
         DocumentAttachmentRecL: Record "Document Attachment";
+        LeaveDateStartYear: Date;
+        LeaveDateEndYear: Date;
+        AccCompEmployeeRecL: Record "Accrual Components Employee";
+        EmployeeInterimAccuralsRecL: Record "Employee Interim Accurals";
+        LastYearStartDate: date;
     begin
         TESTFIELD("Leave Type");
         TESTFIELD("Workflow Status", "Workflow Status"::Open);
@@ -641,180 +646,251 @@ table 60040 "Leave Request Header"
             end;
 
             if l_LeaveType."Accrual ID" = '' then begin
-                AccountingPeriod.RESET;
-                AccountingPeriod.SETRANGE("New Fiscal Year", true);
-                AccountingPeriod.SETFILTER("Starting Date", '>=%1', "Start Date");
-                if AccountingPeriod.FINDLAST then begin
-                    TotalLeaveDays := 0;
-                    LeaveRequestHeader.RESET;
-                    LeaveRequestHeader.SETCURRENTKEY("Personnel Number", "Leave Request ID", "Leave Type", "Start Date", "Leave Cancelled", "Workflow Status");
-                    LeaveRequestHeader.SETRANGE("Personnel Number", "Personnel Number");
-                    LeaveRequestHeader.SETFILTER("Leave Request ID", '<>%1', "Leave Request ID");
-                    LeaveRequestHeader.SETRANGE("Leave Type", "Leave Type");
-                    //////--comment by Avinash LeaveRequestHeader.SETRANGE("Start Date", AccountingPeriod."Starting Date", '12319999D');
-                    AdvancePayrollSetup.GET;
-                    LeaveRequestHeader.SETRANGE("Start Date", AdvancePayrollSetup."Leave Period Start Date", AdvancePayrollSetup."Leave Period End Date");
-                    LeaveRequestHeader.SETRANGE("Leave Cancelled", false);
-                    LeaveRequestHeader.SETFILTER("Workflow Status", '<>%1', LeaveRequestHeader."Workflow Status"::Rejected);
-                    if LeaveRequestHeader.FINDFIRST then
-                        repeat
-                            TotalLeaveDays += LeaveRequestHeader."Leave Days";
-                        until LeaveRequestHeader.NEXT = 0;
-                    if TotalLeaveDays > l_LeaveType."Entitlement Days" then
-                        ERROR('You Cannot apply leaves more than entitlement days in current period');
+                if not l_LeaveType."Allow Negative" then begin
+                    CLEAR(LeaveDateStartYear);
+                    CLEAR(LeaveDateEndYear);
+                    LeaveDateStartYear := CALCDATE('-CY', "Start Date");
+                    LeaveDateEndYear := CALCDATE('CY', "Start Date");
+                    AccountingPeriod.RESET;
+                    AccountingPeriod.SETRANGE("New Fiscal Year", TRUE);
+                    AccountingPeriod.SETFILTER("Starting Date", '>=%1', "Start Date");
+                    IF AccountingPeriod.FINDLAST THEN BEGIN
+                        TotalLeaveDays := 0;
+                        LeaveRequestHeader.RESET;
+                        LeaveRequestHeader.SETCURRENTKEY("Personnel Number", "Leave Request ID", "Leave Type", "Start Date", "Leave Cancelled", "Workflow Status");
+                        LeaveRequestHeader.SETRANGE("Personnel Number", "Personnel Number");
+                        //LeaveRequestHeader.SETFILTER("Leave Request ID",'<>%1',"Leave Request ID");
+                        LeaveRequestHeader.SETRANGE("Leave Type", "Leave Type");
+                        //LeaveRequestHeader.SETRANGE("Start Date",AccountingPeriod."Starting Date",12319999D);
+                        //AdvancePayrollSetup.GET;
+                        LeaveRequestHeader.SETRANGE("Start Date", LeaveDateStartYear, LeaveDateEndYear);
+                        LeaveRequestHeader.SETRANGE("Leave Cancelled", FALSE);
+                        LeaveRequestHeader.SETFILTER("Workflow Status", '<>%1', LeaveRequestHeader."Workflow Status"::Rejected);
+                        IF LeaveRequestHeader.FINDFIRST THEN
+                            REPEAT
+                                TotalLeaveDays += LeaveRequestHeader."Leave Days";
+                            UNTIL LeaveRequestHeader.NEXT = 0;
+                        IF TotalLeaveDays > l_LeaveType."Entitlement Days" THEN
+                            ERROR('You Cannot apply leaves more than entitlement days in current period');
 
+                    end;
                 end;
             end;
-
-            Employee.GET("Personnel Number");
-            if not (l_LeaveType.Gender = l_LeaveType.Gender::" ") then
-                if l_LeaveType.Gender <> Employee.Gender then
-                    ERROR('This leave is for Gender %1', l_LeaveType.Gender);
-
-            if l_LeaveType."Marital Status" <> '' then
-                if l_LeaveType."Marital Status" <> Employee."Marital Status" then
-                    ERROR('This leave is only for employees with Marital Status %1', l_LeaveType."Marital Status");
-
-            if l_LeaveType.Nationality <> '' then
-                if l_LeaveType.Nationality <> Employee.Nationality then
-                    ERROR('This leave %1 is only for %2 Nationality', "Leave Type", l_LeaveType.Nationality);
-
-            if l_LeaveType."Religion ID" <> '' then
-                if l_LeaveType."Religion ID" <> Employee."Employee Religion" then
-                    ERROR('This leave %1 can be applied only by the religion %2', "Leave Type", l_LeaveType."Religion ID");
-
-
+            //####################################################
             if l_LeaveType."Accrual ID" <> '' then begin
-                EmployeeInterimAccruals.RESET;
-                EmployeeInterimAccruals.SETRANGE("Worker ID", Rec."Personnel Number");
-                EmployeeInterimAccruals.SETRANGE("Start Date", CALCDATE('-CM', Rec."Start Date"));
-                if not EmployeeInterimAccruals.FINDFIRST then
-                    ERROR('There is no Employee Interim Accruals defined for this employee');
-            end;
-            Employee.GET("Personnel Number");
-            Employee.TESTFIELD("Joining Date");
+                CLEAR(LeaveDateStartYear);
+                CLEAR(LeaveDateEndYear);
 
-            l_LeaveType.TESTFIELD(Active, true);
-            if Employee."Termination Date" <> 0D then begin
-                if (Employee."Termination Date" < "Start Date") or (Employee."Termination Date" <= "End Date") then
-                    ERROR('You Cannot apply leave after employees termination');
-            end;
+                LeaveDateStartYear := CALCDATE('-CM', "Start Date");
+                LeaveDateEndYear := CALCDATE('CM', "Start Date");
 
-            if Employee."Joining Date" > Rec."Start Date" then
-                ERROR('You cannot apply leaves before joining date %1', Employee."Joining Date");
+                AccCompEmployeeRecL.Reset();
+                AccCompEmployeeRecL.SetRange("Worker ID", "Personnel Number");
+                AccCompEmployeeRecL.SetRange("Accrual ID", l_LeaveType."Accrual ID");
+                if AccCompEmployeeRecL.FindFirst() then begin
+                    if NOT AccCompEmployeeRecL."Allow Negative" then begin
+                        EmployeeInterimAccuralsRecL.Reset();
+                        EmployeeInterimAccuralsRecL.SetRange("Accrual ID", AccCompEmployeeRecL."Accrual ID");
+                        EmployeeInterimAccuralsRecL.SetRange("Start Date", LeaveDateStartYear, LeaveDateEndYear);
+                        if EmployeeInterimAccuralsRecL.FindFirst() then begin
+                            TotalLeaveDays := 0;
+                            LeaveRequestHeader.RESET;
+                            LeaveRequestHeader.SETCURRENTKEY("Personnel Number", "Leave Request ID", "Leave Type", "Start Date", "Leave Cancelled", "Workflow Status");
+                            LeaveRequestHeader.SETRANGE("Personnel Number", "Personnel Number");
+                            LeaveRequestHeader.SETRANGE("Leave Type", "Leave Type");
+                            LeaveRequestHeader.SETRANGE("Start Date", LeaveDateStartYear, LeaveDateEndYear);
+                            LeaveRequestHeader.SETRANGE("Leave Cancelled", FALSE);
+                            LeaveRequestHeader.SETFILTER("Workflow Status", '<>%1', LeaveRequestHeader."Workflow Status"::Rejected);
+                            IF LeaveRequestHeader.FINDFIRST THEN
+                                REPEAT
+                                    TotalLeaveDays += LeaveRequestHeader."Leave Days";
+                                UNTIL LeaveRequestHeader.NEXT = 0;
+                            if TotalLeaveDays > EmployeeInterimAccuralsRecL."Closing Balance" then
+                                Error('Cannot Apply more than total Leaves Days.');
+                        end;
+                    end else begin
+                        CLEAR(LeaveDateStartYear);
+                        CLEAR(LeaveDateEndYear);
+                        LeaveDateStartYear := CALCDATE('-CY', "Start Date");
+                        LeaveDateEndYear := CALCDATE('CY', "Start Date");
+                        LastYearStartDate := CALCDATE('-CM', LeaveDateEndYear);
 
-            if l_LeaveType."Leave Avail Basis" = l_LeaveType."Leave Avail Basis"::"Probation End Date" then
-                if Rec."Start Date" < Employee."Probation Period" then
-                    ERROR('You cannot apply leave before probation period ends');
+                        EmployeeInterimAccuralsRecL.Reset();
+                        EmployeeInterimAccuralsRecL.SetRange("Accrual ID", AccCompEmployeeRecL."Accrual ID");
+                        EmployeeInterimAccuralsRecL.SetRange("Start Date", LastYearStartDate, LeaveDateEndYear);
+                        if EmployeeInterimAccuralsRecL.FindFirst() then begin
+                            TotalLeaveDays := 0;
+                            LeaveRequestHeader.RESET;
+                            LeaveRequestHeader.SETCURRENTKEY("Personnel Number", "Leave Request ID", "Leave Type", "Start Date", "Leave Cancelled", "Workflow Status");
+                            LeaveRequestHeader.SETRANGE("Personnel Number", "Personnel Number");
+                            LeaveRequestHeader.SETRANGE("Leave Type", "Leave Type");
+                            LeaveRequestHeader.SETRANGE("Start Date", LeaveDateStartYear, LeaveDateEndYear);
+                            LeaveRequestHeader.SETRANGE("Leave Cancelled", FALSE);
+                            LeaveRequestHeader.SETFILTER("Workflow Status", '<>%1', LeaveRequestHeader."Workflow Status"::Rejected);
+                            IF LeaveRequestHeader.FINDFIRST THEN
+                                REPEAT
+                                    TotalLeaveDays += LeaveRequestHeader."Leave Days";
+                                UNTIL LeaveRequestHeader.NEXT = 0;
+                            //Message('LeaveDateStartYear  - %1----    LeaveDateEndYear - %2', LeaveDateStartYear, LeaveDateEndYear);
+                            //Message('TotalLeaveDays  %1    Closing Balance  %2', TotalLeaveDays, EmployeeInterimAccuralsRecL."Closing Balance");
+                            if TotalLeaveDays > EmployeeInterimAccuralsRecL."Closing Balance" then
+                                Error('Please apply separate leaves for different years');
 
-            if l_LeaveType."Leave Avail Basis" = l_LeaveType."Leave Avail Basis"::"Confirmation Date" then
-                if Rec."Start Date" < Employee."Employment Date" then
-                    ERROR('You cannot apply leave before Confirmation Date');
+                        end;
+                    end;
 
-            if l_LeaveType."Leave Avail Basis" = l_LeaveType."Leave Avail Basis"::"Joining Date" then
-                if Rec."Start Date" < Employee."Joining Date" then
-                    ERROR('You cannot apply leave before Joining Date');
+                end;
 
-            if l_LeaveType."Probation Entitlement Days" <> 0 then
-                if Rec."Start Date" < Employee."Probation Period" then
-                    if "Leave Days" < l_LeaveType."Probation Entitlement Days" then
-                        ERROR('YOu cannot apply more than %1 days in Probation period', l_LeaveType."Probation Entitlement Days");
+                //####################################################
 
-            if l_LeaveType."Accrual ID" <> '' then begin
-                EmployeeInterimAccruals.SETRANGE("Worker ID", Rec."Personnel Number");
-                EmployeeInterimAccruals.SETRANGE("Start Date", CALCDATE('-CM', Rec."Start Date"));
-                if not EmployeeInterimAccruals.FINDFIRST then
-                    ERROR('There is no Employee Interim Accruals defined for this employee');
-            end;
-            Employee.GET(Rec."Personnel Number");
-            "Submission Date" := TODAY;
+                Employee.GET("Personnel Number");
+                IF NOT (l_LeaveType.Gender = l_LeaveType.Gender::" ") THEN
+                    IF l_LeaveType.Gender <> Employee.Gender THEN
+                        ERROR('This leave is for Gender %1', l_LeaveType.Gender);
 
+                IF l_LeaveType."Marital Status" <> '' THEN
+                    IF l_LeaveType."Marital Status" <> Employee."Marital Status" THEN
+                        ERROR('This leave is only for employees with Marital Status %1', l_LeaveType."Marital Status");
 
+                IF l_LeaveType.Nationality <> '' THEN
+                    IF l_LeaveType.Nationality <> Employee.Nationality THEN
+                        ERROR('This leave %1 is only for %2 Nationality', "Leave Type", l_LeaveType.Nationality);
 
-            PayJobPosWorker.RESET;
-            PayJobPosWorker.SETRANGE(Worker, "Personnel Number");
-            PayJobPosWorker.SETFILTER("Effective Start Date", '<=%1', TODAY);
-            PayJobPosWorker.SETFILTER("Effective End Date", '>=%1|%2', TODAY, 0D);
-            if PayJobPosWorker.FINDFIRST then begin
-                PayPosition.GET(PayJobPosWorker."Position ID");
-                PayPosition.TESTFIELD("Pay Cycle");
-                PayCycle.GET(PayPosition."Pay Cycle");
-                PayPeriods.RESET;
-                PayPeriods.SETRANGE("Pay Cycle", PayCycle."Pay Cycle");
-                PayPeriods.SETFILTER("Period Start Date", '<=%', "Start Date");
-                PayPeriods.SETFILTER("Period End Date", '>=%1|%2', "End Date");
-                PayPeriods.SETRANGE(Status, PayPeriods.Status::Closed);
-                if PayPeriods.FINDFIRST then
-                    ERROR('Pay period is closed for the selected leave request dates');
-            end
-            else begin
-                ERROR('There is no active position assigned for the employee %1 as of date', "Personnel Number");
-            end;
-
-            Employee.TESTFIELD("Joining Date");
-            TESTFIELD("Submission Date");
-            l_LeaveType.TESTFIELD(Active, true);
-            if Employee."Termination Date" <> 0D then begin
-                if (Employee."Termination Date" < "Start Date") or (Employee."Termination Date" <= "End Date") then
-                    ERROR('You Cannot apply leave after employees termination');
-            end;
-
-            if Employee."Joining Date" > Rec."Start Date" then
-                ERROR('You cannot apply leaves before joining date %1', Employee."Joining Date");
-
-            if l_LeaveType.Active then begin                       //Checking Active Leave Type BEGIN
-                                                                   //Validate Max Times
-                if l_LeaveType."Max Times" <> 0 then
-                    ValidateMaxTime(Employee, l_LeaveType);
-
-                //Validate Minimum Service Days required to apply for any leave
-                if l_LeaveType."Min Service Days" <> 0 then
-                    ValidateMinServiceDays(Employee, l_LeaveType);
-
-                //Validate Minimum days required before Leave starts
-                if l_LeaveType."Min Days Before Req" <> 0 then
-                    ValidateMinDaysBeforeReq(Employee, l_LeaveType);
-
-                if l_LeaveType."Max Occurance" <> 0 then
-                    ValidateMaxOccurance(Employee, l_LeaveType);
-                //Validate Max Days
-                if l_LeaveType."Max Days Avail" <> 0 then
-                    if Rec."Leave Days" > l_LeaveType."Max Days Avail" then
-                        //  ERROR('You cannot apply more than %1 Leaves', l_LeaveType."Max Days Avail");
-                        ///LT
-                        Error('You cannot apply more than 1% days of %2', l_LeaveType."Max Days Avail", l_LeaveType."Leave Type");
-
-                //Validate Max Days
-                if l_LeaveType."Min Days Avail" <> 0 then
-                    if Rec."Leave Days" < l_LeaveType."Min Days Avail" then
-                        //ERROR('You cannot apply less than %1 Leaves', l_LeaveType."Min Days Avail");
-                        //LT
-                        ERROR('You cannot apply less than 1% days of %2', l_LeaveType."Min Days Avail", l_LeaveType."Leave Type");
-
-                if l_LeaveType."Min Days Between 2 leave Req." <> 0 then
-                    ValidateDaysBetweenLeaveReq(Employee, l_LeaveType);
-
-                //"Workflow Status" := "Workflow Status"::Submitted;
-            end                                                 //Checking Active Leave Type END
-            else begin                                          //Checking Active Leave Type ELSE BEGIN
-                ERROR('Selected leave type is inactive');
-            end;                                              //Checking Active Leave Type ELSE END;
-
-            //IF NOT l_LeaveType."Allow Negative" THEN
+                IF l_LeaveType."Religion ID" <> '' THEN
+                    IF l_LeaveType."Religion ID" <> Employee."Employee Religion" THEN
+                        ERROR('This leave %1 can be applied only by the religion %2', "Leave Type", l_LeaveType."Religion ID");
 
 
-            EmployeeInterimAccrualLines.RESET;
-            EmployeeInterimAccrualLines.SETRANGE("Accrual ID", l_LeaveType."Accrual ID");
-            EmployeeInterimAccrualLines.SETRANGE("Worker ID", "Personnel Number");
-            EmployeeInterimAccrualLines.SETRANGE("Start Date", CALCDATE('-CM', "Start Date"), CALCDATE('-CM', "End Date"));
-            EmployeeInterimAccrualLines.SETRANGE("End Date", CALCDATE('CM', "End Date"));
-            if EmployeeInterimAccrualLines.FINDLAST then begin
-                if not l_LeaveType."Allow Negative" then
-                    if EmployeeInterimAccrualLines."Closing Balance" < "Leave Days" then
-                        ERROR('You donot have enough balance of leaves');
-            end;
-            "Submission Date" := WORKDATE;
-            MODIFY;
+                IF l_LeaveType."Accrual ID" <> '' THEN BEGIN
+                    EmployeeInterimAccruals.RESET;
+                    EmployeeInterimAccruals.SETRANGE("Worker ID", Rec."Personnel Number");
+                    EmployeeInterimAccruals.SETRANGE("Start Date", CALCDATE('-CM', Rec."Start Date"));
+                    IF NOT EmployeeInterimAccruals.FINDFIRST THEN
+                        ERROR('There is no Employee Interim Accruals defined for this employee');
+                END;
+                Employee.GET("Personnel Number");
+                Employee.TESTFIELD("Joining Date");
+
+                l_LeaveType.TESTFIELD(Active, TRUE);
+                IF Employee."Termination Date" <> 0D THEN BEGIN
+                    IF (Employee."Termination Date" < "Start Date") OR (Employee."Termination Date" <= "End Date") THEN
+                        ERROR('You Cannot apply leave after employees termination');
+                END;
+
+                IF Employee."Joining Date" > Rec."Start Date" THEN
+                    ERROR('You cannot apply leaves before joining date %1', Employee."Joining Date");
+
+                IF l_LeaveType."Leave Avail Basis" = l_LeaveType."Leave Avail Basis"::"Probation End Date" THEN
+                    IF Rec."Start Date" < Employee."Probation Period" THEN
+                        ERROR('You cannot apply leave before probation period ends');
+
+                IF l_LeaveType."Leave Avail Basis" = l_LeaveType."Leave Avail Basis"::"Confirmation Date" THEN
+                    IF Rec."Start Date" < Employee."Employment Date" THEN
+                        ERROR('You cannot apply leave before Confirmation Date');
+
+                IF l_LeaveType."Leave Avail Basis" = l_LeaveType."Leave Avail Basis"::"Joining Date" THEN
+                    IF Rec."Start Date" < Employee."Joining Date" THEN
+                        ERROR('You cannot apply leave before Joining Date');
+
+                IF l_LeaveType."Probation Entitlement Days" <> 0 THEN
+                    IF Rec."Start Date" < Employee."Probation Period" THEN
+                        IF "Leave Days" < l_LeaveType."Probation Entitlement Days" THEN
+                            ERROR('YOu cannot apply more than %1 days in Probation period', l_LeaveType."Probation Entitlement Days");
+
+                IF l_LeaveType."Accrual ID" <> '' THEN BEGIN
+                    EmployeeInterimAccruals.SETRANGE("Worker ID", Rec."Personnel Number");
+                    EmployeeInterimAccruals.SETRANGE("Start Date", CALCDATE('-CM', Rec."Start Date"));
+                    IF NOT EmployeeInterimAccruals.FINDFIRST THEN
+                        ERROR('There is no Employee Interim Accruals defined for this employee');
+                END;
+                Employee.GET(Rec."Personnel Number");
+                "Submission Date" := TODAY;
+
+
+
+                PayJobPosWorker.RESET;
+                PayJobPosWorker.SETRANGE(Worker, "Personnel Number");
+                PayJobPosWorker.SETFILTER("Effective Start Date", '<=%1', TODAY);
+                PayJobPosWorker.SETFILTER("Effective End Date", '>=%1|%2', TODAY, 0D);
+                IF PayJobPosWorker.FINDFIRST THEN BEGIN
+                    PayPosition.GET(PayJobPosWorker."Position ID");
+                    PayPosition.TESTFIELD("Pay Cycle");
+                    PayCycle.GET(PayPosition."Pay Cycle");
+                    PayPeriods.RESET;
+                    PayPeriods.SETRANGE("Pay Cycle", PayCycle."Pay Cycle");
+                    PayPeriods.SETFILTER("Period Start Date", '<=%', "Start Date");
+                    PayPeriods.SETFILTER("Period End Date", '>=%1|%2', "End Date");
+                    PayPeriods.SETRANGE(Status, PayPeriods.Status::Closed);
+                    IF PayPeriods.FINDFIRST THEN
+                        ERROR('Pay period is closed for the selected leave request dates');
+                END
+                ELSE BEGIN
+                    ERROR('There is no active position assigned for the employee %1 as of date', "Personnel Number");
+                END;
+
+                Employee.TESTFIELD("Joining Date");
+                TESTFIELD("Submission Date");
+                l_LeaveType.TESTFIELD(Active, TRUE);
+                IF Employee."Termination Date" <> 0D THEN BEGIN
+                    IF (Employee."Termination Date" < "Start Date") OR (Employee."Termination Date" <= "End Date") THEN
+                        ERROR('You Cannot apply leave after employees termination');
+                END;
+
+                IF Employee."Joining Date" > Rec."Start Date" THEN
+                    ERROR('You cannot apply leaves before joining date %1', Employee."Joining Date");
+
+                IF l_LeaveType.Active THEN BEGIN                       //Checking Active Leave Type BEGIN
+                                                                       //Validate Max Times
+                    IF l_LeaveType."Max Times" <> 0 THEN
+                        ValidateMaxTime(Employee, l_LeaveType);
+
+                    //Validate Minimum Service Days required to apply for any leave
+                    IF l_LeaveType."Min Service Days" <> 0 THEN
+                        ValidateMinServiceDays(Employee, l_LeaveType);
+
+                    //Validate Minimum days required before Leave starts
+                    IF l_LeaveType."Min Days Before Req" <> 0 THEN
+                        ValidateMinDaysBeforeReq(Employee, l_LeaveType);
+
+                    IF l_LeaveType."Max Occurance" <> 0 THEN
+                        ValidateMaxOccurance(Employee, l_LeaveType);
+                    //Validate Max Days
+                    IF l_LeaveType."Max Days Avail" <> 0 THEN
+                        IF Rec."Leave Days" > l_LeaveType."Max Days Avail" THEN
+                            ERROR('You cannot apply more than %1 Leaves', l_LeaveType."Max Days Avail");
+
+                    //Validate Max Days
+                    IF l_LeaveType."Min Days Avail" <> 0 THEN
+                        IF Rec."Leave Days" < l_LeaveType."Min Days Avail" THEN
+                            ERROR('You cannot apply less than %1 Leaves', l_LeaveType."Min Days Avail");
+
+                    IF l_LeaveType."Min Days Between 2 leave Req." <> 0 THEN
+                        ValidateDaysBetweenLeaveReq(Employee, l_LeaveType);
+
+                    //"Workflow Status" := "Workflow Status"::Submitted;
+                END                                                 //Checking Active Leave Type END
+                ELSE BEGIN                                          //Checking Active Leave Type ELSE BEGIN
+                    ERROR('Selected leave type is inactive');
+                END;                                              //Checking Active Leave Type ELSE END;
+
+                //IF NOT l_LeaveType."Allow Negative" THEN
+
+
+                // // // EmployeeInterimAccrualLines.RESET;
+                // // // EmployeeInterimAccrualLines.SETRANGE("Accrual ID", l_LeaveType."Accrual ID");
+                // // // EmployeeInterimAccrualLines.SETRANGE("Worker ID", "Personnel Number");
+                // // // EmployeeInterimAccrualLines.SETRANGE("Start Date", CALCDATE('-CM', "Start Date"), CALCDATE('-CM', "End Date"));
+                // // // //EmployeeInterimAccrualLines.SETRANGE("End Date",CALCDATE('CM',"End Date"));
+                // // // IF EmployeeInterimAccrualLines.FINDLAST THEN BEGIN
+                // // //     IF NOT l_LeaveType."Allow Negative" THEN
+                // // //         IF EmployeeInterimAccrualLines."Closing Balance" < "Leave Days" THEN
+                // // //             ERROR('You donot have enough balance of leaves   %1', EmployeeInterimAccrualLines."Closing Balance");
+                // // // END;
+
+                "Submission Date" := WORKDATE;
+                MODIFY;
+            END;
+
         end;
     end;
 

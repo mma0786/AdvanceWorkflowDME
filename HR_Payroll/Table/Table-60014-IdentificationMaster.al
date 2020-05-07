@@ -218,34 +218,47 @@ table 60014 "Identification Master"
         field(19; "Active Document"; Boolean)
         {
             Description = 'PHASE - 2';
+            Editable = true;
 
             trigger OnValidate()
             var
                 UserSetupRecL: Record "User Setup";
                 IdentificationMasterRecL: Record "Identification Master";
             begin
-                UserSetupRecL.RESET;
-                if UserSetupRecL.GET(USERID) then begin
+                //##################################
+                IF "Document Type" = "Document Type"::Dependent THEN BEGIN
+                    UserSetupRecL.RESET;
+                    IF UserSetupRecL.GET(USERID) THEN BEGIN
+                        IF "Active Document" THEN BEGIN
+                            IdentificationMasterRecL.RESET;
+                            IdentificationMasterRecL.SETRANGE("Dependent No", "Dependent No");
+                            IdentificationMasterRecL.SETRANGE("Identification Type", "Identification Type");
+                            IdentificationMasterRecL.SETRANGE("Active Document", TRUE);
+                            IF IdentificationMasterRecL.FINDSET THEN BEGIN
+                                IdentificationMasterRecL.MODIFYALL("Active Document", FALSE);
+                            END;
+                        END
+                    END;
+                END;
 
-                    if UserSetupRecL."HR Manager" then begin
+                IF "Document Type" = "Document Type"::Employee THEN BEGIN
+                    UserSetupRecL.RESET;
+                    IF UserSetupRecL.GET(USERID) THEN BEGIN
+                        IF "Active Document" THEN BEGIN
+                            IdentificationMasterRecL.RESET;
+                            IdentificationMasterRecL.SETRANGE("Employee No.", "Employee No.");
+                            IdentificationMasterRecL.SETRANGE("Identification Type", "Identification Type");
+                            IdentificationMasterRecL.SETRANGE("Active Document", TRUE);
+                            IF IdentificationMasterRecL.FINDSET THEN BEGIN
+                                IdentificationMasterRecL.MODIFYALL("Active Document", FALSE);
+                            END;
+                        END;
+                    END;
+                END;
 
-                        IdentificationMasterRecL.RESET;
-                        IdentificationMasterRecL.MODIFYALL("Active Document", false);
-                        COMMIT;
-                        IdentificationMasterRecL.RESET;
-                        IdentificationMasterRecL.SETRANGE("No.", "No.");
-                        IdentificationMasterRecL.SETRANGE("Document Type", IdentificationMasterRecL."Document Type"::Employee);
-                        IdentificationMasterRecL.SETRANGE("Employee No.", "Employee No.");
-                        IdentificationMasterRecL.SETRANGE("Identification Type", "Identification Type");
-                        if IdentificationMasterRecL.FINDFIRST then begin
-                            IdentificationMasterRecL."Active Document" := true;
-                            IdentificationMasterRecL.MODIFY;
-                            COMMIT;
-                            if "Active Document" then
-                                MESSAGE(' %1 Document Activated Successfully.', "Identification Type");
-                        end;
-                    end;
-                end;
+                IF "Active Document" THEN
+                    MESSAGE(' %1 Document Activated Successfully.', "Identification Type");
+                //##################################
             end;
         }
 
