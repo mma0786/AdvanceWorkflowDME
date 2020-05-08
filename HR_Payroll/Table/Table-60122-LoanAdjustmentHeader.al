@@ -11,14 +11,30 @@ table 60122 "Loan Adjustment Header"
             TableRelation = Employee;
 
             trigger OnValidate()
+            var
+                LoanAdjustmentLinesRecL: Record "Work Time Template - Ramadn";
             begin
                 Employee.RESET;
                 if Employee.GET("Employee ID") then begin
-                    IF PAGE.RUNMODAL(0, Employee) = ACTION::LookupOK THEN BEGIN
-                        "Employee ID" := Employee."No.";
-                        "Employee Name" := Employee."First Name" + Employee."Middle Name" + Employee."Last Name";
-                    end;
+                    //IF PAGE.RUNMODAL(0, Employee) = ACTION::LookupOK THEN BEGIN
+                    "Employee ID" := Employee."No.";
+                    "Employee Name" := Employee."First Name" + ' ' + Employee."Middle Name" + ' ' + Employee."Last Name";
+                    //end;
+                end;
+                if xRec."Employee ID" <> Rec."Employee ID" then begin
+                    Clear("Loan Request ID");
+                    Clear("Loan ID");
+                    Clear("Loan Description");
+                    Clear("Loan Request Amount");
 
+
+
+                    LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
+                    LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
+                    LoanAdjustmentLines.SETRANGE("Employee ID", xRec."Employee ID");
+                    LoanAdjustmentLines.SETRANGE("Loan Request ID", "Loan Request ID");
+                    if LoanAdjustmentLines.FindSet() then
+                        LoanAdjustmentLines.DeleteAll();
                 end;
             end;
         }
@@ -38,10 +54,10 @@ table 60122 "Loan Adjustment Header"
             trigger OnLookup()
             begin
                 LoanTypeSetup.SETRANGE(Active, TRUE);
-                IF PAGE.RUNMODAL(0, LoanTypeSetup) = ACTION::LookupOK THEN BEGIN
-                    "Loan ID" := LoanTypeSetup."Loan Code";
-                    "Loan Description" := LoanTypeSetup."Loan Description";
-                END;
+                //IF PAGE.RUNMODAL(0, LoanTypeSetup) = ACTION::LookupOK THEN BEGIN
+                "Loan ID" := LoanTypeSetup."Loan Code";
+                "Loan Description" := LoanTypeSetup."Loan Description";
+                // END;
             end;
         }
         field(6; "Loan Description"; Text[250])
@@ -60,18 +76,18 @@ table 60122 "Loan Adjustment Header"
         }
         field(9; "Loan Request ID"; Code[50])
         {
-            TableRelation = "Loan Request"."Loan Request ID" WHERE("Employee ID" = FIELD("Employee ID"));
+            TableRelation = "Loan Request"."Loan Request ID" WHERE("Employee ID" = FIELD("Employee ID"), "WorkFlow Status" = filter(Approved));
 
             trigger OnValidate()
             begin
                 LoanRequest.SETRANGE("Employee ID", "Employee ID");
                 if LoanRequest.FINDFIRST then begin
-                    IF PAGE.RUNMODAL(0, LoanRequest) = ACTION::LookupOK THEN BEGIN
-                        "Loan Request ID" := LoanRequest."Loan Request ID";
-                        "Loan ID" := LoanRequest."Loan Type";
-                        "Loan Description" := LoanRequest."Loan Description";
-                        "Loan Request Amount" := LoanRequest."Request Amount";
-                    end;
+                    // IF PAGE.RUNMODAL(0, LoanRequest) = ACTION::LookupOK THEN BEGIN
+                    "Loan Request ID" := LoanRequest."Loan Request ID";
+                    "Loan ID" := LoanRequest."Loan Type";
+                    "Loan Description" := LoanRequest."Loan Description";
+                    "Loan Request Amount" := LoanRequest."Request Amount";
+                    // end;
 
 
                     if (("Loan Request ID" <> '') and ("Loan ID" <> '')) then
@@ -84,6 +100,7 @@ table 60122 "Loan Adjustment Header"
             Editable = false;
         }
         field(11; RecID; RecordId) { }
+        field(12; "Update Loan Bool"; Boolean) { }
     }
 
     keys
@@ -143,6 +160,14 @@ table 60122 "Loan Adjustment Header"
     var
         LoanAdjustmentLinesRecL: Record "Work Time Template - Ramadn";
     begin
+
+        LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
+        LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
+        LoanAdjustmentLines.SETRANGE("Employee ID", "Employee ID");
+        LoanAdjustmentLines.SETRANGE("Loan Request ID", "Loan Request ID");
+        if LoanAdjustmentLines.FindSet() then
+            LoanAdjustmentLines.DeleteAll();
+
         LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
         LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
         LoanAdjustmentLines.SETRANGE("Employee ID", "Employee ID");

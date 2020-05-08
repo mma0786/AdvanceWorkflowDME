@@ -2,8 +2,9 @@ page 60183 "Loan Adjustment  Lines"
 {
     PageType = ListPart;
     SourceTable = "Loan Adjustment Lines";
-    SourceTableView = SORTING("Entry No.", "Loan Adjustment ID")
-                      ORDER(Ascending);
+    SourceTableView = SORTING("Entry No.", "Loan Adjustment ID") ORDER(Ascending);
+    InsertAllowed = false;
+
 
     layout
     {

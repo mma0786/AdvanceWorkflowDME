@@ -57,22 +57,19 @@ page 60182 "Loan Adjustment"
                     ApplicationArea = All;
                 }
             }
-            //commented By Avinash 
-            //commented By Avinash 
-            /*
-            part(Control10; "Loan Adjustment  Lines-Old")
+
+
+            part("Loan Adjustment  Lines"; "Loan Adjustment  Lines")
             {
                 Editable = "Workflow Status" = "Workflow Status"::Open;
-                SubPageLink = Field5 = FIELD ("Employee ID"),
-                              Field3 = FIELD ("Loan ID"),
-                              Field2 = FIELD ("Loan Request ID"),
-                              Field13 = FIELD ("Loan Adjustment ID");
-                SubPageView = SORTING (Field1)
-                              ORDER(Ascending);
+                SubPageLink = "Employee ID" = FIELD("Employee ID"),
+                              Loan = FIELD("Loan ID"),
+                              "Loan Request ID" = FIELD("Loan Request ID"),
+                              "Loan Adjustment ID" = FIELD("Loan Adjustment ID");
+                SubPageView = SORTING("Entry No.") ORDER(Ascending);
             }
-            */
-            //commented By Avinash 
-            //commented By Avinash 
+
+
         }
     }
 
@@ -101,45 +98,48 @@ page 60182 "Loan Adjustment"
 
                 trigger OnAction()
                 begin
-                    if "Workflow Status" = "Workflow Status"::Approved then begin
+                    if not "Update Loan Bool" then
+                        if "Workflow Status" = "Workflow Status"::Approved then begin
 
 
-                        LoanInstallmentGeneration.RESET;
-                        LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
-                        LoanInstallmentGeneration.SETRANGE("Employee ID", "Employee ID");
-                        LoanInstallmentGeneration.SETRANGE(Loan, "Loan ID");
-                        LoanInstallmentGeneration.SETRANGE("Loan Request ID", "Loan Request ID");
-                        if LoanInstallmentGeneration.FINDSET then
-                            LoanInstallmentGeneration.DELETEALL;
+                            LoanInstallmentGeneration.RESET;
+                            LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
+                            LoanInstallmentGeneration.SETRANGE("Employee ID", "Employee ID");
+                            LoanInstallmentGeneration.SETRANGE(Loan, "Loan ID");
+                            LoanInstallmentGeneration.SETRANGE("Loan Request ID", "Loan Request ID");
+                            if LoanInstallmentGeneration.FINDSET then
+                                LoanInstallmentGeneration.DELETEALL;
 
-                        LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
-                        LoanAdjustmentLines.SETRANGE("Employee ID", "Employee ID");
-                        LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
-                        LoanAdjustmentLines.SETRANGE("Loan Request ID", "Loan Request ID");
-                        if LoanAdjustmentLines.FINDSET then
-                            repeat
-                                LoanInstallmentGeneration.INIT;
-                                LoanInstallmentGeneration."Entry No." := LoanInstallmentGeneration."Entry No." + 1;
-                                LoanInstallmentGeneration."Loan Request ID" := LoanAdjustmentLines."Loan Request ID";
-                                LoanInstallmentGeneration.Loan := LoanAdjustmentLines.Loan;
-                                LoanInstallmentGeneration."Loan Description" := LoanAdjustmentLines."Loan Description";
-                                LoanInstallmentGeneration."Employee ID" := LoanAdjustmentLines."Employee ID";
-                                LoanInstallmentGeneration."Employee Name" := LoanAdjustmentLines."Employee Name";
-                                LoanInstallmentGeneration."Installament Date" := LoanAdjustmentLines."Installament Date";
-                                LoanInstallmentGeneration."Principal Installment Amount" := LoanAdjustmentLines."Principal Installment Amount";
-                                LoanInstallmentGeneration."Interest Installment Amount" := LoanAdjustmentLines."Interest Installment Amount";
-                                LoanInstallmentGeneration.Currency := LoanAdjustmentLines.Currency;
-                                LoanInstallmentGeneration.Status := LoanAdjustmentLines.Status;
-                                // Updated Installment
-                                LoanAdjustmentLines."Installament Updated" := true;
-                                LoanAdjustmentLines.MODIFY;
-                                // Updated Installment
-                                LoanInstallmentGeneration.INSERT(true);
-                            until LoanAdjustmentLines.NEXT = 0;
-                        MESSAGE(Text50006);
-                    end
-                    else
-                        ERROR(Text50003);
+                            LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
+                            LoanAdjustmentLines.SETRANGE("Employee ID", "Employee ID");
+                            LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
+                            LoanAdjustmentLines.SETRANGE("Loan Request ID", "Loan Request ID");
+                            if LoanAdjustmentLines.FINDSET then
+                                repeat
+                                    LoanInstallmentGeneration.INIT;
+                                    LoanInstallmentGeneration."Entry No." := LoanInstallmentGeneration."Entry No." + 1;
+                                    LoanInstallmentGeneration."Loan Request ID" := LoanAdjustmentLines."Loan Request ID";
+                                    LoanInstallmentGeneration.Loan := LoanAdjustmentLines.Loan;
+                                    LoanInstallmentGeneration."Loan Description" := LoanAdjustmentLines."Loan Description";
+                                    LoanInstallmentGeneration."Employee ID" := LoanAdjustmentLines."Employee ID";
+                                    LoanInstallmentGeneration."Employee Name" := LoanAdjustmentLines."Employee Name";
+                                    LoanInstallmentGeneration."Installament Date" := LoanAdjustmentLines."Installament Date";
+                                    LoanInstallmentGeneration."Principal Installment Amount" := LoanAdjustmentLines."Principal Installment Amount";
+                                    LoanInstallmentGeneration."Interest Installment Amount" := LoanAdjustmentLines."Interest Installment Amount";
+                                    LoanInstallmentGeneration.Currency := LoanAdjustmentLines.Currency;
+                                    LoanInstallmentGeneration.Status := LoanAdjustmentLines.Status;
+                                    // Updated Installment
+                                    LoanAdjustmentLines."Installament Updated" := true;
+                                    LoanAdjustmentLines.MODIFY;
+                                    // Updated Installment
+                                    LoanInstallmentGeneration.INSERT(true);
+                                until LoanAdjustmentLines.NEXT = 0;
+                            MESSAGE(Text50006);
+                            "Update Loan Bool" := true;
+                            Modify();
+                        end
+                        else
+                            ERROR(Text50003);
 
 
 
@@ -275,6 +275,7 @@ page 60182 "Loan Adjustment"
                     PromotedCategory = Category4;
                     PromotedIsBig = true;
                     ToolTip = 'Approve the requested changes.';
+                    Enabled = OpenApprovalEntriesExistForCurrUser;
 
                     trigger OnAction()
                     var
@@ -287,7 +288,7 @@ page 60182 "Loan Adjustment"
                 {
                     ApplicationArea = All;
                     Caption = 'Reject';
-                    // Enabled = OpenApprovalEntriesExistForCurrUser;
+                    Enabled = OpenApprovalEntriesExistForCurrUser;
                     Image = Reject;
                     Promoted = true;
                     PromotedCategory = Category4;
@@ -305,7 +306,7 @@ page 60182 "Loan Adjustment"
                 {
                     ApplicationArea = All;
                     Caption = 'Delegate';
-                    // Enabled = OpenApprovalEntriesExistForCurrUser;
+                    Enabled = OpenApprovalEntriesExistForCurrUser;
                     Image = Delegate;
                     Promoted = true;
                     PromotedCategory = Category4;
@@ -382,6 +383,9 @@ page 60182 "Loan Adjustment"
                 ApplicationArea = All;
                 trigger OnAction()
                 begin
+                    if "Update Loan Bool" then
+                        Error('Loan Line already updated, cannot reopen .');
+
                     LoanAdjustmentLines.SETRANGE("Loan Adjustment ID", "Loan Adjustment ID");
                     LoanAdjustmentLines.SETRANGE("Employee ID", "Employee ID");
                     LoanAdjustmentLines.SETRANGE(Loan, "Loan ID");
@@ -406,10 +410,9 @@ page 60182 "Loan Adjustment"
                 PromotedCategory = Process;
                 PromotedIsBig = true;
                 ApplicationArea = All;
-                //commented By Avinash  RunObject = Page "Loan Request-Old";
-                //commented By Avinash  RunPageLink = Field2 = FIELD("Loan Request ID");
-                //commented By Avinash RunPageView = SORTING(Field1, Field2)
-                //commented By Avinash              ORDER(Ascending);
+                RunObject = Page "Loan Request";
+                RunPageLink = "Loan Request ID" = FIELD("Loan Request ID");
+                RunPageView = SORTING("Entry No.", "Loan Request ID") ORDER(Ascending);
             }
         }
     }
@@ -417,6 +420,7 @@ page 60182 "Loan Adjustment"
     trigger OnAfterGetRecord()
     begin
         EditableFun;
+        SetControlAppearance;
     end;
 
     trigger OnInit()
@@ -427,6 +431,7 @@ page 60182 "Loan Adjustment"
     trigger OnModifyRecord(): Boolean
     begin
         //EditableFun;
+        SetControlAppearance;
     end;
 
     trigger OnOpenPage()
@@ -457,6 +462,9 @@ page 60182 "Loan Adjustment"
         InstDiff: Decimal;
         WFCode: Codeunit InitCodeunit_Loan_Adj;
         LoanAdjustmentLinesRecG: Record "Loan Adjustment Lines";
+        OpenApprovalEntriesExistForCurrUser: Boolean;
+        OpenApprovalEntriesExist: Boolean;
+        CanCancelApprovalForRecord: Boolean;
 
     local procedure EditableFun()
     begin
@@ -464,6 +472,16 @@ page 60182 "Loan Adjustment"
             VarEditable := true
         else
             VarEditable := false;
+    end;
+
+    procedure SetControlAppearance()
+    var
+    begin
+
+
+        OpenApprovalEntriesExistForCurrUser := ApprovalsMgmt.HasOpenApprovalEntriesForCurrentUser(RECORDID);
+        OpenApprovalEntriesExist := ApprovalsMgmt.HasOpenApprovalEntries(RECORDID);
+        CanCancelApprovalForRecord := ApprovalsMgmt.CanCancelApprovalForRecord(RECORDID);
     end;
 }
 
