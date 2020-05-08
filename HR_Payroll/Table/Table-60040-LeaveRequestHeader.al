@@ -257,7 +257,7 @@ table 60040 "Leave Request Header"
 
 
                 /*
-                
+
                 Employee.RESET;
                 Employee.FILTERGROUP(2);
                 Employee.SETFILTER("No.",'<>%1',"Personnel Number");
@@ -348,6 +348,12 @@ table 60040 "Leave Request Header"
         {
             DataClassification = ToBeClassified;
         }
+        // @Avinash 08.05.2020
+        field(502; "Compensatory Leave Date"; Date)
+        {
+
+        }
+        // @Avinash 08.05.2020
     }
 
     keys
@@ -638,12 +644,14 @@ table 60040 "Leave Request Header"
             if HCMLeavetype."Cover Resource Mandatory" then
                 LeaveRequestHeader.TESTFIELD("Cover Resource");
 
-            if l_LeaveType."Attachment Mandate" then begin
-                RecordLink.RESET;
-                RecordLink.SETRANGE("Record ID", RECORDID);
-                if not RecordLink.FINDFIRST then
-                    ERROR('Attachment is mandatory for this leave type, Please select the attachment');
-            end;
+            // @Avinash 08.05.2020
+            // // // if l_LeaveType."Attachment Mandate" then begin
+            // // //     RecordLink.RESET;
+            // // //     RecordLink.SETRANGE("Record ID", RECORDID);
+            // // //     if not RecordLink.FINDFIRST then
+            // // //         ERROR('Attachment is mandatory for this leave type, Please select the attachment');
+            // // // end;
+            // @Avinash 08.05.2020
 
             if l_LeaveType."Accrual ID" = '' then begin
                 if not l_LeaveType."Allow Negative" then begin
@@ -1139,7 +1147,7 @@ table 60040 "Leave Request Header"
         IF AccrualComponentEmployee.FINDFIRST THEN BEGIN
             IF AccrualComponentEmployee."Consumption Split by Month" THEN BEGIN
               IF DATE2DMY("Start Date",2) = DATE2DMY("End Date",2) THEN BEGIN
-        
+
                 EmployeeInterimLedger.RESET;
                   EmployeeInterimLedger.SETRANGE("Accrual ID",AccrualComponentEmployee."Accrual ID");
                   EmployeeInterimLedger.SETRANGE("Worker ID",AccrualComponentEmployee."Worker ID");
@@ -1161,7 +1169,7 @@ table 60040 "Leave Request Header"
                  Period.SETRANGE("Period End",CALCDATE('CM',"Start Date"));
                  IF Period.FINDFIRST THEN
                     NoOfLeaveDaysFirstMonth := Period.COUNT;
-        
+
                   EmployeeInterimLedger.RESET;
                   EmployeeInterimLedger.SETRANGE("Accrual ID",AccrualComponentEmployee."Accrual ID");
                   EmployeeInterimLedger.SETRANGE("Worker ID",AccrualComponentEmployee."Worker ID");
@@ -1174,14 +1182,14 @@ table 60040 "Leave Request Header"
                     EmployeeInterimLedger."Accrual Consumed" := -NoOfLeaveDaysFirstMonth;
                     EmployeeInterimLedger.MODIFY;
                   END;
-        
+
                  Period.RESET;
                  Period.SETRANGE("Period Type",Period."Period Type"::Date);
                  Period.SETRANGE("Period Start",CALCDATE('-CM',"End Date"));
                  Period.SETRANGE("Period End","End Date");
                  IF Period.FINDFIRST THEN
                     NoOfLeaveDaysSecondMonth := Period.COUNT;
-        
+
                   EmployeeInterimLedger.RESET;
                   EmployeeInterimLedger.SETRANGE("Accrual ID",AccrualComponentEmployee."Accrual ID");
                   EmployeeInterimLedger.SETRANGE("Worker ID",AccrualComponentEmployee."Worker ID");
@@ -1281,7 +1289,7 @@ table 60040 "Leave Request Header"
         LeaveType.SETRANGE("Leave Type Id",Rec."Leave Type");
         LeaveType.SETRANGE("Earning Code Group",Rec."Earning Code Group");
         IF LeaveType.FINDFIRST THEN ;
-        
+
         EmployeeInterimLedger.RESET;
         EmployeeInterimLedger.SETRANGE("Worker ID",Rec."Personnel Number");
         EmployeeInterimLedger.SETRANGE("Accrual ID",LeaveType."Accrual ID");
@@ -1313,7 +1321,7 @@ table 60040 "Leave Request Header"
                        EmployeeInterimLedger."Carryforward Consumed" := 0;
                     EmployeeInterimLedger."Accrual Opening Month" :=  EmployeeInterimLedger2."Accrual Opening Month" + EmployeeInterimLedger2."Unit Accrued" + EmployeeInterimLedger2."Accrual Consumed"
                                                                       + EmployeeInterimLedger."Accrual Additonal/ Lapse";
-        
+
                  END;
                     EmployeeInterimLedger.MODIFY;
               END;

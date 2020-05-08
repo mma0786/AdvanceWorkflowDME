@@ -33,6 +33,12 @@ page 60064 "Leave Request Card"
                 {
                     ShowMandatory = true;
                     ApplicationArea = All;
+                    trigger OnValidate()
+                    var
+                        LeaveType: Record "HCM Leave Types Wrkr";
+                    begin
+                        Valid_IsCompensatoryLeave_LT;
+                    end;
                 }
                 field("Short Name"; "Short Name")
                 {
@@ -49,6 +55,12 @@ page 60064 "Leave Request Card"
                 {
                     ShowMandatory = true;
                     ApplicationArea = All;
+                    trigger OnValidate()
+                    var
+                        LeaveType: Record "HCM Leave Types Wrkr";
+                    begin
+                        Valid_IsCompensatoryLeave_LT;
+                    end;
                 }
                 field("Leave Start Day Type"; "Leave Start Day Type")
                 {
@@ -58,8 +70,24 @@ page 60064 "Leave Request Card"
                 {
                     ShowMandatory = true;
                     ApplicationArea = All;
+                    trigger OnValidate()
+                    var
+                        LeaveType: Record "HCM Leave Types Wrkr";
+                    begin
+                        Valid_IsCompensatoryLeave_LT;
+                    end;
                 }
+                // @Avinash 08.05.2020
+                field("Compensatory Leave Date"; "Compensatory Leave Date")
+                {
+                    ApplicationArea = All;
+                    Editable = CheckBoolG;
+                    Style = Strong;
+                    StyleExpr = true;
 
+
+                }
+                // @Avinash 08.05.2020
                 //LT
                 field("Entitlement Days"; "Entitlement Days")
                 {
@@ -143,6 +171,7 @@ page 60064 "Leave Request Card"
                     Editable = false;
                     ApplicationArea = All;
                 }
+
                 group("Resumption Details")
                 {
                     Caption = 'Resumption Details';
@@ -200,6 +229,12 @@ page 60064 "Leave Request Card"
                         TESTFIELD("Start Date");
                         TESTFIELD("End Date");
                         TESTFIELD(Posted, false);
+                        // @Avinash 08.05.2020
+                        if CheckBoolG then
+                            TestField("Compensatory Leave Date");
+                        CheckAttachmentsIfAfterdat;
+
+                        // @Avinash 08.05.2020
                         // Start #Levtech WF
                         CancelAndDeleteApprovalEntryTrans_LT(Rec.RecordId);
                         // Stop #Levtech WF
@@ -609,6 +644,13 @@ page 60064 "Leave Request Card"
     trigger OnAfterGetRecord()
     begin
         SetControlVisibility;
+        Valid_IsCompensatoryLeave_LT;
+    end;
+
+
+    trigger OnAfterGetCurrRecord()
+    begin
+        Valid_IsCompensatoryLeave_LT;
     end;
 
     trigger OnOpenPage()
@@ -617,6 +659,7 @@ page 60064 "Leave Request Card"
     end;
 
     var
+        CheckBoolG: Boolean;
         DutyResume: Record "Duty Resumption";
         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
         P_DutyResume: Page "Duty Resumption";
@@ -631,7 +674,46 @@ page 60064 "Leave Request Card"
         DutyResumeEdit: Boolean;
         i: Integer;
         ShowRecCommentsEnabled: Boolean;
+    // @Avinash 08.05.2020
+    procedure Valid_IsCompensatoryLeave_LT()
+    var
+        LeaveType: Record "HCM Leave Types Wrkr";
+    begin
+        LeaveType.RESET;
+        LeaveType.SETRANGE(Worker, Rec."Personnel Number");
+        LeaveType.SETRANGE("Leave Type Id", Rec."Leave Type");
+        LeaveType.SETRANGE("Earning Code Group", Rec."Earning Code Group");
+        if LeaveType.FINDFIRST then begin
+            if LeaveType."Is Compensatory Leave" then
+                CheckBoolG := true
+            else
+                CheckBoolG := false;
+        end;
+    end;
 
+    procedure CheckAttachmentsIfAfterdat()
+    var
+        LeaveType: Record "HCM Leave Types Wrkr";
+        DocumentAttachment: Record "Document Attachment";
+    begin
+        LeaveType.RESET;
+        LeaveType.SETRANGE(Worker, Rec."Personnel Number");
+        LeaveType.SETRANGE("Leave Type Id", Rec."Leave Type");
+        LeaveType.SETRANGE("Earning Code Group", Rec."Earning Code Group");
+        if LeaveType.FINDFIRST then begin
+            if LeaveType."Attachment Mandate" then begin
+                if "Leave Days" > LeaveType."Attachments After Days" then begin
+                    DocumentAttachment.Reset();
+                    DocumentAttachment.SetRange("No.", "Leave Request ID");
+                    DocumentAttachment.SetRange("Table ID", Database::"Leave Request Header");
+                    if not DocumentAttachment.FindFirst() then
+                        Error('Attachments required !');
+                end;
+            end;
+        end;
+    end;
+
+    // @Avinash 08.05.2020
     local procedure SetControlVisibility()
     var
         ApprovalsMgmt: Codeunit "Approvals Mgmt.";

@@ -203,10 +203,31 @@ page 60040 "HCM Leave Types Wrkr"
             }
             group("Other Setup")
             {
+
+                // @Avinash 08.05.2020
                 field("Is Attachment Mandatory"; "Attachment Mandate")
                 {
                     ApplicationArea = All;
+                    trigger
+                   OnValidate()
+                    begin
+                        if "Attachment Mandate" then
+                            ChnageBool := true
+                        else
+                            ChnageBool := false;
+                    end;
                 }
+                field("Attachments After Days"; "Attachments After Days")
+                {
+                    ApplicationArea = All;
+                    Editable = ChnageBool;
+                }
+                field("Is Compensatory Leave"; "Is Compensatory Leave")
+                {
+                    ApplicationArea = All;
+
+                }
+                // @Avinash 08.05.2020
                 field("WorkFlow Required"; "WorkFlow Required")
                 {
                     ApplicationArea = All;
@@ -219,11 +240,13 @@ page 60040 "HCM Leave Types Wrkr"
                 {
                     ApplicationArea = All;
                 }
+
             }
         }
     }
 
-
+    var
+        ChnageBool: Boolean;
 
     trigger OnNewRecord(BelowxRec: Boolean)
     begin

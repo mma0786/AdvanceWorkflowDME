@@ -298,8 +298,16 @@ table 60010 "HCM Leave Types ErnGrp"
         }
         field(352; "Marital Status"; Text[30])
         {
-            // Commented By Avinash    TableRelation = Table50050;
+            TableRelation = "Marital Status";
         }
+        // @Avinash 08.05.2020
+        field(501; "Attachments After Days"; Integer)
+        {
+        }
+        field(502; "Is Compensatory Leave"; Boolean)
+        {
+        }
+        // @Avinash 08.05.2020
     }
 
     keys

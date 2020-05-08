@@ -216,7 +216,27 @@ page 60007 "Leave Type Card"
                 field("Is Attachment Mandatory"; "Attachment Mandate")
                 {
                     ApplicationArea = All;
+                    trigger
+                    OnValidate()
+                    begin
+                        if "Attachment Mandate" then
+                            ChnageBool := true
+                        else
+                            ChnageBool := false;
+                    end;
                 }
+                // @Avinash 08.05.2020
+                field("Attachments After Days"; "Attachments After Days")
+                {
+                    ApplicationArea = All;
+                    Editable = ChnageBool;
+                }
+                field("Is Compensatory Leave"; "Is Compensatory Leave")
+                {
+                    ApplicationArea = All;
+
+                }
+                // @Avinash 08.05.2020
                 field("WorkFlow Required"; "WorkFlow Required")
                 {
                     ApplicationArea = All;
@@ -232,8 +252,8 @@ page 60007 "Leave Type Card"
             }
         }
     }
-
-
+    var
+        ChnageBool: Boolean;
 
     trigger OnClosePage()
     begin

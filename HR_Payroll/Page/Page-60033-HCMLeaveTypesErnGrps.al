@@ -134,10 +134,7 @@ page 60033 "HCM Leave Types ErnGrps"
                 {
                     ApplicationArea = All;
                 }
-                field("Attachment Mandate"; "Attachment Mandate")
-                {
-                    ApplicationArea = All;
-                }
+
                 field("Benefit Id"; "Benefit Id")
                 {
                     ApplicationArea = All;
@@ -166,9 +163,35 @@ page 60033 "HCM Leave Types ErnGrps"
                 {
                     ApplicationArea = All;
                 }
+                // @Avinash 08.05.2020
+                field("Attachment Mandate"; "Attachment Mandate")
+                {
+                    ApplicationArea = All;
+                    trigger
+                   OnValidate()
+                    begin
+                        if "Attachment Mandate" then
+                            ChnageBool := true
+                        else
+                            ChnageBool := false;
+                    end;
+                }
+                field("Attachments After Days"; "Attachments After Days")
+                {
+                    ApplicationArea = All;
+                    Editable = ChnageBool;
+                }
+                field("Is Compensatory Leave"; "Is Compensatory Leave")
+                {
+                    ApplicationArea = All;
+
+                }
+                // @Avinash 08.05.2020
             }
         }
     }
+    var
+        ChnageBool: Boolean;
 
 
 }

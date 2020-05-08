@@ -211,10 +211,30 @@ page 60034 "HCM Leave Types ErnGrp"
                 {
                     ApplicationArea = all;
                 }
+                // @Avinash 08.05.2020
                 field("Is Attachment Mandatory"; "Attachment Mandate")
                 {
-                    ApplicationArea = all;
+                    ApplicationArea = All;
+                    trigger
+                   OnValidate()
+                    begin
+                        if "Attachment Mandate" then
+                            ChnageBool := true
+                        else
+                            ChnageBool := false;
+                    end;
                 }
+                field("Attachments After Days"; "Attachments After Days")
+                {
+                    ApplicationArea = All;
+                    Editable = ChnageBool;
+                }
+                field("Is Compensatory Leave"; "Is Compensatory Leave")
+                {
+                    ApplicationArea = All;
+
+                }
+                // @Avinash 08.05.2020
                 field("WorkFlow Required"; "WorkFlow Required")
                 {
                     ApplicationArea = all;
@@ -230,6 +250,7 @@ page 60034 "HCM Leave Types ErnGrp"
             }
         }
     }
-
+    var
+        ChnageBool: Boolean;
 }
 
