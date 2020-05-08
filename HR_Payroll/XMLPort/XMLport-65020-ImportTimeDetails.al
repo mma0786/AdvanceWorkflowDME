@@ -122,7 +122,7 @@ xmlport 65020 "Import Time Details"
         if EmployeeWorkDate_GCC.FINDFIRST then
             TimeAttendanceDetails.VALIDATE("Day Type", EmployeeWorkDate_GCC."Calculation Type");
 
-        TimeAttendanceDetails.VALIDATE("Check -In Time", CTime);
+        TimeAttendanceDetails."Check -In Time" := CTime;
         //////TimeAttendanceDetails."Check -Out Time" := Ctimeout;
         TimeAttendanceDetails.VALIDATE("Check -Out Time", Ctimeout);
         TimeAttendanceDetails.VALIDATE("Gate In", GIn);

@@ -83,6 +83,11 @@ page 60195 "Time Attendances"
                 {
                     ApplicationArea = All;
                 }
+                field(Confirmed; Confirmed)
+                {
+                    ApplicationArea = All;
+                    Editable = false;
+                }
             }
         }
     }

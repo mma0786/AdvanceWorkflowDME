@@ -8,9 +8,7 @@ page 60196 "Import Time Attendance"
     UsageCategory = Lists;
     Caption = 'Import Time Attendance List';
     /// commented By Avinash
-    SourceTableView = SORTING("Employee ID")
-                      ORDER(Ascending)
-                      WHERE(Confirmed = FILTER(false));
+    SourceTableView = SORTING("Employee ID") ORDER(Ascending) WHERE(Confirmed = FILTER(false));
     //commented By Avinash
 
     layout
@@ -98,12 +96,18 @@ page 60196 "Import Time Attendance"
                 PromotedOnly = true;
                 ApplicationArea = All;
                 trigger OnAction()
+                var
+                    TimeAttendance: Record "Time Attendance";
                 begin
+                    TimeAttendance.Reset();
+                    TimeAttendance.SetRange("Employee ID", "Employee ID");
+                    TimeAttendance.SetRange(Date, "Check -In Date");
+                    TimeAttendance.SetRange(Confirmed, true);
+                    if TimeAttendance.FindFirst() then
+                        Error('Time Attendance details are already confirmed for the selected employees date range.');
                     DeleteUnconfirm;
                     CheckSameDayCheckin;
                     UpdateTimeAttendance;
-
-                    //UpdateConfirm;
                 end;
             }
             action("Import Attendance")
@@ -122,8 +126,8 @@ page 60196 "Import Time Attendance"
                     if TimeAttendanceDetails.FINDSET then
                         TimeAttendanceDetails.DELETEALL;
                     COMMIT;
-                    // ImportTimeDtailsXmlport.Run();
-                    XMLPORT.RUN(65020, true, true);
+                    ImportTimeDtailsXmlport.Run();
+                    //XMLPORT.RUN(65020, true, true);
                 end;
             }
             action("Export Attendance Details")
@@ -171,98 +175,77 @@ page 60196 "Import Time Attendance"
 
     local procedure UpdateTimeAttendance()
     begin
-        TimeAttendanceDetails1.SETRANGE(Confirmed, false);
-        if TimeAttendanceDetails1.FINDSET then begin
+        TimeAttendanceDetails1.Reset();
+        TimeAttendanceDetails1.SETRANGE(Confirmed, FALSE);
+        IF TimeAttendanceDetails1.FINDSET THEN BEGIN
+            REPEAT
+
+                TimeAttendance.SETRANGE("Employee ID", TimeAttendanceDetails1."Employee ID");
+                TimeAttendance.SETRANGE(Confirmed, FALSE);
+                TimeAttendance.SETRANGE(Date, TimeAttendanceDetails1."Check -In Date");
+
+                IF NOT TimeAttendance.FINDFIRST THEN BEGIN
+                    TimeAttendance."Employee ID" := TimeAttendanceDetails1."Employee ID";
+                    TimeAttendance.Name := TimeAttendanceDetails1."Employee Full Name";
+                    TimeAttendance.Date := TimeAttendanceDetails1."Check -In Date";
+
+                    EmployeeWorkDate_GCC.RESET;
+                    EmployeeWorkDate_GCC.SETRANGE("Employee Code", TimeAttendanceDetails1."Employee ID");
+                    EmployeeWorkDate_GCC.SETRANGE("Trans Date", TimeAttendanceDetails1."Check -In Date");
+                    IF EmployeeWorkDate_GCC.FINDFIRST THEN
+                        TimeAttendance."Day Type" := EmployeeWorkDate_GCC."Calculation Type";
+
+                    TimeAttendanceDetails.SETRANGE("Employee ID", TimeAttendanceDetails1."Employee ID");
+                    TimeAttendanceDetails.SETRANGE("Check -In Date", TimeAttendanceDetails1."Check -In Date");
+                    IF TimeAttendanceDetails.FINDFIRST THEN;
+
+                    TimeAttendance."Start Time" := TimeAttendanceDetails."Check -In Time";
+                    TimeAttendance."Normal Hrs" := TimeAttendanceDetails."Normal Hrs";
+
+                    TimeAttendanceDetails.SETRANGE("Employee ID", TimeAttendanceDetails1."Employee ID");
+                    TimeAttendanceDetails.SETRANGE("Check -In Date", TimeAttendanceDetails1."Check -In Date");
+                    IF TimeAttendanceDetails.FINDLAST THEN;
+
+                    TimeAttendance."End Time" := TimeAttendanceDetails."Check -Out Time";
+
+                    TotalHrs := 0;
+                    WorkingHrs := 0;
+                    HrsWorked := 0;
+                    OvertimeHrs := 0;
+
+                    TimeAttendanceDetails.SETRANGE("Employee ID", TimeAttendanceDetails1."Employee ID");
+                    TimeAttendanceDetails.SETRANGE("Check -In Date", TimeAttendanceDetails1."Check -In Date");
+                    TimeAttendanceDetails.SETFILTER(Confirmed, '%1', FALSE);
+                    IF TimeAttendanceDetails.FINDSET THEN
+                        REPEAT
+                            TotalHrs := TotalHrs + TimeAttendanceDetails."Total Working Hrs";
+                            WorkingHrs := WorkingHrs + TimeAttendanceDetails."Working Hrs";
+                            OvertimeHrs := OvertimeHrs + TimeAttendanceDetails."Overtime Hrs";
+                            TimeAttendanceDetails.RENAME(TimeAttendanceDetails."Employee ID", TimeAttendanceDetails."Check -In Date", TimeAttendanceDetails."Check -In Time", TRUE);
+                        UNTIL TimeAttendanceDetails.NEXT = 0;
 
 
-            TimeAttendance.SETRANGE("Employee ID", TimeAttendanceDetails1."Employee ID");
-            TimeAttendance.SETRANGE(Confirmed, false);
-            TimeAttendance.SETRANGE(Date, TimeAttendanceDetails1."Check -In Date");
+                    TimeAttendance."Total Hours" := TotalHrs;
+                    TimeAttendance."Worked Hours" := WorkingHrs;
+                    TimeAttendance."Absent Hours" := TimeAttendance."Normal Hrs" - TimeAttendance."Worked Hours";
+                    TimeAttendance."Overtime Hrs" := OvertimeHrs;
 
-            if not TimeAttendance.FINDFIRST then begin
-                TimeAttendance."Employee ID" := TimeAttendanceDetails1."Employee ID";
-                TimeAttendance.Name := TimeAttendanceDetails1."Employee Full Name";
-                TimeAttendance.Date := TimeAttendanceDetails1."Check -In Date";
-
-                EmployeeWorkDate_GCC.RESET;
-                EmployeeWorkDate_GCC.SETRANGE("Employee Code", TimeAttendanceDetails1."Employee ID");
-                EmployeeWorkDate_GCC.SETRANGE("Trans Date", TimeAttendanceDetails1."Check -In Date");
-                if EmployeeWorkDate_GCC.FINDFIRST then
-                    TimeAttendance."Day Type" := EmployeeWorkDate_GCC."Calculation Type";
-
-                TimeAttendanceDetails.SETRANGE("Employee ID", TimeAttendanceDetails1."Employee ID");
-                TimeAttendanceDetails.SETRANGE("Check -In Date", TimeAttendanceDetails1."Check -In Date");
-                if TimeAttendanceDetails.FINDFIRST then;
-
-                TimeAttendance."Start Time" := TimeAttendanceDetails."Check -In Time";
-                TimeAttendance."Normal Hrs" := TimeAttendanceDetails."Normal Hrs";
-
-                TimeAttendanceDetails.SETRANGE("Employee ID", TimeAttendanceDetails1."Employee ID");
-                TimeAttendanceDetails.SETRANGE("Check -In Date", TimeAttendanceDetails1."Check -In Date");
-                if TimeAttendanceDetails.FINDLAST then;
-
-                TimeAttendance."End Time" := TimeAttendanceDetails."Check -Out Time";
-
-                TotalHrs := 0;
-                WorkingHrs := 0;
-                HrsWorked := 0;
-                OvertimeHrs := 0;
-
-                TimeAttendanceDetails.SETRANGE("Employee ID", TimeAttendanceDetails1."Employee ID");
-                TimeAttendanceDetails.SETRANGE("Check -In Date", TimeAttendanceDetails1."Check -In Date");
-                TimeAttendanceDetails.SETFILTER(Confirmed, '%1', false);
-                if TimeAttendanceDetails.FINDSET then
-                    repeat
-                        // TimeAttendanceDetails.Confirmed := TRUE;
-                        //
-                        TotalHrs := TotalHrs + TimeAttendanceDetails."Total Working Hrs";
-                        WorkingHrs := WorkingHrs + TimeAttendanceDetails."Working Hrs";
-                        OvertimeHrs := OvertimeHrs + TimeAttendanceDetails."Overtime Hrs";
-                        TimeAttendanceDetails.RENAME(TimeAttendanceDetails."Employee ID", TimeAttendanceDetails."Check -In Date", TimeAttendanceDetails."Check -In Time", true);
-                    until TimeAttendanceDetails.NEXT = 0;
-
-
-                TimeAttendance."Total Hours" := TotalHrs;
-                TimeAttendance."Worked Hours" := WorkingHrs;
-                TimeAttendance."Absent Hours" := TimeAttendance."Normal Hrs" - TimeAttendance."Worked Hours";
-                TimeAttendance."Overtime Hrs" := OvertimeHrs;
-
-                /*
-                       IF WorkingHrs < TimeAttendance."Normal Hrs" THEN
-                          HrsWorked:= ABS(TimeAttendance."Normal Hrs" - TimeAttendance."Worked Hours");
-
-                      IF TimeAttendanceDetails1."Day Type" = TimeAttendanceDetails1."Day Type"::"Working Day"  THEN BEGIN
-                         IF TimeAttendance."Normal Hrs" < WorkingHrs THEN
-                            TimeAttendance."Overtime Hrs" := WorkingHrs- TimeAttendance."Normal Hrs"
-                         ELSE BEGIN
-
-                            TimeAttendance."Absent Hours" := HrsWorked;
-                        END;
-                      END
-                      ELSE BEGIN
-                       TimeAttendance."Overtime Hrs" := TotalHrs;
-                       TimeAttendance."Normal Hrs" := 0;
-                       TimeAttendance."Absent Hours" :=0;
-                      END;
-
-                     IF TimeAttendance."Worked Hours" > TimeAttendance."Normal Hrs" THEN
-                        TimeAttendance."Worked Hours" := TimeAttendance."Normal Hrs";
-
-                */
-
-                if TimeAttendanceDetails1."Day Type" <> TimeAttendanceDetails1."Day Type"::"Working Day" then begin
-                    TimeAttendance."Overtime Hrs" := OvertimeHrs + WorkingHrs;
-                    TimeAttendance."Absent Hours" := 0;
-                    TimeAttendance."Worked Hours" := 0;
-                end;
-                TimeAttendance.Confirmed := false;
-                TimeAttendance.INSERT;
-                // TimeAttendanceDetails1.RENAME(TimeAttendanceDetails1."Employee ID",TimeAttendanceDetails1."Check -In Date",TimeAttendanceDetails1."Check -In Time",TRUE);
-
-            end;
-        end;
-        //UNTIL TimeAttendanceDetails1.NEXT = 0;
+                    IF TimeAttendanceDetails1."Day Type" <> TimeAttendanceDetails1."Day Type"::"Working Day" THEN BEGIN
+                        TimeAttendance."Overtime Hrs" := OvertimeHrs + WorkingHrs;
+                        TimeAttendance."Absent Hours" := 0;
+                        TimeAttendance."Worked Hours" := 0;
+                    END;
+                    TimeAttendance.Confirmed := FALSE;
+                    TimeAttendance.INSERT;
+                END;
+            UNTIL TimeAttendanceDetails1.NEXT = 0;
+        END;
         CurrPage.UPDATE;
+
+
+
+
+
 
     end;
 
@@ -279,17 +262,17 @@ page 60196 "Import Time Attendance"
     begin
         TimeAttendance.SETRANGE("Employee ID", "Employee ID");
         TimeAttendance.SETRANGE(Date, "Check -In Date");
-        TimeAttendance.SETRANGE(Confirmed, false);
-        if TimeAttendance.FINDFIRST then begin
+        TimeAttendance.SETRANGE(Confirmed, FALSE);
+        IF TimeAttendance.FINDFIRST THEN BEGIN
             TimeAttendanceDetails.SETRANGE("Employee ID", "Employee ID");
             TimeAttendanceDetails.SETRANGE("Check -In Date", "Check -In Date");
-            TimeAttendanceDetails.SETRANGE(Confirmed, true);
-            if TimeAttendanceDetails.FINDSET then
+            TimeAttendanceDetails.SETRANGE(Confirmed, TRUE);
+            IF TimeAttendanceDetails.FINDSET THEN
                 TimeAttendanceDetails.DELETEALL;
 
             TimeAttendance.DELETEALL;
 
-        end;
+        END;
     end;
 
     local procedure UpdateConfirm()

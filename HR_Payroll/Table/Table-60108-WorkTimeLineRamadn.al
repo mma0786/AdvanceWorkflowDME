@@ -24,7 +24,7 @@ table 60108 "Work Time Line - Ramadn"
 
             trigger OnValidate()
             begin
-                if "To Time" <> 000000T then begin
+                if "To Time" <> 0T then begin
                     if "From Time" >= "To Time" then
                         ERROR('Invalid From time ');
 
@@ -41,7 +41,7 @@ table 60108 "Work Time Line - Ramadn"
                 end;
 
 
-                if "To Time" <> 000000T then
+                if "To Time" <> 0T then
                     if "From Time" > "To Time" then
                         Duration := "From Time" - "To Time"
                     else

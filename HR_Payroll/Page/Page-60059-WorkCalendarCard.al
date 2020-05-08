@@ -93,18 +93,18 @@ page 60059 "Work Calendar Card"
                     trigger OnAction()
                     begin
                         //commented By Avinash
-                        // CLEAR(CardRamadnPage);
-                        // TimeRamadanRec.RESET;
-                        // TimeRamadanRec.SETRANGE("Work Time ID", Rec."Calendar ID");
-                        // if not TimeRamadanRec.FINDFIRST then begin
-                        //     TimeRamadanRec.INIT;
-                        //     TimeRamadanRec.VALIDATE("Work Time ID", Rec."Calendar ID");
-                        //     TimeRamadanRec.INSERT(true);
-                        //     CardRamadnPage.SETTABLEVIEW(TimeRamadanRec);
-                        // end else begin
-                        //     CardRamadnPage.SETTABLEVIEW(TimeRamadanRec);
-                        //     CardRamadnPage.RUNMODAL
-                        // end;
+                        CLEAR(CardRamadnPage);
+                        TimeRamadanRec.RESET;
+                        TimeRamadanRec.SETRANGE("Work Time ID", Rec."Calendar ID");
+                        if not TimeRamadanRec.FINDFIRST then begin
+                            TimeRamadanRec.INIT;
+                            TimeRamadanRec.VALIDATE("Work Time ID", Rec."Calendar ID");
+                            TimeRamadanRec.INSERT(true);
+                            CardRamadnPage.SETTABLEVIEW(TimeRamadanRec);
+                        end else begin
+                            CardRamadnPage.SETTABLEVIEW(TimeRamadanRec);
+                            CardRamadnPage.RUNMODAL
+                        end;
                         //commented By Avinash
 
                     end;
@@ -126,9 +126,9 @@ page 60059 "Work Calendar Card"
     end;
 
     var
-    //commented By Avinash
-    // CardRamadnPage: Page "Work Time Template CardRamadn";
-    // TimeRamadanRec: Record Table50054;
-    //commented By Avinash
+
+        CardRamadnPage: Page "Work Time Template Card-Ramadn";
+        TimeRamadanRec: Record "Work Time Template - Ramadn";
+
 }
 

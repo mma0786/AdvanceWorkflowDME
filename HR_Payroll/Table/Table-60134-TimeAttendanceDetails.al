@@ -182,15 +182,16 @@ table 60134 "Time Attendance - Details"
         TimeAttendanceDetails.RESET;
         TimeAttendanceDetails.SETRANGE("Employee ID", "Employee ID");
         TimeAttendanceDetails.SETRANGE("Check -In Date", "Check -In Date");
-        TimeAttendanceDetails.SETASCENDING("Check -In Time", true);
-        if TimeAttendanceDetails.FIND('-') then
-            repeat
-                if TimeAttendanceDetails."Check -In Time" < "Check -In Time" then begin
-                    if TimeAttendanceDetails."Check -Out Time" > "Check -In Time" then
+        TimeAttendanceDetails.SETASCENDING("Check -In Time", TRUE);
+        IF TimeAttendanceDetails.FIND('-') THEN
+            REPEAT
+                IF TimeAttendanceDetails."Check -In Time" < "Check -In Time" THEN BEGIN
+                    IF TimeAttendanceDetails."Check -Out Time" > "Check -In Time" THEN
                         ERROR(Text50002, TimeAttendanceDetails."Employee ID", TimeAttendanceDetails."Check -In Date", TimeAttendanceDetails."Check -Out Time");
-                end;
+                END;
 
-            until TimeAttendance.NEXT = 0;
+            UNTIL TimeAttendance.NEXT = 0;
+
     end;
 
     local procedure CalcForSameDayCheckIn()
@@ -231,29 +232,29 @@ table 60134 "Time Attendance - Details"
 
 
         if (("Check -In Time" >= WorkCalendarDateLine."From Time") and ("Check -In Time" < WorkCalendarDateLine1."To Time")) then
-            Message('1 SCENARI');
+            //Message('1 SCENARI');
         if (("Check -Out Time" <= WorkCalendarDateLine1."To Time")) then begin
-            WorkingDuration := "Check -Out Time" - "Check -In Time";
+                WorkingDuration := "Check -Out Time" - "Check -In Time";
 
-            "Working Hrs" := ((WorkingDuration / 1000) / 60) / 60;
-            "Absent Hrs" := 0;
-            "Overtime Hrs" := 0
-        end
-        else
-            if "Check -Out Time" >= WorkCalendarDateLine1."To Time" then begin
-                WorkingDuration := WorkCalendarDateLine1."To Time" - "Check -In Time";
-                OvertimeDuration := "Check -Out Time" - WorkCalendarDateLine1."To Time";
                 "Working Hrs" := ((WorkingDuration / 1000) / 60) / 60;
                 "Absent Hrs" := 0;
-                "Overtime Hrs" := ((OvertimeDuration / 1000) / 60) / 60;
-            end;
+                "Overtime Hrs" := 0
+            end
+            else
+                if "Check -Out Time" >= WorkCalendarDateLine1."To Time" then begin
+                    WorkingDuration := WorkCalendarDateLine1."To Time" - "Check -In Time";
+                    OvertimeDuration := "Check -Out Time" - WorkCalendarDateLine1."To Time";
+                    "Working Hrs" := ((WorkingDuration / 1000) / 60) / 60;
+                    "Absent Hrs" := 0;
+                    "Overtime Hrs" := ((OvertimeDuration / 1000) / 60) / 60;
+                end;
 
 
 
         //****************2ND SCENARI********************************
         if (("Check -In Time" <= WorkCalendarDateLine."From Time")) then
             if (("Check -Out Time" <= WorkCalendarDateLine1."To Time")) then begin
-                Message('2 SCENARI');
+                // Message('2 SCENARI');
                 WorkingDuration := "Check -Out Time" - WorkCalendarDateLine."From Time";
 
                 "Working Hrs" := ((WorkingDuration / 1000) / 60) / 60;
@@ -274,9 +275,9 @@ table 60134 "Time Attendance - Details"
 
         if (("Check -In Time" >= WorkCalendarDateLine."From Time")) then
             if (("Check -Out Time" <= WorkCalendarDateLine1."To Time")) then begin
-                Message('3 SCENARI');
+                //Message('3 SCENARI');
 
-                Message('Out - %1               In- %2', "Check -Out Time", "Check -In Time");
+                // Message('Out - %1               In- %2', "Check -Out Time", "Check -In Time");
 
                 WorkingDuration := "Check -Out Time" - "Check -In Time";
 
@@ -287,7 +288,7 @@ table 60134 "Time Attendance - Details"
             else
                 if "Check -Out Time" >= WorkCalendarDateLine1."To Time" then begin
 
-                    Message('Out - %1               In- %2 else', WorkCalendarDateLine1."To Time", "Check -In Time");
+                    // Message('Out - %1               In- %2 else', WorkCalendarDateLine1."To Time", "Check -In Time");
 
                     WorkingDuration := WorkCalendarDateLine1."To Time" - "Check -In Time";
 
@@ -301,7 +302,7 @@ table 60134 "Time Attendance - Details"
         //****************4th scenario****************
         if (("Check -In Time" >= WorkCalendarDateLine1."To Time")) then
             if "Check -Out Time" >= WorkCalendarDateLine1."To Time" then begin
-                Message('4 SCENARI');
+                // Message('4 SCENARI');
                 OvertimeDuration := "Check -Out Time" - "Check -In Time";
                 "Working Hrs" := 0;
                 "Absent Hrs" := 0;
