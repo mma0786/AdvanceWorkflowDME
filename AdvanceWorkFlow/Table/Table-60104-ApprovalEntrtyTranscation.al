@@ -10,8 +10,8 @@ table 60104 "Approval Entrty Transcation"
         field(2; "Advance Payrolll Type"; Option)
         {
             Editable = false;
-            OptionCaption = ',Loan,Leaves,Benifit,Over Time,Employee Contracts,Asset Return,Duty Resumption,Pre Approval Overtime Request,Overtime Benefit Claim';
-            OptionMembers = ,Loan,Leaves,Benifit,"Asset Issue","Employee Contracts","Asset Return","Duty Resumption","Pre Approval Overtime Request","Overtime Benefit Claim";
+            OptionCaption = ',Loan,Leaves,Benifit,Over Time,Employee Contracts,Asset Return,Duty Resumption,Pre Approval Overtime Request,Overtime Benefit Claim,Cancel Leave Requests';
+            OptionMembers = ,Loan,Leaves,Benifit,"Asset Issue","Employee Contracts","Asset Return","Duty Resumption","Pre Approval Overtime Request","Overtime Benefit Claim","Cancel Leave Requests";
         }
         field(3; "Employee ID - Sender"; Code[50])
         {

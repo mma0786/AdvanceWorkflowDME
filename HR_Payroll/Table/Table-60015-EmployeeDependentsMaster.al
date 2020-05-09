@@ -265,7 +265,7 @@ table 60015 "Employee Dependents Master"
         }
         field(21; "Primary Contact"; Boolean)
         {
-            Caption = 'Primary Contact';
+            Caption = 'Emergency Contact';
 
             trigger OnValidate()
             begin
@@ -419,6 +419,10 @@ table 60015 "Employee Dependents Master"
         field(35; "Religion Desciption"; Text[120])
         {
             Editable = false;
+        }
+        field(36; "Is Nominee"; Boolean)
+        {
+
         }
     }
 

@@ -141,6 +141,10 @@ page 60023 "Employee Dependent Card1"
                 {
                     ApplicationArea = All;
                 }
+                field("Is Nominee"; "Is Nominee")
+                {
+                    ApplicationArea = All;
+                }
             }
             part("Dependent Address"; "Dependent Address ListPart1")
             {

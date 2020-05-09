@@ -471,18 +471,7 @@ page 60064 "Leave Request Card"
                     end;
                 }
 
-                /* action(Test)
-                 {
-                     Image = TestFile;
-                     Promoted = true;
-                     PromotedOnly = true;
-                     Caption = 'Test Duty';
-                     trigger OnAction()
-                     begin
-                         CreateDutyResumptionEntry;
 
-                     end;
-                 }*/
                 action("Cancel Leave Request")
                 {
                     Image = Cancel;

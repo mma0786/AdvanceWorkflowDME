@@ -5,8 +5,8 @@ table 60103 "Approval Level Setup"
     {
         field(1; "Advance Payrolll Type"; Option)
         {
-            OptionCaption = ',Loan,Leaves,Benifit,Asset Issue,Employee Contracts,Asset Return,Duty Resumption,Pre Approval Overtime Request,Overtime Benefit Claim';
-            OptionMembers = ,Loan,Leaves,Benifit,"Asset Issue","Employee Contracts","Asset Return","Duty Resumption","Pre Approval Overtime Request","Overtime Benefit Claim";
+            OptionCaption = ',Loan,Leaves,Benifit,Asset Issue,Employee Contracts,Asset Return,Duty Resumption,Pre Approval Overtime Request,Overtime Benefit Claim,Cancel Leave Requests';
+            OptionMembers = ,Loan,Leaves,Benifit,"Asset Issue","Employee Contracts","Asset Return","Duty Resumption","Pre Approval Overtime Request","Overtime Benefit Claim","Cancel Leave Requests";
         }
         field(2; Level; Integer)
         {
