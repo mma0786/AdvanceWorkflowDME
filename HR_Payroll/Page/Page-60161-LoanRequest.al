@@ -213,6 +213,8 @@ page 60161 "Loan Request"
                     AccessByPermission = TableData "Approval Entry" = R;
                     ApplicationArea = Suite;
                     Caption = 'Approvals';
+                    Promoted = true;
+                    PromotedCategory = Category4;
                     Image = Approvals;
                     ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
 
@@ -221,13 +223,18 @@ page 60161 "Loan Request"
                     var
                         GenJournalLine: Record "Gen. Journal Line";
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                        ApprovalEntry: Record "Approval Entry";
                     begin
-                        //commented By Avinash   ApprovalsMgmt.ShowLoanRequestApprovalEntries(Rec);
+                        ApprovalEntry.Reset();
+                        ApprovalEntry.SETRANGE("Table ID", DATABASE::"Loan Request");
+                        ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RecordId);
+                        ApprovalEntry.SETRANGE("Related to Change", FALSE);
+                        PAGE.RUN(70010, ApprovalEntry);
                     end;
                 }
                 action(Reopen)
                 {
-                    Enabled = ("WorkFlow Status" = "WorkFlow Status"::Approved);
+                    Enabled = ("WorkFlow Status" = "WorkFlow Status"::Released);
                     Image = ReOpen;
                     Promoted = true;
                     PromotedCategory = Process;
@@ -294,6 +301,7 @@ page 60161 "Loan Request"
                 }
                 action("Create Installment")
                 {
+                    Enabled = ("WorkFlow Status" = "WorkFlow Status"::Released);
                     Image = CreateInteraction;
                     Promoted = true;
                     PromotedCategory = "Report";

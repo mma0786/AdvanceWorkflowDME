@@ -13,7 +13,7 @@ page 60203 "Leave Request Card_RC"
         {
             group(General)
             {
-                Editable = ("Workflow Status" <> "Workflow Status"::Approved) AND ("Workflow Status" <> "Workflow Status"::Cancelled);
+                Editable = ("Workflow Status" <> "Workflow Status"::Released) AND ("Workflow Status" <> "Workflow Status"::Rejected);
                 field("Leave Request ID"; "Leave Request ID")
                 {
                 }
@@ -170,7 +170,7 @@ page 60203 "Leave Request Card_RC"
                     //
                     CurrPage.SETSELECTIONFILTER(LeaveRequestHeader);
                     if LeaveRequestHeader.FINDFIRST then begin
-                        if LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved then
+                        if LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Released then
                             ERROR('You cannot cancel approved leaves');
 
                         //commented By Avinash     ApprovalsMgmt.OnCancelLeaveApprovalRequest(LeaveRequestHeader);
@@ -192,7 +192,7 @@ page 60203 "Leave Request Card_RC"
                     if Rec."Workflow Status" = Rec."Workflow Status"::"Pending For Approval" then
                         ERROR(Text001);
 
-                    if "Workflow Status" = "Workflow Status"::Cancelled then
+                    if "Workflow Status" = "Workflow Status"::Rejected then
                         ERROR('You Cannot reopen Cancelled Leave request');
                     TESTFIELD(Posted, false);
                     Reopen(Rec);
@@ -217,10 +217,10 @@ page 60203 "Leave Request Card_RC"
                     if LeaveRequestHeader.FINDFIRST then begin
                         if LeaveRequestHeader."Leave Days" = 0 then
                             ERROR('Leave days cannot be zero');
-                        LeaveRequestHeader.TESTFIELD("Workflow Status", "Workflow Status"::Approved);
+                        LeaveRequestHeader.TESTFIELD("Workflow Status", "Workflow Status"::Released);
                         if LeaveRequestHeader.Posted then
                             ERROR('Leave request is already posted');
-                        if not (LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved) then
+                        if not (LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Released) then
                             ERROR('Workflow Status must be Approved, Current value is %1', LeaveRequestHeader."Workflow Status");
                         PostLeave(LeaveRequestHeader);
                     end;
@@ -421,7 +421,7 @@ page 60203 "Leave Request Card_RC"
 
 
         if "Leave Request ID" <> '' then begin
-            if (Rec."Workflow Status" = Rec."Workflow Status"::Open) or (Rec."Workflow Status" = Rec."Workflow Status"::"Not Submitted") then
+            if (Rec."Workflow Status" = Rec."Workflow Status"::Open) or (Rec."Workflow Status" = Rec."Workflow Status"::"Pending For Approval") then
                 EditLeaveRequest := true
             else
                 EditLeaveRequest := false;

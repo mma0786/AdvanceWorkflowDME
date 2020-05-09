@@ -12,7 +12,7 @@ page 60064 "Leave Request Card"
         {
             group(General)
             {
-                Editable = ("Workflow Status" <> "Workflow Status"::Approved) AND ("Workflow Status" <> "Workflow Status"::Cancelled) AND ("Workflow Status" <> "Workflow Status"::"Pending For Approval");
+                Editable = ("Workflow Status" <> "Workflow Status"::Released) AND ("Workflow Status" <> "Workflow Status"::"Pending For Approval");
                 field("Leave Request ID"; "Leave Request ID")
                 {
                     Editable = false;
@@ -282,7 +282,7 @@ page 60064 "Leave Request Card"
 
                         CurrPage.SETSELECTIONFILTER(LeaveRequestHeader);
                         if LeaveRequestHeader.FINDFIRST then begin
-                            if LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved then
+                            if LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Released then
                                 ERROR('You cannot cancel approved leaves');
 
                             DutyResumption.Reset();
@@ -312,8 +312,8 @@ page 60064 "Leave Request Card"
                         if Rec."Workflow Status" = Rec."Workflow Status"::"Pending For Approval" then
                             ERROR(Text001);
 
-                        if "Workflow Status" = "Workflow Status"::Cancelled then
-                            ERROR('You Cannot reopen Cancelled Leave request');
+                        if "Workflow Status" = "Workflow Status"::Rejected then
+                            ERROR('You Cannot reopen rejected Leave request');
                         TESTFIELD(Posted, false);
                         Reopen(Rec);
                     end;
@@ -339,10 +339,10 @@ page 60064 "Leave Request Card"
                         if LeaveRequestHeader.FINDFIRST then begin
                             if LeaveRequestHeader."Leave Days" = 0 then
                                 ERROR('Leave days cannot be zero');
-                            LeaveRequestHeader.TESTFIELD("Workflow Status", "Workflow Status"::Approved);
+                            LeaveRequestHeader.TESTFIELD("Workflow Status", "Workflow Status"::Released);
                             if LeaveRequestHeader.Posted then
                                 ERROR('Leave request is already posted');
-                            if not (LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved) then
+                            if not (LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Released) then
                                 ERROR('Workflow Status must be Approved, Current value is %1', LeaveRequestHeader."Workflow Status");
                             PostLeave(LeaveRequestHeader);
                         end;
@@ -423,8 +423,8 @@ page 60064 "Leave Request Card"
                     begin
                         //
                         TESTFIELD(Posted, true);
-                        if Rec."Workflow Status" = Rec."Workflow Status"::Cancelled then
-                            ERROR('Leave Request is Cancelled, You cannot create duty resumption');
+                        if Rec."Workflow Status" = Rec."Workflow Status"::Rejected then
+                            ERROR('Leave Request is Rejected, You cannot create duty resumption');
                         CreateDutyResumptionEntry;
                     end;
                 }
@@ -444,7 +444,7 @@ page 60064 "Leave Request Card"
                     begin
                         //
                         TESTFIELD(Posted, true);
-                        if Rec."Workflow Status" = Rec."Workflow Status"::Cancelled then
+                        if Rec."Workflow Status" = Rec."Workflow Status"::Rejected then
                             ERROR('Leave Request is Cancelled, You cannot create duty resumption');
                         CreateDutyResumptionEntry;
                     end;
@@ -728,7 +728,7 @@ page 60064 "Leave Request Card"
 
 
         if "Leave Request ID" <> '' then begin
-            if (Rec."Workflow Status" = Rec."Workflow Status"::Open) or (Rec."Workflow Status" = Rec."Workflow Status"::"Not Submitted") then
+            if (Rec."Workflow Status" = Rec."Workflow Status"::Open) or (Rec."Workflow Status" = Rec."Workflow Status"::Released) then
                 EditLeaveRequest := true
             else
                 EditLeaveRequest := false;

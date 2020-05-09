@@ -214,6 +214,8 @@ page 60152 "Full and Final Journal Card"
                 AccessByPermission = TableData "Approval Entry" = R;
                 ApplicationArea = Suite;
                 Caption = 'Approvals';
+                Promoted = true;
+                PromotedCategory = Category4;
                 Image = Approvals;
                 ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
 
@@ -221,8 +223,13 @@ page 60152 "Full and Final Journal Card"
                 var
                     GenJournalLine: Record "Gen. Journal Line";
                     ApprovalsMgmt: Codeunit "Approvals Mgmt.";
+                    ApprovalEntry: Record "Approval Entry";
                 begin
-                    //commented By Avinash   ApprovalsMgmt.ShowFullandFinalApprovalEntries(Rec);
+                    ApprovalEntry.Reset();
+                    ApprovalEntry.SETRANGE("Table ID", DATABASE::"Full and Final Calculation");
+                    ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RecordId);
+                    ApprovalEntry.SETRANGE("Related to Change", FALSE);
+                    PAGE.RUN(70010, ApprovalEntry);
                 end;
             }
             action(Comments)

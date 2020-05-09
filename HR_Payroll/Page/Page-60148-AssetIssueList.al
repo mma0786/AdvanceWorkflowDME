@@ -178,7 +178,7 @@ page 60148 "Asset Issue List"
 
                         AssetAssiReg.RESET;
                         AssetAssiReg.SETRANGE("FA No", Rec."FA No");
-                        AssetAssiReg.SETFILTER("WorkFlow Status", '%1|%2', AssetAssiReg."WorkFlow Status"::"Pending Approval", AssetAssiReg."WorkFlow Status"::Released);
+                        AssetAssiReg.SETFILTER("WorkFlow Status", '%1|%2', AssetAssiReg."WorkFlow Status"::"Pending For Approval", AssetAssiReg."WorkFlow Status"::Released);
 
                         if AssetAssiReg.FINDSET then begin
                             repeat
@@ -230,7 +230,7 @@ page 60148 "Asset Issue List"
                 {
                     ApplicationArea = Suite;
                     Caption = 'Cancel Approval Re&quest';
-                    Enabled = "WorkFlow Status" = "WorkFlow Status"::"Pending Approval";
+                    Enabled = "WorkFlow Status" = "WorkFlow Status"::"Pending For Approval";
                     Image = CancelApprovalRequest;
                     Promoted = true;
                     PromotedCategory = Category9;
@@ -252,22 +252,23 @@ page 60148 "Asset Issue List"
                 {
                     AccessByPermission = TableData "Approval Entry" = R;
                     ApplicationArea = Suite;
+                    Caption = 'Approvals';
                     Promoted = true;
                     PromotedCategory = Category4;
-                    Caption = 'Approvals';
                     Image = Approvals;
                     ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
 
                     trigger OnAction()
                     var
+                        GenJournalLine: Record "Gen. Journal Line";
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                         ApprovalEntry: Record "Approval Entry";
                     begin
-                        ApprovalEntry.RESET;
-                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
-                        ApprovalEntry.SetRange("Record ID to Approve", Rec.RecID);
-                        if ApprovalEntry.FindSet() then begin
-                            PAGE.RUNMODAL(658, ApprovalEntry);
-                        end;
+                        ApprovalEntry.Reset();
+                        ApprovalEntry.SETRANGE("Table ID", DATABASE::"Asset Assignment Register");
+                        ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RecordId);
+                        ApprovalEntry.SETRANGE("Related to Change", FALSE);
+                        PAGE.RUN(70010, ApprovalEntry);
                     end;
                 }
                 action(Reopen)

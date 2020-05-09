@@ -78,7 +78,7 @@ table 60122 "Loan Adjustment Header"
         }
         field(9; "Loan Request ID"; Code[50])
         {
-            TableRelation = "Loan Request"."Loan Request ID" WHERE("Employee ID" = FIELD("Employee ID"), "WorkFlow Status" = filter(Approved));
+            TableRelation = "Loan Request"."Loan Request ID" WHERE("Employee ID" = FIELD("Employee ID"), "WorkFlow Status" = filter(Released));
 
             trigger OnValidate()
             begin

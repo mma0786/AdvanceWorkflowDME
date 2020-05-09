@@ -291,22 +291,23 @@ page 60084 "Payroll Statements"
                 {
                     AccessByPermission = TableData "Approval Entry" = R;
                     ApplicationArea = Suite;
+                    Caption = 'Approvals';
                     Promoted = true;
                     PromotedCategory = Category4;
-                    Caption = 'Approvals';
                     Image = Approvals;
                     ToolTip = 'View a list of the records that are waiting to be approved. For example, you can see who requested the record to be approved, when it was sent, and when it is due to be approved.';
 
                     trigger OnAction()
                     var
+                        GenJournalLine: Record "Gen. Journal Line";
+                        ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                         ApprovalEntry: Record "Approval Entry";
                     begin
-                        ApprovalEntry.RESET;
-                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
-                        ApprovalEntry.SetRange("Record ID to Approve", Rec.RecID);
-                        if ApprovalEntry.FindSet() then begin
-                            PAGE.RUNMODAL(658, ApprovalEntry);
-                        end;
+                        ApprovalEntry.Reset();
+                        ApprovalEntry.SETRANGE("Table ID", Database::"Payroll Statement");
+                        ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RecordId);
+                        ApprovalEntry.SETRANGE("Related to Change", FALSE);
+                        PAGE.RUN(70010, ApprovalEntry);
                     end;
                 }
                 action(Comments)
