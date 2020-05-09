@@ -4,10 +4,6 @@ report 60013 "Employee Termination"
 
     ProcessingOnly = true;
 
-    dataset
-    {
-    }
-
     requestpage
     {
 

@@ -1,5 +1,6 @@
 pageextension 60014 EmployeeListExt extends "Employee List"
 {
+
     layout
     {
         // Add changes to page layout here
@@ -151,6 +152,12 @@ pageextension 60014 EmployeeListExt extends "Employee List"
             }
         }
     }
+
+    trigger OnOpenPage()
+    begin
+        SetRange(Status, Status::Active);
+
+    end;
 
     var
         PayrollEarningCodeWrkr: Record "Payroll Earning Code Wrkr";
