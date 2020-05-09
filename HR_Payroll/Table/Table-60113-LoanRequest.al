@@ -150,8 +150,10 @@ table 60113 "Loan Request"
         field(17; "WorkFlow Status"; Option)
         {
             Editable = false;
-            OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
-            OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
+            //OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
+            //OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
+            OptionCaption = 'Open,Approved,Send for Approval,Rejected';
+            OptionMembers = Open,Released,"Pending For Approval",Rejected;
         }
         field(18; "Created Date"; Date)
         {

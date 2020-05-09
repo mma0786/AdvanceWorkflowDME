@@ -70,9 +70,11 @@ table 60122 "Loan Adjustment Header"
         }
         field(8; "Workflow Status"; Option)
         {
-            Description = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
-            OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
-            OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
+            //Description = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
+            //OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
+            //OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
+            OptionCaption = 'Open,Approved,Send for Approval,Rejected';
+            OptionMembers = Open,Released,"Pending For Approval",Rejected;
         }
         field(9; "Loan Request ID"; Code[50])
         {

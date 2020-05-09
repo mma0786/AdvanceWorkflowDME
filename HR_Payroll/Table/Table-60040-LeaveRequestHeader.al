@@ -275,8 +275,10 @@ table 60040 "Leave Request Header"
         field(18; "Workflow Status"; Option)
         {
             //Editable = false;
-            OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
-            OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
+            //OptionCaption = 'Not Submitted,Submitted,Approved,Cancelled,Rejected,Open,Pending For Approval';
+            //OptionMembers = "Not Submitted",Submitted,Approved,Cancelled,Rejected,Open,"Pending For Approval";
+            OptionCaption = 'Open,Approved,Send for Approval,Rejected';
+            OptionMembers = Open,Released,"Pending For Approval",Rejected;
         }
         field(19; Posted; Boolean)
         {
@@ -910,7 +912,7 @@ table 60040 "Leave Request Header"
         l_LeaveRequestHeader.RESET;
         l_LeaveRequestHeader.SETRANGE("Personnel Number", l_Employee."No.");
         l_LeaveRequestHeader.SETRANGE("Leave Type", l_LeaveType."Leave Type Id");
-        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Approved);
+        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Released);
         if l_LeaveRequestHeader.FINDFIRST then
             if l_LeaveRequestHeader.COUNT > l_LeaveType."Max Times" then
                 ERROR('You cannot apply %1 leave type more than %2 times', l_LeaveType."Leave Type Id", l_LeaveType."Max Times");
@@ -943,7 +945,7 @@ table 60040 "Leave Request Header"
     begin
         l_LeaveRequestHeader.RESET;
         l_LeaveRequestHeader.SETRANGE("Leave Type", l_LeaveType."Leave Type Id");
-        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Approved);
+        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Released);
         if l_LeaveRequestHeader.FINDFIRST then
             if l_LeaveRequestHeader.COUNT > l_LeaveType."Max Occurance" then
                 ERROR('You Cannot apply %1 leave type more than %2 times', l_LeaveType."Leave Type Id", l_LeaveType."Max Occurance");
@@ -955,7 +957,7 @@ table 60040 "Leave Request Header"
         AccrualCompCalc: Codeunit "Accrual Component Calculate";
     begin
         TESTFIELD("Leave Type");
-        TESTFIELD("Workflow Status", "Workflow Status"::Approved);
+        TESTFIELD("Workflow Status", "Workflow Status"::Released);
 
         Employee.GET("Personnel Number");
 
@@ -1248,7 +1250,7 @@ table 60040 "Leave Request Header"
         l_LeaveRequestHeader.RESET;
         l_LeaveRequestHeader.SETRANGE("Personnel Number", l_Employee."No.");
         l_LeaveRequestHeader.SETRANGE("Leave Type", l_LeaveType."Leave Type Id");
-        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Approved);
+        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Released);
         if l_LeaveRequestHeader.FINDFIRST then
             if (l_LeaveRequestHeader."End Date" - Rec."Start Date") <= l_LeaveType."Min Days Between 2 leave Req." then
                 ERROR('You can apply %1 leave type Only after  %2', l_LeaveType."Leave Type Id",
@@ -1352,7 +1354,7 @@ table 60040 "Leave Request Header"
 
         LeaveType.TESTFIELD(Active);
 
-        "Workflow Status" := "Workflow Status"::Cancelled;
+        "Workflow Status" := "Workflow Status"::Rejected;
 
         UpdateEmployeeWorkDate;
         // // Commented By Avinash
