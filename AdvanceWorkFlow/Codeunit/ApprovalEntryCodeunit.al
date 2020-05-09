@@ -50,7 +50,7 @@ codeunit 70001 "Advance Workflow"
                         LeaveRequestHeaderRecL.Reset();
                         LeaveRequestHeaderRecL.SetRange(RecId, DocRecodsID);
                         if LeaveRequestHeaderRecL.FindFirst() then begin
-                            LeaveRequestHeaderRecL.Validate("Workflow Status", LeaveRequestHeaderRecL."Workflow Status"::Released);
+                            LeaveRequestHeaderRecL.Validate("Workflow Status", LeaveRequestHeaderRecL."Workflow Status"::Approved);
                             LeaveRequestHeaderRecL.Modify();
                             Message('Leave Request has been Approved.');
                         end;

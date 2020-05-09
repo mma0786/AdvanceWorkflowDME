@@ -151,7 +151,7 @@ page 60202 "Leave Requests_RC"
                 begin
                     CurrPage.SETSELECTIONFILTER(LeaveRequestHeader);
                     if LeaveRequestHeader.FINDFIRST then begin
-                        if LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Released then
+                        if LeaveRequestHeader."Workflow Status" = LeaveRequestHeader."Workflow Status"::Approved then
                             ERROR('You cannot cancel approved leaves');
 
                         //commented By Avinash   ApprovalsMgmt.OnCancelLeaveApprovalRequest(LeaveRequestHeader);
@@ -189,13 +189,13 @@ page 60202 "Leave Requests_RC"
                 begin
                     //
 
-                    TESTFIELD("Workflow Status", "Workflow Status"::Released);
+                    TESTFIELD("Workflow Status", "Workflow Status"::Approved);
                     if not CONFIRM('Do you want to post the leave request?') then
                         exit;
 
                     CurrPage.SETSELECTIONFILTER(LeaveRequestHeader);
                     if LeaveRequestHeader.FINDFIRST then begin
-                        LeaveRequestHeader.TESTFIELD("Workflow Status", "Workflow Status"::Released);
+                        LeaveRequestHeader.TESTFIELD("Workflow Status", "Workflow Status"::Approved);
                         TESTFIELD(Posted, false);
                         PostLeave(LeaveRequestHeader);
                     end;
@@ -353,7 +353,7 @@ page 60202 "Leave Requests_RC"
 
 
         if "Leave Request ID" <> '' then begin
-            if (Rec."Workflow Status" = Rec."Workflow Status"::Open) then
+            if (Rec."Workflow Status" = Rec."Workflow Status"::Open) or (Rec."Workflow Status" = Rec."Workflow Status"::"Not Submitted") then
                 EditLeaveRequest := true
             else
                 EditLeaveRequest := false;

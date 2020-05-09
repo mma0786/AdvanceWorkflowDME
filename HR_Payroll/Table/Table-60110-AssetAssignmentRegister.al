@@ -255,10 +255,8 @@ table 60110 "Asset Assignment Register"
         {
             Caption = 'WorkFlow Status';
             Editable = true;
-            // OptionCaption = 'Open,Approved,Send for Approval,Rejected';
-            // OptionMembers = Open,Released,"Pending Approval",Rejected;
-            OptionCaption = 'Open,Pending For Approval,Released,Rejected';
-            OptionMembers = Open,"Pending For Approval",Released,Rejected;
+            OptionCaption = 'Open,Approved,Send for Approval,Rejected';
+            OptionMembers = Open,Released,"Pending Approval",Rejected;
         }
         field(25; Posted; Boolean)
         {

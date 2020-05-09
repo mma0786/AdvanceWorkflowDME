@@ -368,7 +368,7 @@ page 60147 "Asset Issue"
                 {
                     ApplicationArea = Suite;
                     Caption = 'Cancel Approval Re&quest';
-                    Enabled = "WorkFlow Status" = "WorkFlow Status"::"Pending For Approval";
+                    Enabled = "WorkFlow Status" = "WorkFlow Status"::"Pending Approval";
                     Image = CancelApprovalRequest;
                     Promoted = true;
                     PromotedCategory = Category9;
@@ -407,11 +407,12 @@ page 60147 "Asset Issue"
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                         ApprovalEntry: Record "Approval Entry";
                     begin
-                        ApprovalEntry.Reset();
-                        ApprovalEntry.SETRANGE("Table ID", DATABASE::"Asset Assignment Register");
-                        ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RecordId);
-                        ApprovalEntry.SETRANGE("Related to Change", FALSE);
-                        PAGE.RUN(70010, ApprovalEntry);
+                        ApprovalEntry.RESET;
+                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
+                        ApprovalEntry.SetRange("Record ID to Approve", Rec.RecID);
+                        if ApprovalEntry.FindSet() then begin
+                            PAGE.RUNMODAL(658, ApprovalEntry);
+                        end
                     end;
                 }
                 // Avinash
@@ -490,7 +491,7 @@ page 60147 "Asset Issue"
                     var
                         ReleaseSalesDoc: Codeunit "Release Sales Document";
                     begin
-                        if "WorkFlow Status" = "WorkFlow Status"::"Pending For Approval" then
+                        if "WorkFlow Status" = "WorkFlow Status"::"Pending Approval" then
                             ERROR('WorkFlow status should be Approved for reopen');
 
                         "WorkFlow Status" := "WorkFlow Status"::Open;

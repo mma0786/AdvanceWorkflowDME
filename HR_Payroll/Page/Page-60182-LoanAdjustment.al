@@ -99,7 +99,7 @@ page 60182 "Loan Adjustment"
                 trigger OnAction()
                 begin
                     if not "Update Loan Bool" then
-                        if "Workflow Status" = "Workflow Status"::Released then begin
+                        if "Workflow Status" = "Workflow Status"::Approved then begin
 
 
                             LoanInstallmentGeneration.RESET;

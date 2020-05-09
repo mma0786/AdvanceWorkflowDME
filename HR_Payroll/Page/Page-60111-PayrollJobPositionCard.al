@@ -46,12 +46,10 @@ page 60111 "Payroll Job Position Card"
                 field(Title; Title)
                 {
                     ApplicationArea = All;
-                    ShowMandatory = true;
                 }
                 field("Position Type"; "Position Type")
                 {
                     ApplicationArea = All;
-                    ShowMandatory = true;
                 }
                 field("Full Time Equivalent"; "Full Time Equivalent")
                 {
@@ -278,8 +276,6 @@ page 60111 "Payroll Job Position Card"
             TESTFIELD("Available for Assignment");
             TESTFIELD(Department);
             TESTFIELD("Pay Cycle");
-            TestField("Position Type");
-            TestField(Title);
         end;
     end;
 }

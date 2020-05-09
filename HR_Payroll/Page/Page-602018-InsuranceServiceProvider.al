@@ -1,6 +1,6 @@
 page 60218 "Insurance Servicec Prov. List"
 {
-    Caption = 'Insurance Service Providers';
+
     PageType = List;
     SourceTable = "Insurance Service Provider";
     UsageCategory = Lists;

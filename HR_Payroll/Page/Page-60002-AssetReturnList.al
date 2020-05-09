@@ -9,7 +9,7 @@ page 60002 "Asset Return List"
                             Posted = FILTER(false));
     UsageCategory = Administration;
     ApplicationArea = All;
-    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
+
     layout
     {
         area(content)

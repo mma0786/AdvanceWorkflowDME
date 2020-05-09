@@ -113,13 +113,6 @@ table 60052 "Payroll Jobs"
         field(16; "Grade Category"; Code[50])
         {
             TableRelation = "Payroll Grade Category";
-            trigger OnValidate()
-            var
-                myInt: Integer;
-            begin
-                if xRec."Grade Category" <> Rec."Grade Category" then
-                    "Earning Code Group" := '';
-            end;
         }
     }
 
