@@ -109,9 +109,9 @@ codeunit 60032 WFCode_Loan_Adj
         l_ApprovalEntry.SetFilter(Status, '%1|%2', l_ApprovalEntry.Status::Open, l_ApprovalEntry.Status::Created);
         if l_ApprovalEntry.FindFirst() then begin
             LoanAdjRecRec.Reset();
-            LoanAdjRecRec.SetRange(RecID, ApprovalEntry."Record ID to Approve");
+            LoanAdjRecRec.SetRange("Loan Adjustment ID", ApprovalEntry."Document No.");
             if LoanAdjRecRec.FindFirst() then begin
-                LoanAdjRecRec."WorkFlow Status" := LoanAdjRecRec."WorkFlow Status"::Rejected;
+                LoanAdjRecRec."WorkFlow Status" := LoanAdjRecRec."WorkFlow Status"::Open;
                 LoanAdjRecRec.Modify(true);
             end;
         end;

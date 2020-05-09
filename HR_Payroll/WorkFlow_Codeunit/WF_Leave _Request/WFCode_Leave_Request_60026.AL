@@ -542,6 +542,12 @@ codeunit 60026 WFCode_Leave_Request
                 CardPageID := Page::"Document request Card";
             Database::"Asset Assignment Register":
                 CardPageID := Page::"Asset Issue";
+            Database::"Loan Request":
+                CardPageID := Page::"Loan Request";
+            Database::"Loan Adjustment Header":
+                CardPageID := Page::"Loan Adjustment";
+            Database::"Payroll Statement":
+                CardPageID := Page::"Payroll Statements";
         end;
     end;
 
