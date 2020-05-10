@@ -325,6 +325,14 @@ table 60021 "HCM Leave Types Wrkr"
         field(502; "Is Compensatory Leave"; Boolean)
         {
         }
+        field(503; "Is Paternity Leave"; Boolean)
+        {
+
+        }
+        field(504; "Child Age Limit in Months"; Integer)
+        {
+
+        }
         // @Avinash 08.05.2020
     }
 

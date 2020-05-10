@@ -247,10 +247,32 @@ page 60034 "HCM Leave Types ErnGrp"
                 {
                     ApplicationArea = all;
                 }
+
+                field("Is Paternity Leave"; "Is Paternity Leave")
+                {
+                    ApplicationArea = All;
+
+                    trigger
+                              OnValidate()
+                    begin
+                        if "Is Compensatory Leave" then
+                            ChildAgeLimitinMonthsBool := true
+                        else
+                            ChildAgeLimitinMonthsBool := false;
+
+                    end;
+                }
+                field("Child Age Limit in Months"; "Child Age Limit in Months")
+                {
+                    ApplicationArea = All;
+                    Editable = ChildAgeLimitinMonthsBool;
+                }
+                // @Avinash 10.05.2020
             }
         }
     }
     var
         ChnageBool: Boolean;
+        ChildAgeLimitinMonthsBool: Boolean;
 }
 

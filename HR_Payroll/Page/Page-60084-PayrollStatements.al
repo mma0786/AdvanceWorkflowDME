@@ -140,7 +140,6 @@ page 60084 "Payroll Statements"
                 var
                     GeneratePayrollStatementL: Report "Generate Payroll Statement DLL";
                 begin
-                    Message('My DLL Repoprt');
                     CurrPage.SETSELECTIONFILTER(PayrollStatement);
                     if PayrollStatement.FINDFIRST then begin
                         CLEAR(GeneratePayrollStatementL);
@@ -161,7 +160,6 @@ page 60084 "Payroll Statements"
                 PromotedCategory = Process;
                 RunObject = Page "Payroll Statement Employees";
                 RunPageLink = "Payroll Statement ID" = FIELD("Payroll Statement ID");
-
 
             }
             action("Payroll Error Log")

@@ -329,8 +329,10 @@ page 60064 "Leave Request Card"
                     PromotedCategory = Process;
 
                     trigger OnAction()
+                    var
+                        LeaveRequestHeaderRecL: Record "Leave Request Header";
                     begin
-                        //
+
 
                         if not CONFIRM('Do you want to post the leave request?') then
                             exit;

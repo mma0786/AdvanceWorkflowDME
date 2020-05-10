@@ -249,16 +249,49 @@ page 60007 "Leave Type Card"
                 {
                     ApplicationArea = All;
                 }
+                // @Avinash 10.05.2020
+                field("Is Paternity Leave"; "Is Paternity Leave")
+                {
+                    ApplicationArea = All;
+
+                    trigger
+                              OnValidate()
+                    begin
+                        if "Is Compensatory Leave" then
+                            ChildAgeLimitinMonthsBool := true
+                        else
+                            ChildAgeLimitinMonthsBool := false;
+
+                    end;
+                }
+                field("Child Age Limit in Months"; "Child Age Limit in Months")
+                {
+                    ApplicationArea = All;
+                    Editable = ChildAgeLimitinMonthsBool;
+                }
+
+                // @Avinash 10.05.2020
             }
         }
     }
     var
         ChnageBool: Boolean;
+        ChildAgeLimitinMonthsBool: Boolean;
 
     trigger OnClosePage()
     begin
         ValidateMandatoryFields;
     end;
+    // @Avinash 10.05.2020
+    trigger OnOpenPage()
+    begin
+        if "Is Compensatory Leave" then
+            ChildAgeLimitinMonthsBool := true
+        else
+            ChildAgeLimitinMonthsBool := false;
+
+    end;
+    // @Avinash 10.05.2020
 
     trigger OnQueryClosePage(CloseAction: Action): Boolean
     begin

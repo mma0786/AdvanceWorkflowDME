@@ -21,7 +21,19 @@ table 60040 "Leave Request Header"
             TableRelation = Employee;
 
             trigger OnValidate()
+            var
+                LeaveRequestHeaderRecL: Record "Leave Request Header";
             begin
+                // Start @Avinash
+                LeaveRequestHeaderRecL.Reset();
+                LeaveRequestHeaderRecL.SetRange("Personnel Number", "Personnel Number");
+                LeaveRequestHeaderRecL.SetRange(Posted, false);
+                if LeaveRequestHeaderRecL.FindFirst() then
+                    Error('Leave Request %1 not posted, you cannot created new one.', LeaveRequestHeaderRecL."Leave Request ID");
+                // Stop Avinash
+
+
+
                 if Employee.GET("Personnel Number") then
                     "Employee Name" := Employee."First Name" + ' ' + Employee."Last Name"
                 else

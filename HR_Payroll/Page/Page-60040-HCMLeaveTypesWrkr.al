@@ -227,6 +227,14 @@ page 60040 "HCM Leave Types Wrkr"
                     ApplicationArea = All;
 
                 }
+                field("Is Paternity Leave"; "Is Paternity Leave")
+                {
+                    ApplicationArea = All;
+                }
+                field("Child Age Limit in Months"; "Child Age Limit in Months")
+                {
+                    ApplicationArea = All;
+                }
                 // @Avinash 08.05.2020
                 field("WorkFlow Required"; "WorkFlow Required")
                 {

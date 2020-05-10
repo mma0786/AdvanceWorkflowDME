@@ -20,6 +20,18 @@ report 70000 "Generate Payroll Statement DLL"
                 //Progress Bar
                 //>>>Commented till Live for process testing
 
+                // @Avinash 10.05.2020 CheckAccuralAmountOfEmployee
+                if (CheckAccuralAmountOfEmployee(Employee."No.") <> '') then begin
+                    PayrollErrorLog.INIT;
+                    PayrollErrorLog."Entry No." := 0;
+                    PayrollErrorLog."Payroll Statement ID" := PayrollStatement."Payroll Statement ID";
+                    PayrollErrorLog."HCM Worker" := Employee."No.";
+                    PayrollErrorLog.Error := CheckAccuralAmountOfEmployee(Employee."No.");
+                    PayrollErrorLog.INSERT;
+                    CurrReport.SKIP;
+                end;
+                // @Avinash 10.05.2020 CheckAccuralAmountOfEmployee
+
                 if (Employee."Joining Date" >= NORMALDATE(PayrollStatement."Pay Period End Date")) then begin
                     PayrollErrorLog.INIT;
                     PayrollErrorLog."Entry No." := 0;
@@ -356,6 +368,9 @@ report 70000 "Generate Payroll Statement DLL"
                 PayrollStatementEmployee."Payroll Pay Period" := RecPayrollStatement."Pay Period";
                 PayrollStatementEmployee.Worker := EmployeeCode;
                 PayrollStatementEmployee.INSERT;
+
+                PayrollStatementEmployee."Currency Code" := EmployeeEarningCodeGroup.Currency; // @Avinash
+
                 PayrollStatementEmployee."Pay Period Start Date" := RecPayrollStatement."Pay Period Start Date";
                 PayrollStatementEmployee."Pay Period End Date" := RecPayrollStatement."Pay Period End Date";
                 PayrollStatementEmployee."Payroll Year" := DATE2DMY(RecPayrollStatement."Pay Period Start Date", 3);
@@ -636,9 +651,9 @@ report 70000 "Generate Payroll Statement DLL"
                             TempDataTable.INIT;
                             TempDataTable."Entry No." := 0;
                             TempDataTable."Benefit Code" := EmployeeBenefits."Short Name";
-                            TempDataTable."Unit Formula" := UnitFormula;
+                            TempDataTable."Unit Formula" := CopyStr(UnitFormula, 1, 250);
                             TempDataTable."Value Formula" := CopyStr(AmountCalcFormula, 1, 250);
-                            TempDataTable."Encashment Formula" := EncashmentFormula;
+                            TempDataTable."Encashment Formula" := CopyStr(EncashmentFormula, 1, 250);
                             TempDataTable.INSERT;
                             //Temp Data
                             PayrollFormulaKeyWords.RESET;
@@ -983,14 +998,6 @@ report 70000 "Generate Payroll Statement DLL"
                     @BC DLL 
                     Start Calling API Methos
                     */
-
-                    // // ReturnJsonStringTxtL := DLLSolutionAPI_CU.CreateJSonFomatOfTable_LT(ParameterTableTableRecL,
-                    // //                                                                    PayComponentEECistTableRecL,
-                    // //                                                                    BenefitTableRecL);
-                    // // // // ReturnJsonResponse := DLLSolutionAPI_CU.MakeRequest('https://azfntrialdme01.azurewebsites.net/api/AzFn-Pyrl', ReturnJsonStringTxtL);
-                    /////Message('ReturnJsonStringTxtL           %1', ReturnJsonStringTxtL);
-                    // // // // Clear(EmpResultTableRecL);
-                    // // // DLLSolutionAPI_CU.CopyJsonStringIntoResultTable(EmpResultTableRecL, ReturnJsonResponse);
 
                     /*
                      @BC DLL 
@@ -1631,5 +1638,29 @@ report 70000 "Generate Payroll Statement DLL"
         CLEAR(Counter);
         CLEAR(TotalRecords);
     end;
+
+    // @Avinash 10.05.2020
+    procedure CheckAccuralAmountOfEmployee(EmpCode: Code[20]): Text
+    var
+        AccrualComponentsEmployeeRecL: Record "Accrual Components Employee";
+        EmployeeInterimAccuralsRecL: Record "Employee Interim Accurals";
+
+    begin
+        AccrualComponentsEmployeeRecL.Reset();
+        AccrualComponentsEmployeeRecL.SetRange("Worker ID", EmpCode);
+        if AccrualComponentsEmployeeRecL.FindFirst() then begin
+            EmployeeInterimAccuralsRecL.Reset();
+            EmployeeInterimAccuralsRecL.SetRange("Worker ID", AccrualComponentsEmployeeRecL."Worker ID");
+            EmployeeInterimAccuralsRecL.SetRange("Accrual ID", AccrualComponentsEmployeeRecL."Accrual ID");
+            if EmployeeInterimAccuralsRecL.FindSet() then
+                repeat
+                    if EmployeeInterimAccuralsRecL."Monthly Accrual Amount" = 0 then
+                        exit('Employee Accrual Monthly Amount is Zero in month of ' + Format(EmployeeInterimAccuralsRecL.Month));
+
+                until EmployeeInterimAccuralsRecL.Next() = 0;
+        end;
+
+    end;
+    // @Avinash 10.05.2020
 }
 

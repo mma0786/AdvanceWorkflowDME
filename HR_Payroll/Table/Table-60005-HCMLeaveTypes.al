@@ -327,6 +327,14 @@ table 60005 "HCM Leave Types"
         field(502; "Is Compensatory Leave"; Boolean)
         {
         }
+        field(503; "Is Paternity Leave"; Boolean)
+        {
+
+        }
+        field(504; "Child Age Limit in Months"; Integer)
+        {
+
+        }
         // @Avinash 08.05.2020
     }
 
@@ -356,6 +364,7 @@ table 60005 "HCM Leave Types"
         PayrollFormula: Record "Payroll Formula";
         AccrualComponent: Record "Accrual Components";
         AccrualComponentLines: Record "Accrual Component Lines";
+
 
 
     procedure InsertLeaveTypeFormulas(ShortName: Code[20])

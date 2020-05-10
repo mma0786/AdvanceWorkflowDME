@@ -307,6 +307,14 @@ table 60010 "HCM Leave Types ErnGrp"
         field(502; "Is Compensatory Leave"; Boolean)
         {
         }
+        field(503; "Is Paternity Leave"; Boolean)
+        {
+
+        }
+        field(504; "Child Age Limit in Months"; Integer)
+        {
+
+        }
         // @Avinash 08.05.2020
     }
 

@@ -106,22 +106,19 @@ page 60094 "Terminated Employee Card"
                     ApplicationArea = All;
                 }
             }
-            //commented By Avinash
-            //commented By Avinash
-            /*
+
+
             part("Address Part "; "Employee Address ListPart")
             {
                 Caption = 'Address';
-                SubPageLink = Field1 = FIELD(No.);
+                SubPageLink = "Employee ID" = FIELD("No.");
             }
             part(Contacts; "Employee Contacts SubPage")
             {
                 Caption = 'Contacts';
-                SubPageLink = Field1 = FIELD(No.);
-            }*/
+                SubPageLink = "Employee ID" = FIELD("No.");
+            }
 
-            //commented By Avinash
-            //commented By Avinash
             group("Address & Contact")
             {
                 field(Address; Address)
@@ -442,7 +439,6 @@ page 60094 "Terminated Employee Card"
             }
         }
     }
-
     actions
     {
         area(navigation)
@@ -456,73 +452,67 @@ page 60094 "Terminated Employee Card"
                     Caption = 'Co&mments';
                     Image = ViewComments;
                     RunObject = Page "Human Resource Comment Sheet";
-                    ApplicationArea = All;
-                    //commented By Avinash RunPageLink = Table Name=CONST(Employee),No.=FIELD(No.);
+                    RunPageLink = "Table Name" = CONST(Employee),
+                                  "No." = FIELD("No.");
                 }
                 action(Dimensions)
                 {
                     Caption = 'Dimensions';
                     Image = Dimensions;
-                    //commented By Avinash RunObject = Page "Default Dimensions";
-                    //commented By Avinash        RunPageLink = Table ID=CONST(5200),No.=FIELD(No.);
+                    RunObject = Page "Default Dimensions";
+                    RunPageLink = "Table ID" = CONST(5200),
+                                  "No." = FIELD("No.");
                     ShortCutKey = 'Shift+Ctrl+D';
-                    ApplicationArea = All;
                     ToolTip = 'View or edit dimensions, such as area, project, or department, that you can assign to sales and purchase documents to distribute costs and analyze transaction history.';
                 }
                 action("&Picture")
                 {
                     Caption = '&Picture';
                     Image = Picture;
-                    ApplicationArea = All;
-                    //commented By AvinashRunObject = Page "Employee Picture";
-                    //commented By Avinash            RunPageLink = No.=FIELD(No.);
+                    RunObject = Page "Employee Picture";
+                    RunPageLink = "No." = FIELD("No.");
                 }
                 action(AlternativeAddresses)
                 {
                     Caption = '&Alternative Addresses';
                     Image = Addresses;
-                    //commented By Avinash RunObject = Page "Alternative Address List";
-                    //commented By Avinash     RunPageLink = Employee No.=FIELD(No.);
+                    RunObject = Page "Alternative Address List";
+                    RunPageLink = "Employee No." = FIELD("No.");
                 }
                 action("&Relatives")
                 {
                     Caption = '&Relatives';
                     Image = Relatives;
-                    ApplicationArea = All;
-                    //commented By Avinash   RunObject = Page "Employee Relatives";
-                    //commented By Avinash      RunPageLink = Employee No.=FIELD(No.);
+                    RunObject = Page "Employee Relatives";
+                    RunPageLink = "Employee No." = FIELD("No.");
                 }
                 action("Mi&sc. Article Information")
                 {
                     Caption = 'Mi&sc. Article Information';
                     Image = Filed;
-                    ApplicationArea = All;
-                    //commented By Avinash  RunObject = Page "Misc. Article Information";
-                    //commented By Avinash      RunPageLink = Employee No.=FIELD(No.);
+                    RunObject = Page "Misc. Article Information";
+                    RunPageLink = "Employee No." = FIELD("No.");
                 }
                 action("&Confidential Information")
                 {
                     Caption = '&Confidential Information';
                     Image = Lock;
-                    ApplicationArea = All;
-                    //commented By Avinash RunObject = Page "Confidential Information";
-                    //commented By Avinash   RunPageLink = Employee No.=FIELD(No.);
+                    RunObject = Page "Confidential Information";
+                    RunPageLink = "Employee No." = FIELD("No.");
                 }
                 action("Q&ualifications")
                 {
                     Caption = 'Q&ualifications';
                     Image = Certificate;
-                    ApplicationArea = All;
-                    //commented By Avinash  RunObject = Page "Employee Qualifications";
-                    //commented By Avinash           RunPageLink = Employee No.=FIELD(No.);
+                    RunObject = Page "Employee Qualifications";
+                    RunPageLink = "Employee No." = FIELD("No.");
                 }
                 action("A&bsences")
                 {
                     Caption = 'A&bsences';
                     Image = Absence;
-                    ApplicationArea = All;
-                    //commented By Avinash  RunObject = Page "Employee Absences";
-                    //commented By Avinash       RunPageLink = Employee No.=FIELD(No.);
+                    RunObject = Page "Employee Absences";
+                    RunPageLink = "Employee No." = FIELD("No.");
                 }
                 separator(Separator23)
                 {
@@ -531,23 +521,21 @@ page 60094 "Terminated Employee Card"
                 {
                     Caption = 'Absences by Ca&tegories';
                     Image = AbsenceCategory;
-                    ApplicationArea = All;
-                    //commented By Avinash  RunObject = Page "Empl. Absences by Categories";
-                    //commented By Avinash            RunPageLink = No.=FIELD(No.),Employee No. Filter=FIELD(No.);
+                    RunObject = Page "Empl. Absences by Categories";
+                    RunPageLink = "No." = FIELD("No."),
+                                  "Employee No. Filter" = FIELD("No.");
                 }
                 action("Misc. Articles &Overview")
                 {
                     Caption = 'Misc. Articles &Overview';
                     Image = FiledOverview;
-                    ApplicationArea = All;
-                    //commented By Avinash  RunObject = Page "Misc. Articles Overview";
+                    RunObject = Page "Misc. Articles Overview";
                 }
                 action("Co&nfidential Info. Overview")
                 {
                     Caption = 'Co&nfidential Info. Overview';
                     Image = ConfidentialOverview;
-                    ApplicationArea = All;
-                    //commented By Avinash  RunObject = Page "Confidential Info. Overview";
+                    RunObject = Page "Confidential Info. Overview";
                 }
                 separator(Separator61)
                 {
@@ -556,41 +544,39 @@ page 60094 "Terminated Employee Card"
                 {
                     Caption = 'Online Map';
                     Image = Map;
-                    ApplicationArea = All;
 
-                    trigger OnAction()
+                    trigger OnAction();
                     begin
                         DisplayMap;
                     end;
                 }
-                action(Insurance)
-                {
-                    Caption = 'Insurance';
-                    Image = BankAccount;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
-                    ApplicationArea = All;
-                    //commented By Avinash   RunObject = Page "Employee Insurance List";
-                    //commented By Avinash               RunPageLink = Field1=FIELD(No.);
-                    //commented By Avinash  RunPageView = SORTING(Field1);
-                    Scope = Repeater;
-                }
-                action("New Insurance")
-                {
-                    Caption = 'New Insurance';
-                    Image = BankAccount;
-                    Promoted = true;
-                    PromotedCategory = Process;
-                    PromotedIsBig = true;
-                    ApplicationArea = All;
-                    //commented By Avinash  RunObject = Page "Employee Insurance Card";
-                    //commented By Avinash               RunPageLink = Field1=FIELD(No.);
-                }
+                // // // action(Insurance)
+                // // // {
+                // // //     Caption = 'Insurance';
+                // // //     Image = BankAccount;
+                // // //     Promoted = true;
+                // // //     PromotedCategory = Process;
+                // // //     PromotedIsBig = true;
+                // // //     RunObject = Page Page50056;
+                // // //     RunPageLink = Field1 = FIELD("No.");
+                // // //     RunPageView = SORTING(Field1);
+                // // //     Scope = Repeater;
+                // // // }
+                // // // action("New Insurance")
+                // // // {
+                // // //     Caption = 'New Insurance';
+                // // //     Image = BankAccount;
+                // // //     Promoted = true;
+                // // //     PromotedCategory = Process;
+                // // //     PromotedIsBig = true;
+                // // //     RunObject = Page Page50057;
+                // // //     RunPageLink = Field1 = FIELD("No.");
+                // // // }
             }
         }
         area(processing)
         {
+            //Caption = 'Advance Payroll';
             Description = 'Advance Payroll';
             action("Earning Code")
             {
@@ -598,22 +584,20 @@ page 60094 "Terminated Employee Card"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-                ApplicationArea = All;
 
-                trigger OnAction()
+                trigger OnAction();
                 begin
-                    //commented By Avinash  EmployeeEarningCodeGroup.RESET;
-                    //commented By Avinash EmployeeEarningCodeGroup.SETRANGE("Employee Code", "No.");
-                    //commented By Avinash  EmployeeEarningCodeGroup.SETFILTER("Valid From", '<=%1', WORKDATE);
-                    //commented By Avinash  EmployeeEarningCodeGroup.SETFILTER("Valid To", '>%1|%2', WORKDATE, 0D);
-                    // // // //commented By Avinash  IF EmployeeEarningCodeGroup.FINDFIRST THEN;
-                    // // // PayrollEarningCodeWrkr.RESET;
-                    // // // PayrollEarningCodeWrkr.FILTERGROUP(2);
-
-                    // // // /// PayrollEarningCodeWrkr.SETRANGE(Worker, "No.");
-                    // // // //commented By Avinash PayrollEarningCodeWrkr.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
-                    // // // PayrollEarningCodeWrkr.FILTERGROUP(0);
-                    //commented By Avinash   PAGE.RUNMODAL(60041,PayrollEarningCodeWrkr);
+                    EmployeeEarningCodeGroup.RESET;
+                    EmployeeEarningCodeGroup.SETRANGE("Employee Code", "No.");
+                    EmployeeEarningCodeGroup.SETFILTER("Valid From", '<=%1', WORKDATE);
+                    EmployeeEarningCodeGroup.SETFILTER("Valid To", '>%1|%2', WORKDATE, 0D);
+                    if EmployeeEarningCodeGroup.FINDFIRST then;
+                    PayrollEarningCodeWrkr.RESET;
+                    PayrollEarningCodeWrkr.FILTERGROUP(2);
+                    PayrollEarningCodeWrkr.SETRANGE(Worker, "No.");
+                    PayrollEarningCodeWrkr.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
+                    PayrollEarningCodeWrkr.FILTERGROUP(0);
+                    PAGE.RUNMODAL(60041, PayrollEarningCodeWrkr);
                 end;
             }
             action("Leave Type")
@@ -622,24 +606,20 @@ page 60094 "Terminated Employee Card"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-                ApplicationArea = All;
 
-
-                trigger OnAction()
+                trigger OnAction();
                 begin
-                    //commented By Avinash
-                    // EmployeeEarningCodeGroup.RESET;
-                    // EmployeeEarningCodeGroup.SETRANGE("Employee Code", "No.");
-                    // EmployeeEarningCodeGroup.SETFILTER("Valid From", '<=%1', WORKDATE);
-                    // EmployeeEarningCodeGroup.SETFILTER("Valid To", '>%1|%2', WORKDATE, 0D);
-                    // IF EmployeeEarningCodeGroup.FINDFIRST THEN;
-                    //commented By Avinash
+                    EmployeeEarningCodeGroup.RESET;
+                    EmployeeEarningCodeGroup.SETRANGE("Employee Code", "No.");
+                    EmployeeEarningCodeGroup.SETFILTER("Valid From", '<=%1', WORKDATE);
+                    EmployeeEarningCodeGroup.SETFILTER("Valid To", '>%1|%2', WORKDATE, 0D);
+                    if EmployeeEarningCodeGroup.FINDFIRST then;
                     HCMLeaveTypesWrkr.RESET;
                     HCMLeaveTypesWrkr.FILTERGROUP(2);
                     HCMLeaveTypesWrkr.SETRANGE(Worker, "No.");
-                    //commented By Avinash  HCMLeaveTypesWrkr.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
+                    HCMLeaveTypesWrkr.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
                     HCMLeaveTypesWrkr.FILTERGROUP(0);
-                    //commented By Avinash   PAGE.RUNMODAL(60039,HCMLeaveTypesWrkr);
+                    PAGE.RUNMODAL(60039, HCMLeaveTypesWrkr);
                 end;
             }
             action(Benefit)
@@ -648,25 +628,20 @@ page 60094 "Terminated Employee Card"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-                ApplicationArea = All;
 
-                trigger OnAction()
+                trigger OnAction();
                 begin
-                    //commented By Avinash
-                    //commented By Avinash
-                    // EmployeeEarningCodeGroup.RESET;
-                    // EmployeeEarningCodeGroup.SETRANGE("Employee Code", "No.");
-                    // EmployeeEarningCodeGroup.SETFILTER("Valid From", '<=%1', WORKDATE);
-                    // EmployeeEarningCodeGroup.SETFILTER("Valid To", '>%1|%2', WORKDATE, 0D);
-                    // IF EmployeeEarningCodeGroup.FINDFIRST THEN;
-                    //commented By Avinash
-                    // // // //commented By Avinash
-                    // // // HCMBenefitWrkr.RESET;
-                    // // // HCMBenefitWrkr.FILTERGROUP(2);
-                    // // // ////   HCMBenefitWrkr.SETRANGE(Worker, "No.");
-                    // // // //commented By Avinash  HCMBenefitWrkr.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
-                    // // // HCMBenefitWrkr.FILTERGROUP(0);
-                    //commented By Avinash  PAGE.RUNMODAL(60043,HCMBenefitWrkr);
+                    EmployeeEarningCodeGroup.RESET;
+                    EmployeeEarningCodeGroup.SETRANGE("Employee Code", "No.");
+                    EmployeeEarningCodeGroup.SETFILTER("Valid From", '<=%1', WORKDATE);
+                    EmployeeEarningCodeGroup.SETFILTER("Valid To", '>%1|%2', WORKDATE, 0D);
+                    if EmployeeEarningCodeGroup.FINDFIRST then;
+                    HCMBenefitWrkr.RESET;
+                    HCMBenefitWrkr.FILTERGROUP(2);
+                    HCMBenefitWrkr.SETRANGE(Worker, "No.");
+                    HCMBenefitWrkr.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
+                    HCMBenefitWrkr.FILTERGROUP(0);
+                    PAGE.RUNMODAL(60043, HCMBenefitWrkr);
                 end;
             }
             action(Loans)
@@ -675,25 +650,21 @@ page 60094 "Terminated Employee Card"
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-                ApplicationArea = All;
-                trigger OnAction()
-                begin
-                    //commented By Avinash
-                    //commented By Avinash
 
-                    // EmployeeEarningCodeGroup.RESET;
-                    // EmployeeEarningCodeGroup.SETRANGE("Employee Code", "No.");
-                    // EmployeeEarningCodeGroup.SETFILTER("Valid From", '<=%1', WORKDATE);
-                    // EmployeeEarningCodeGroup.SETFILTER("Valid To", '>%1|%2', WORKDATE, 0D);
-                    // IF EmployeeEarningCodeGroup.FINDFIRST THEN;
-                    //commented By Avinash
-                    //commented By Avinash
-                    // // HCMLoanTableGCCWrkr.RESET;
+                trigger OnAction();
+                begin
+                    EmployeeEarningCodeGroup.RESET;
+                    EmployeeEarningCodeGroup.SETRANGE("Employee Code", "No.");
+                    EmployeeEarningCodeGroup.SETFILTER("Valid From", '<=%1', WORKDATE);
+                    EmployeeEarningCodeGroup.SETFILTER("Valid To", '>%1|%2', WORKDATE, 0D);
+                    if EmployeeEarningCodeGroup.FINDFIRST then;
+
+                    HCMLoanTableGCCWrkr.RESET;
                     //HCMLoanTableGCCWrkr.FILTERGROUP(2);
-                    ////   HCMLoanTableGCCWrkr.SETRANGE(Worker, "No.");
-                    //commented By Avinash HCMLoanTableGCCWrkr.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
+                    HCMLoanTableGCCWrkr.SETRANGE(Worker, "No.");
+                    HCMLoanTableGCCWrkr.SETRANGE("Earning Code Group", EmployeeEarningCodeGroup."Earning Code Group");
                     //HCMLoanTableGCCWrkr.FILTERGROUP(0);
-                    //commented By Avinash PAGE.RUNMODAL(60045,HCMLoanTableGCCWrkr);
+                    PAGE.RUNMODAL(60045, HCMLoanTableGCCWrkr);
                 end;
             }
             action("Earning Code Group")
@@ -701,10 +672,10 @@ page 60094 "Terminated Employee Card"
                 Image = PaymentJournal;
                 Promoted = true;
                 PromotedCategory = Process;
-                ApplicationArea = All;
                 PromotedIsBig = true;
-                //commented By Avinash   RunObject = Page "Employee Earning Code Group";
-                //commented By Avinash             RunPageLink = Employee Code=FIELD(No.);
+                RunObject = Page "Employee Earning Code Groups";
+                RunPageLink = "Earning Code Group" = FIELD("Earning Code Group"), "Employee Code" = field("No.");
+
             }
             action("Accrual Components")
             {
@@ -712,28 +683,26 @@ page 60094 "Terminated Employee Card"
                 Image = Agreement;
                 Promoted = true;
                 PromotedCategory = Process;
-                //commented By Avinash   RunObject = Page "Accrual Components Workers";
-                //commented By Avinash           RunPageLink = Worker ID=FIELD(No.);
+                RunObject = Page "Accrual Components Workers-2";
+                RunPageLink = "Worker ID" = FIELD("No.");
             }
             action("Employee Position Assignment")
             {
                 Image = Position;
                 Promoted = true;
                 PromotedCategory = Process;
-                ApplicationArea = All;
                 PromotedIsBig = true;
-                //commented By Avinash  RunObject = Page "Employee Position Assignment";
-                //commented By Avinash           RunPageLink = Worker=FIELD(No.);
+                RunObject = Page "Employee Position Assignments";
+                RunPageLink = Worker = FIELD("No.");
             }
             action("Employee Work Date")
             {
                 Image = Workdays;
                 Promoted = true;
                 PromotedCategory = Process;
-                ApplicationArea = All;
                 PromotedIsBig = true;
-                //commented By Avinash   RunObject = Page "Employee Work Date";
-                //commented By Avinash      RunPageLink = Employee Code=FIELD(No.);
+                RunObject = Page "Employee Position Assignments";
+                RunPageLink = Worker = FIELD("No.");
                 RunPageMode = View;
                 Scope = Repeater;
             }
@@ -742,103 +711,67 @@ page 60094 "Terminated Employee Card"
                 Image = Delegate;
                 Promoted = true;
                 PromotedIsBig = true;
-                ApplicationArea = All;
-                //commented By Avinash RunObject = Page "Employee Dependent List";
-                //commented By Avinash           RunPageLink = Field2=FIELD(No.);
+                RunObject = Page "Employee Dependent List";
+                RunPageLink = "Employee ID" = FIELD("No.");
 
-                trigger OnAction()
+                trigger OnAction();
                 begin
-                    /*
-                    CLEAR(EmployeeDependentPage);
-                    EmpDepMasterRec.RESET;
-                    EmpDepMasterRec.SETRANGE("Employee ID","No.");
-                    EmployeeDependentPage.SETTABLEVIEW(EmpDepMasterRec);
-                    EmployeeDependentPage.RUNMODAL;
-                    */
+
 
                 end;
             }
             action("Employee Identification")
             {
                 Image = Document;
-                ApplicationArea = All;
+                Promoted = true;
                 //The property 'PromotedCategory' can only be set if the property 'Promoted' is set to 'true'
-                //PromotedCategory = Process;
+                PromotedCategory = Process;
                 //The property 'PromotedIsBig' can only be set if the property 'Promoted' is set to 'true'
-                //PromotedIsBig = true;
-                //commented By Avinash   RunObject = Page "Employee Identification - Old";
-                //commented By Avinash     RunPageLink = Employee No.=FIELD(No.),No.=FILTER(<>'');
+                PromotedIsBig = true;
+                RunObject = Page "Employee Identification_MS-1";
+                RunPageLink = "Employee No." = FIELD("No."), "No." = FILTER(<> '');
             }
             action("Asset Assignment Register")
             {
                 Image = FixedAssets;
-                ApplicationArea = All;
+                Promoted = true;
                 //The property 'PromotedIsBig' can only be set if the property 'Promoted' is set to 'true'
-                //PromotedIsBig = true;
-                //commented By Avinash  RunObject = Page "Asset Assignment RegisterList";
+                PromotedIsBig = true;
+                RunObject = Page "Asset Assignment Register List";
+                RunPageLink = "Issue to/Return by" = FIELD("No."),
+                              Posted = FILTER(true);
             }
-            action(Contract)
-            {
-                Caption = 'Employee Contracts';
-                Image = Certificate;
-                ApplicationArea = All;
-                //The property 'PromotedIsBig' can only be set if the property 'Promoted' is set to 'true'
-                //PromotedIsBig = true;
-                //commented By Avinash  RunObject = Page Page50027;
-                //commented By Avinash      RunPageLink = Field3=FIELD(No.);
-            }
-            action("Contract List")
-            {
-                Caption = 'Employee Contracts List';
-                ApplicationArea = All;
-                Image = ListPage;
-                //commented By Avinash  RunObject = Page Page50029;
-                //commented By Avinash    RunPageLink = Field7=FIELD(No.);
-                Visible = false;
-            }
+
+
             action("Employee Bank Details")
             {
                 Caption = 'Employee Bank Details';
-                ApplicationArea = All;
                 Image = BankAccount;
                 Promoted = true;
                 PromotedCategory = Process;
                 PromotedIsBig = true;
-                //commented By Avinash  RunObject = Page "Employee Bank Account List";
-                //commented By Avinash   RunPageLink = Field4=FIELD(No.);
+                RunObject = Page "Employee Bank Account List";
+                RunPageLink = "Employee Id" = FIELD("No.");
             }
-            action("Employee Payout Scheme")
-            {
-                Caption = 'Employee Payout Scheme';
-                ApplicationArea = All;
-                Image = Salutation;
-                Promoted = true;
-                PromotedCategory = Process;
-                PromotedIsBig = true;
-                //commented By Avinash  RunObject = Page Page50064;
-                //commented By Avinash  RunPageLink = Field2=FIELD(No.);
-            }
+
             action("Employee Termination")
             {
                 Image = TerminationDescription;
-                ApplicationArea = All;
                 Promoted = true;
                 PromotedCategory = Process;
 
-                trigger OnAction()
+                trigger OnAction();
                 begin
-                    //commented By Avinash
                     CLEAR(EmployeeTermination);
                     EmployeeTermination.SetValues("No.");
                     EmployeeTermination.RUNMODAL;
                     CurrPage.UPDATE;
-                    //commented By Avinash
                 end;
             }
         }
     }
 
-    trigger OnAfterGetCurrRecord()
+    trigger OnAfterGetCurrRecord();
     begin
         //LT_05052019 >>
         //Find Active Earning Code Group
@@ -847,48 +780,31 @@ page 60094 "Terminated Employee Card"
         EmplErngCodegrp.SETRANGE("Employee Code", "No.");
         EmplErngCodegrp.SETFILTER("Valid From", '<=%1', WORKDATE);
         EmplErngCodegrp.SETFILTER("Valid To", '>=%1|%2', WORKDATE, 0D);
-        IF EmplErngCodegrp.FINDFIRST THEN
+        if EmplErngCodegrp.FINDFIRST then
             "Earning Code Group" := EmplErngCodegrp."Earning Code Group";
         //LT_05052019 <<
-        //commented By Avinash
+
         CLEAR("Age As Of Date");
         CLEAR(Age);
-        IF "Birth Date" <> 0D THEN BEGIN
+        if "Birth Date" <> 0D then begin
             Age := -("Birth Date" - TODAY);
-            IF Age <> 0 THEN
+            if Age <> 0 then
                 "Age As Of Date" := FORMAT(ROUND((Age / 365.27), 0.1));
-        END;
-        //commented By Avinash
+        end;
     end;
 
-    trigger OnAfterGetRecord()
+    trigger OnAfterGetRecord();
     begin
         CLEAR("Age As Of Date");
-        //commented By Avinash
         CLEAR(Age);
-        IF "Birth Date" <> 0D THEN BEGIN
+        if "Birth Date" <> 0D then begin
             Age := -("Birth Date" - TODAY);
-            IF Age <> 0 THEN
+            if Age <> 0 then
                 "Age As Of Date" := FORMAT(ROUND((Age / 365.27), 0.1));
-        END;
-        //commented By Avinash
+        end;
     end;
 
-    trigger OnDeleteRecord(): Boolean
-    begin
-        //<LT_AssetAssignment> //On hold
-        /*AssetAssigntReg.RESET;
-        AssetAssigntReg.SETRANGE("Issue to/Return by","No.");
-        AssetAssigntReg.SETRANGE(Posted,TRUE);
-        IF AssetAssigntReg.FINDSET THEN BEGIN
-          REPEAT
-            IF AssetAssigntReg.Status <> AssetAssigntReg.Status::Returned THEN
-              ERROR('%1 Employee has not returned the asset %2',"No.",AssetAssigntReg."FA No");
-          UNTIL AssetAssigntReg.NEXT = 0;
-        END;*/
-        //</LT_AssetAssignment> //On hold
 
-    end;
 
     var
         EmplErngCodegrp: Record "Employee Earning Code Groups";
@@ -898,10 +814,11 @@ page 60094 "Terminated Employee Card"
         HCMLoanTableGCCWrkr: Record "HCM Loan Table GCC Wrkr";
         EmpDepMasterRec: Record "Employee Dependents Master";
         EmployeeRec2: Record Employee;
-        EmployeeDependentPage: Page "Employee Identification List";
+        EmployeeDependentPage: Page "Employee Dependent List";
         EmployeeEarningCodeGroup: Record "Employee Earning Code Groups";
-        //commented By Avinash                         AssetAssigntReg: Record Zetalents_GL_View;
+
         Age: Decimal;
         EmployeeTermination: Report "Employee Termination";
 }
+
 
