@@ -227,7 +227,7 @@ page 60161 "Loan Request"
                 }
                 action(Reopen)
                 {
-                    Enabled = ("WorkFlow Status" = "WorkFlow Status"::Approved);
+                    Enabled = ("WorkFlow Status" = "WorkFlow Status"::Released);
                     Image = ReOpen;
                     Promoted = true;
                     PromotedCategory = Process;

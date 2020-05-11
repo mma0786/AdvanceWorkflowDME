@@ -368,7 +368,7 @@ page 60147 "Asset Issue"
                 {
                     ApplicationArea = Suite;
                     Caption = 'Cancel Approval Re&quest';
-                    Enabled = "WorkFlow Status" = "WorkFlow Status"::"Pending Approval";
+                    Enabled = "WorkFlow Status" = "WorkFlow Status"::"Pending For Approval";
                     Image = CancelApprovalRequest;
                     Promoted = true;
                     PromotedCategory = Category9;
@@ -491,7 +491,7 @@ page 60147 "Asset Issue"
                     var
                         ReleaseSalesDoc: Codeunit "Release Sales Document";
                     begin
-                        if "WorkFlow Status" = "WorkFlow Status"::"Pending Approval" then
+                        if "WorkFlow Status" = "WorkFlow Status"::"Pending For Approval" then
                             ERROR('WorkFlow status should be Approved for reopen');
 
                         "WorkFlow Status" := "WorkFlow Status"::Open;

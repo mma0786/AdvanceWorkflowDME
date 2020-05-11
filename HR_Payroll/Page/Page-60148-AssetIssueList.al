@@ -178,7 +178,7 @@ page 60148 "Asset Issue List"
 
                         AssetAssiReg.RESET;
                         AssetAssiReg.SETRANGE("FA No", Rec."FA No");
-                        AssetAssiReg.SETFILTER("WorkFlow Status", '%1|%2', AssetAssiReg."WorkFlow Status"::"Pending Approval", AssetAssiReg."WorkFlow Status"::Released);
+                        AssetAssiReg.SETFILTER("WorkFlow Status", '%1|%2', AssetAssiReg."WorkFlow Status"::"Pending For Approval", AssetAssiReg."WorkFlow Status"::Released);
 
                         if AssetAssiReg.FINDSET then begin
                             repeat
@@ -230,7 +230,7 @@ page 60148 "Asset Issue List"
                 {
                     ApplicationArea = Suite;
                     Caption = 'Cancel Approval Re&quest';
-                    Enabled = "WorkFlow Status" = "WorkFlow Status"::"Pending Approval";
+                    Enabled = "WorkFlow Status" = "WorkFlow Status"::"Pending For Approval";
                     Image = CancelApprovalRequest;
                     Promoted = true;
                     PromotedCategory = Category9;
