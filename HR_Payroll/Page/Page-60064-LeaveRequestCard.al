@@ -36,8 +36,18 @@ page 60064 "Leave Request Card"
                     trigger OnValidate()
                     var
                         LeaveType: Record "HCM Leave Types Wrkr";
+
                     begin
                         Valid_IsCompensatoryLeave_LT;
+                        LeaveType.SetRange(Worker, "Personnel Number");
+                        LeaveType.SetRange("Leave Type Id", "Leave Type");
+                        LeaveType.SetRange("Is Paternity Leave", true);
+                        if LeaveType.FindFirst() then
+                            IsperBool := true
+                        else
+                            IsperBool := false;
+
+
                     end;
                 }
                 field("Short Name"; "Short Name")
@@ -54,6 +64,7 @@ page 60064 "Leave Request Card"
                 field("Dependent ID"; "Dependent ID")
                 {
                     ApplicationArea = All;
+                    Editable = IsperBool;
                 }
                 field("Dependent Name"; "Dependent Name")
                 {
@@ -659,6 +670,7 @@ page 60064 "Leave Request Card"
 
     var
         CheckBoolG: Boolean;
+        IsperBool: Boolean;
         DutyResume: Record "Duty Resumption";
         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
         P_DutyResume: Page "Duty Resumption";
