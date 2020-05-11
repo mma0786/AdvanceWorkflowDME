@@ -361,6 +361,36 @@ table 60040 "Leave Request Header"
             DataClassification = ToBeClassified;
         }
         // @Avinash 08.05.2020
+        field(73; "Dependent ID"; Code[20])
+        {
+            TableRelation = "Employee Dependents Master" where(Relationship = filter(Child));
+            trigger
+            OnValidate()
+            var
+                EmpDepeMasterRecL: Record "Employee Dependents Master";
+                ChildCurrentAge: Integer;
+                HCMLeaveTypeRecL: Record "HCM Leave Types";
+            begin
+                EmpDepeMasterRecL.Reset();
+                if EmpDepeMasterRecL.Get("Dependent ID", "Personnel Number") then begin
+                    "Dependent Name" := EmpDepeMasterRecL.FullName();
+                    ChildCurrentAge := Today - EmpDepeMasterRecL."Date of Birth";
+
+                    HCMLeaveTypeRecL.Reset();
+                    HCMLeaveTypeRecL.SetRange("Leave Type Id", "Leave Type");
+                    HCMLeaveTypeRecL.SetRange("Is Paternity Leave", true);
+                    if HCMLeaveTypeRecL.FindFirst() then
+                        if ChildCurrentAge > (HCMLeaveTypeRecL."Child Age Limit in Months" * 30) then
+                            Error('you cannot apply for this leave.');
+
+
+                end;
+            end;
+        }
+        field(74; "Dependent Name"; Text[150])
+        {
+            Editable = false;
+        }
         field(502; "Compensatory Leave Date"; Date)
         {
 

@@ -257,6 +257,10 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
         {
             ShowMandatory = true;
         }
+        modify("No.")
+        {
+            Editable = false;
+        }
 
 
 

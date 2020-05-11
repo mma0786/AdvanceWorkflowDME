@@ -230,10 +230,20 @@ page 60040 "HCM Leave Types Wrkr"
                 field("Is Paternity Leave"; "Is Paternity Leave")
                 {
                     ApplicationArea = All;
+                    trigger
+                             OnValidate()
+                    begin
+                        if "Is Paternity Leave" then
+                            ChildAgeLimitinMonthsBool := true
+                        else
+                            ChildAgeLimitinMonthsBool := false;
+
+                    end;
                 }
                 field("Child Age Limit in Months"; "Child Age Limit in Months")
                 {
                     ApplicationArea = All;
+                    Editable = ChildAgeLimitinMonthsBool;
                 }
                 // @Avinash 08.05.2020
                 field("WorkFlow Required"; "WorkFlow Required")
@@ -255,6 +265,7 @@ page 60040 "HCM Leave Types Wrkr"
 
     var
         ChnageBool: Boolean;
+        ChildAgeLimitinMonthsBool: Boolean;
 
     trigger OnNewRecord(BelowxRec: Boolean)
     begin
@@ -262,10 +273,15 @@ page 60040 "HCM Leave Types Wrkr"
         "Earning Code Group" := Rec."Earning Code Group";
     end;
 
+    // @Avinash 10.05.2020
     trigger OnOpenPage()
     begin
-        // SETFILTER("Valid From" , '<=%1', WORKDATE);
-        // SETFILTER("Valid To" , '>%1|%2', WORKDATE, 0D);
+        if "Is Paternity Leave" then
+            ChildAgeLimitinMonthsBool := true
+        else
+            ChildAgeLimitinMonthsBool := false;
+
     end;
+    // @Avinash 10.05.2020
 }
 

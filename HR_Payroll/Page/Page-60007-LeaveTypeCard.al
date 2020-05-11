@@ -257,7 +257,7 @@ page 60007 "Leave Type Card"
                     trigger
                               OnValidate()
                     begin
-                        if "Is Compensatory Leave" then
+                        if "Is Paternity Leave" then
                             ChildAgeLimitinMonthsBool := true
                         else
                             ChildAgeLimitinMonthsBool := false;
@@ -285,7 +285,7 @@ page 60007 "Leave Type Card"
     // @Avinash 10.05.2020
     trigger OnOpenPage()
     begin
-        if "Is Compensatory Leave" then
+        if "Is Paternity Leave" then
             ChildAgeLimitinMonthsBool := true
         else
             ChildAgeLimitinMonthsBool := false;

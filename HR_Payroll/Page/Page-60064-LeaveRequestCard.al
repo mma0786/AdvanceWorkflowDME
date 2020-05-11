@@ -51,6 +51,14 @@ page 60064 "Leave Request Card"
                     Editable = false;
                     ApplicationArea = All;
                 }
+                field("Dependent ID"; "Dependent ID")
+                {
+                    ApplicationArea = All;
+                }
+                field("Dependent Name"; "Dependent Name")
+                {
+                    ApplicationArea = All;
+                }
                 field("Start Date"; "Start Date")
                 {
                     ShowMandatory = true;

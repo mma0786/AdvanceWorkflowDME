@@ -255,7 +255,7 @@ page 60034 "HCM Leave Types ErnGrp"
                     trigger
                               OnValidate()
                     begin
-                        if "Is Compensatory Leave" then
+                        if "Is Paternity Leave" then
                             ChildAgeLimitinMonthsBool := true
                         else
                             ChildAgeLimitinMonthsBool := false;

@@ -315,8 +315,9 @@ table 60005 "HCM Leave Types"
         field(352; "Marital Status"; Text[30])
         {
             TableRelation = "Marital Status";
-            // Commented By Avinash  TableRelation = Table50050;
+
         }
+
         field(500; "Termination Leave"; Boolean)
         {
         }
