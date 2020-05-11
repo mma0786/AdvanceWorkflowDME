@@ -136,7 +136,7 @@ table 60098 "Duty Resumption"
                     LeaveReqHeader."Resumption Type" := LeaveReqHeader."Resumption Type"::"Late Resumption";
                     LeaveReqHeader."Duty Resumption Request" := true;
                     LeaveReqHeader."Duty Resumption ID" := LeaveReqLines."Leave Request ID";
-                    LeaveReqHeader."Workflow Status" := LeaveReqHeader."Workflow Status"::Approved;
+                    LeaveReqHeader."Workflow Status" := LeaveReqHeader."Workflow Status"::Released;
                     LeaveReqHeader.INSERT;
                 until LeaveReqLines.NEXT = 0;
                 COMMIT;
@@ -219,7 +219,7 @@ table 60098 "Duty Resumption"
                 LeaveReqHeader1.SETRANGE("Duty Resumption Request", true);
                 if LeaveReqHeader1.FINDFIRST then begin
                     REPEAT
-                        LeaveReqHeader1.TESTFIELD("Workflow Status", LeaveReqHeader1."Workflow Status"::Approved);
+                        LeaveReqHeader1.TESTFIELD("Workflow Status", LeaveReqHeader1."Workflow Status"::Released);
                         LeaveReqHeader1.TESTFIELD(Posted, false);
                         if LeaveReqHeader.GET(LeaveReqHeader1."Leave Request ID") then
                             LeaveReqHeader1.PostLeave(LeaveReqHeader);

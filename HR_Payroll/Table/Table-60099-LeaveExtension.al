@@ -589,7 +589,7 @@ table 60099 "Leave Extension"
         l_LeaveRequestHeader.RESET;
         l_LeaveRequestHeader.SETRANGE("Personnel Number", l_Employee."No.");
         l_LeaveRequestHeader.SETRANGE("Leave Type", l_LeaveType."Leave Type Id");
-        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Approved);
+        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Released);
         if l_LeaveRequestHeader.FINDFIRST then
             if l_LeaveRequestHeader.COUNT > l_LeaveType."Max Times" then
                 ERROR('You cannot apply %1 leave type more than %2 times', l_LeaveType."Leave Type Id", l_LeaveType."Max Times");
@@ -622,7 +622,7 @@ table 60099 "Leave Extension"
     begin
         l_LeaveRequestHeader.RESET;
         l_LeaveRequestHeader.SETRANGE("Leave Type", l_LeaveType."Leave Type Id");
-        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Approved);
+        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Released);
         if l_LeaveRequestHeader.FINDFIRST then
             if l_LeaveRequestHeader.COUNT > l_LeaveType."Max Occurance" then
                 ERROR('You Cannot apply %1 leave type more than %2 times', l_LeaveType."Leave Type Id", l_LeaveType."Max Occurance");
@@ -636,7 +636,7 @@ table 60099 "Leave Extension"
         l_LeaveRequestHeader.RESET;
         l_LeaveRequestHeader.SETRANGE("Personnel Number", l_Employee."No.");
         l_LeaveRequestHeader.SETRANGE("Leave Type", l_LeaveType."Leave Type Id");
-        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Approved);
+        l_LeaveRequestHeader.SETRANGE("Workflow Status", l_LeaveRequestHeader."Workflow Status"::Released);
         if l_LeaveRequestHeader.FINDFIRST then
             if (l_LeaveRequestHeader."End Date" - Rec."Start Date") <= l_LeaveType."Min Days Between 2 leave Req." then
                 ERROR('You can apply %1 leave type Only after  %2', l_LeaveType."Leave Type Id",

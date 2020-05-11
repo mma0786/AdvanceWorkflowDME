@@ -157,7 +157,7 @@ codeunit 60022 WFCode_Asset_Issue
             DATABASE::"Asset Assignment Register":
                 begin
                     RecRef.SetTable(AssetAssignmentRegister);
-                    AssetAssignmentRegister.Validate("WorkFlow Status", AssetAssignmentRegister."WorkFlow Status"::"Pending For Approval");
+                    AssetAssignmentRegister.Validate("WorkFlow Status", AssetAssignmentRegister."WorkFlow Status"::"Pending Approval");
                     AssetAssignmentRegister.Modify();
                     Variant := AssetAssignmentRegister;
                 end;
