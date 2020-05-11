@@ -5,6 +5,7 @@ page 60151 "Full and Final Settlement"
     SourceTable = "Full and Final Calculation";
     ApplicationArea = All;
     UsageCategory = Lists;
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)

@@ -134,7 +134,10 @@ page 60033 "HCM Leave Types ErnGrps"
                 {
                     ApplicationArea = All;
                 }
-
+                // // field("Attachment Mandate"; "Attachment Mandate")
+                // // {
+                // //     ApplicationArea = All;
+                // // }
                 field("Benefit Id"; "Benefit Id")
                 {
                     ApplicationArea = All;

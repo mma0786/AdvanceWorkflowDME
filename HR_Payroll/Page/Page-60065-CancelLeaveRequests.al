@@ -5,7 +5,7 @@ page 60065 "Cancel Leave Requests"
     SourceTable = "Cancel Leave Request";
     UsageCategory = Administration;
     ApplicationArea = All;
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)

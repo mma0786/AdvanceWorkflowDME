@@ -6,7 +6,7 @@ page 60018 "Employee Earning Code Groups"//commented By Avinash
     SourceTable = "Employee Earning Code Groups";
     UsageCategory = Administration;
     ApplicationArea = All;
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)

@@ -1672,7 +1672,7 @@ xmlport 60548 "DMS Universal XMLport"
                   "Posting Date", //ExpectedReceiptDate
                   0D, //ShipmentDate
                   0, //TransferredFromEntryNo
-                  3 //Status (3==Prospect)
+                  Status// (3==Prospect)
                 );
 
                 "Warranty Date" := 0D;

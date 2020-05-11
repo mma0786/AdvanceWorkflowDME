@@ -7,7 +7,7 @@ page 60074 "Leave Requests"
     SourceTable = "Leave Request Header";
     UsageCategory = Lists;
     ApplicationArea = All;
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)

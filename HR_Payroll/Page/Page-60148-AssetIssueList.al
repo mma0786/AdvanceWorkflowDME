@@ -7,7 +7,7 @@ page 60148 "Asset Issue List"
     SourceTable = "Asset Assignment Register";
     SourceTableView = WHERE("Transaction Type" = FILTER(Issue),
                             Posted = FILTER(false));
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)
@@ -262,12 +262,11 @@ page 60148 "Asset Issue List"
                     var
                         ApprovalEntry: Record "Approval Entry";
                     begin
-                        ApprovalEntry.RESET;
-                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
-                        ApprovalEntry.SetRange("Record ID to Approve", Rec.RecID);
-                        if ApprovalEntry.FindSet() then begin
-                            PAGE.RUNMODAL(658, ApprovalEntry);
-                        end;
+                       ApprovalEntry.Reset();
+                        ApprovalEntry.SETRANGE("Table ID", DATABASE::"Asset Assignment Register");
+                        ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RecordId);
+                        ApprovalEntry.SETRANGE("Related to Change", FALSE);
+                        PAGE.RUN(70010, ApprovalEntry);
                     end;
                 }
                 action(Reopen)

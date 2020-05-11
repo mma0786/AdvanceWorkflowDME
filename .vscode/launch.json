@@ -6,8 +6,8 @@
             "type": "al",
             "request": "launch",
             "name": "Your own server",
-            "server": "http://localhost",
-            "serverInstance": "NEWBC150",
+            "server": "http://localhost/",
+            "serverInstance": "NEWBC160",
             "authentication": "Windows",
             "startupObjectId": 22,
             "startupObjectType": "Page",
@@ -15,8 +15,8 @@
             "launchBrowser": true,
             "enableLongRunningSqlStatements": true,
             "enableSqlInformationDebugger": true,
-            "schemaUpdateMode": "ForceSync",
-            "port": 9050
+            "schemaUpdateMode": "Synchronize",
+            "port": 9049
         }
     ]
 }

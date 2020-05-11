@@ -9,7 +9,7 @@ page 60147 "Asset Issue"
                       ORDER(Ascending);
     // // UsageCategory = Documents;
     // // ApplicationArea = All;
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)
@@ -407,12 +407,11 @@ page 60147 "Asset Issue"
                         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
                         ApprovalEntry: Record "Approval Entry";
                     begin
-                        ApprovalEntry.RESET;
-                        ApprovalEntry.SETRANGE("Table ID", RecID.TABLENO);
-                        ApprovalEntry.SetRange("Record ID to Approve", Rec.RecID);
-                        if ApprovalEntry.FindSet() then begin
-                            PAGE.RUNMODAL(658, ApprovalEntry);
-                        end
+                        ApprovalEntry.Reset();
+                        ApprovalEntry.SETRANGE("Table ID", DATABASE::"Asset Assignment Register");
+                        ApprovalEntry.SETRANGE("Record ID to Approve", Rec.RecordId);
+                        ApprovalEntry.SETRANGE("Related to Change", FALSE);
+                        PAGE.RUN(70010, ApprovalEntry);
                     end;
                 }
                 // Avinash

@@ -421,7 +421,7 @@ page 60203 "Leave Request Card_RC"
 
 
         if "Leave Request ID" <> '' then begin
-            if (Rec."Workflow Status" = Rec."Workflow Status"::Open) or (Rec."Workflow Status" = Rec."Workflow Status"::Open) then
+            if (Rec."Workflow Status" = Rec."Workflow Status"::Open) then
                 EditLeaveRequest := true
             else
                 EditLeaveRequest := false;

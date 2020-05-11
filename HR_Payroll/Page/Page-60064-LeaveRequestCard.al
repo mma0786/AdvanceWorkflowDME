@@ -5,14 +5,14 @@ page 60064 "Leave Request Card"
     SourceTable = "Leave Request Header";
     UsageCategory = Documents;
     // ApplicationArea = All;
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)
         {
             group(General)
             {
-                Editable = ("Workflow Status" <> "Workflow Status"::Released) AND ("Workflow Status" <> "Workflow Status"::Rejected) AND ("Workflow Status" <> "Workflow Status"::"Pending For Approval");
+                Editable = ("Workflow Status" <> "Workflow Status"::Released) AND ("Workflow Status" <> "Workflow Status"::"Pending For Approval");
                 field("Leave Request ID"; "Leave Request ID")
                 {
                     Editable = false;

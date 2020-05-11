@@ -31,7 +31,10 @@ tableextension 60008 GenJournaLine extends "Gen. Journal Line"
 
             trigger OnValidate()
             begin
-                TESTFIELD("FA Posting Type", "FA Posting Type"::"Acquisition Cost");
+                if ("FA Posting Type" = "FA Posting Type"::"Acquisition Cost") then
+                    Error('FA Posting type shoulb be ');
+
+                // TESTFIELD("FA Posting Type", "FA Posting Type"::"Acquisition Cost"); .. @avinash
                 UpdateAmount;
             end;
         }

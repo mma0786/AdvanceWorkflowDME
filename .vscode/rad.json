@@ -1,1 +1,1 @@
-﻿{"Added":[],"Modified":[{"Id":60064,"Kind":12,"Name":"Leave Request Card","PackagePath":"/src/HR_Payroll/Page/Page-60064-LeaveRequestCard.al"}],"Removed":[]}
+﻿{"Added":[],"Modified":[{"Id":60008,"Kind":17,"Name":"GenJournaLine","PackagePath":"/src/HR_Payroll/Ext-Table/TableExt-60008-GenJournaLine.al"},{"Id":60548,"Kind":15,"Name":"DMS Universal XMLport","PackagePath":"/src/HR_Payroll/DMS/DMS%20Universal%20Xmlport%20_%20BC.al"}],"Removed":[]}

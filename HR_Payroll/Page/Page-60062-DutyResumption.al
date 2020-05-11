@@ -4,7 +4,7 @@ page 60062 "Duty Resumption"
     SourceTable = "Duty Resumption";
     UsageCategory = Administration;
     ApplicationArea = All;
-
+    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)
