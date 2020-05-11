@@ -81,7 +81,7 @@ codeunit 60032 WFCode_Loan_Adj
             RequisitionRequestsRec.Reset();
             RequisitionRequestsRec.SetRange("Loan Adjustment ID", ApprovalEntry."Document No.");
             if RequisitionRequestsRec.FindFirst() then begin
-                RequisitionRequestsRec."WorkFlow Status" := RequisitionRequestsRec."WorkFlow Status"::Approved;
+                RequisitionRequestsRec."WorkFlow Status" := RequisitionRequestsRec."WorkFlow Status"::Released;
                 RequisitionRequestsRec.Modify(true);
             end;
         end;
@@ -109,9 +109,9 @@ codeunit 60032 WFCode_Loan_Adj
         l_ApprovalEntry.SetFilter(Status, '%1|%2', l_ApprovalEntry.Status::Open, l_ApprovalEntry.Status::Created);
         if l_ApprovalEntry.FindFirst() then begin
             LoanAdjRecRec.Reset();
-            LoanAdjRecRec.SetRange(RecID, ApprovalEntry."Record ID to Approve");
+            LoanAdjRecRec.SetRange("Loan Adjustment ID", ApprovalEntry."Document No.");
             if LoanAdjRecRec.FindFirst() then begin
-                LoanAdjRecRec."WorkFlow Status" := LoanAdjRecRec."WorkFlow Status"::Rejected;
+                LoanAdjRecRec."WorkFlow Status" := LoanAdjRecRec."WorkFlow Status"::Open;
                 LoanAdjRecRec.Modify(true);
             end;
         end;
@@ -213,7 +213,7 @@ codeunit 60032 WFCode_Loan_Adj
                 begin
 
                     RecRef.SetTable(LoanAdjRec);
-                    LoanAdjRec.Validate("WorkFlow Status", LoanAdjRec."WorkFlow Status"::Approved);
+                    LoanAdjRec.Validate("WorkFlow Status", LoanAdjRec."WorkFlow Status"::Released);
                     LoanAdjRec.Modify();
                     Variant := LoanAdjRec;
 

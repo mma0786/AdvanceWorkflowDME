@@ -81,7 +81,7 @@ codeunit 60026 WFCode_Leave_Request
             LeaveReqRec.Reset();
             LeaveReqRec.SetRange("Leave Request ID", ApprovalEntry."Document No.");
             if LeaveReqRec.FindFirst() then begin
-                LeaveReqRec."WorkFlow Status" := LeaveReqRec."WorkFlow Status"::Approved;
+                LeaveReqRec."WorkFlow Status" := LeaveReqRec."WorkFlow Status"::Released;
                 LeaveReqRec.Modify(true);
             end;
         end;
@@ -215,7 +215,7 @@ codeunit 60026 WFCode_Leave_Request
                 begin
 
                     RecRef.SetTable(LeaveReqRec);
-                    LeaveReqRec.Validate("WorkFlow Status", LeaveReqRec."WorkFlow Status"::Approved);
+                    LeaveReqRec.Validate("WorkFlow Status", LeaveReqRec."WorkFlow Status"::Released);
                     LeaveReqRec.Modify();
                     Variant := LeaveReqRec;
 
@@ -542,6 +542,12 @@ codeunit 60026 WFCode_Leave_Request
                 CardPageID := Page::"Document request Card";
             Database::"Asset Assignment Register":
                 CardPageID := Page::"Asset Issue";
+            Database::"Loan Request":
+                CardPageID := Page::"Loan Request";
+            Database::"Loan Adjustment Header":
+                CardPageID := Page::"Loan Adjustment";
+            Database::"Payroll Statement":
+                CardPageID := Page::"Payroll Statements";
         end;
     end;
 
