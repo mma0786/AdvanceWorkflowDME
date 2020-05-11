@@ -126,11 +126,18 @@ table 60021 "HCM Leave Types Wrkr"
             OptionCaption = 'None,Joining Date,Probation End Date,Confirmation Date';
             OptionMembers = "None","Joining Date","Probation End Date","Confirmation Date";
         }
-        field(135; Gender; Option)
+        // @Avinash Start Due to BC Upgrade
+        // // field(135; Gender; Option)
+        // // {
+        // //     OptionCaption = ' ,Female,Male';
+        // //     OptionMembers = " ",Female,Male;
+        // // }
+        //"Employee Gender"
+        field(135; Gender; Enum "Employee Gender")
         {
-            OptionCaption = ' ,Female,Male';
-            OptionMembers = " ",Female,Male;
+            Caption = 'Gender';
         }
+        // @Avinash Stop
         field(140; "Pay Type"; Option)
         {
             OptionCaption = 'None,Paid,UnPaid';

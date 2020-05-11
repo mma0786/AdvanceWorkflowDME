@@ -1636,7 +1636,9 @@ xmlport 60548 "DMS Universal XMLport"
     procedure addItemTracking()
     var
         lrecItemJnl: Record 83;
-        lcuCreateResEntry: Codeunit 99000830;
+        lcuCreateResEntry: Codeunit "Create Reserv. Entry";// 99000830;
+        StatusL: Enum "Reservation Status"; // @Avinash upgrade
+        ForReservEntry: Record "Reservation Entry"; // @Avinash upgrade 
     begin
         //<DMS>
         // Adds item tracking lines to item journal line table
@@ -1649,18 +1651,35 @@ xmlport 60548 "DMS Universal XMLport"
         WITH lrecItemJnl DO BEGIN
 
             IF ("Serial No." <> '') OR ("Lot No." <> '') THEN BEGIN
+
+                // Avinash need to check logic as per BC 160
+
+                // // // // //   lcuCreateResEntry.CreateReservEntryFor(
+                // // // // //                   DATABASE::"Item Journal Line", // ForType: Option;
+                // // // // //                   "Entry Type", // ForSubtype: Integer; 
+                // // // // //                   "Journal Template Name",// ForID: Code[20]; 
+                // // // // //                    "Journal Batch Name",// ForBatchName: Code[10];
+                // // // // //                   0, //prod order line// ForProdOrderLine: Integer;
+                // // // // //                   "Line No.", //source ref no.//  ForRefNo: Integer;
+                // // // // //                   "Qty. per Unit of Measure",// ForQtyPerUOM: Decimal; 
+                // // // // //                   Quantity,// Quantity: Decimal;
+                // // // // //                   "Quantity (Base)",// QuantityBase: Decimal; 
+                // // // // //                   "Serial No.",
+                // // // // //                   "Lot No."
+                // // // // //                 );
+
+
                 lcuCreateResEntry.CreateReservEntryFor(
-                  DATABASE::"Item Journal Line",
-                  "Entry Type",
-                  "Journal Template Name", "Journal Batch Name",
-                  0, //prod order line
-                  "Line No.", //source ref no.
-                  "Qty. per Unit of Measure",
-                  Quantity,
-                  "Quantity (Base)",
-                  "Serial No.",
-                  "Lot No."
-                );
+                  DATABASE::"Item Journal Line", // ForType: Option;
+                  "Entry Type", // ForSubtype: Integer; 
+                  "Journal Template Name",// ForID: Code[20]; 
+                   "Journal Batch Name",// ForBatchName: Code[10];
+                  0, //prod order line// ForProdOrderLine: Integer;
+                  "Line No.", //source ref no.//  ForRefNo: Integer;
+                  "Qty. per Unit of Measure",// ForQtyPerUOM: Decimal; 
+                  Quantity,// Quantity: Decimal;
+                  "Quantity (Base)",// QuantityBase: Decimal; 
+                  ForReservEntry);
 
                 lcuCreateResEntry.SetDates("Warranty Date", "Expiration Date");
 
@@ -1672,7 +1691,7 @@ xmlport 60548 "DMS Universal XMLport"
                   "Posting Date", //ExpectedReceiptDate
                   0D, //ShipmentDate
                   0, //TransferredFromEntryNo
-                  Status// (3==Prospect)
+                 StatusL::Prospect // 3// (3==Prospect)
                 );
 
                 "Warranty Date" := 0D;
