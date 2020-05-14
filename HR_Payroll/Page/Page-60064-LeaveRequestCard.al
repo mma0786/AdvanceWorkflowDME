@@ -277,6 +277,9 @@ page 60064 "Leave Request Card"
                             AdvanceWorkflowCUL.LeaveRequest_SwapApprovalUser_Advance_LT(Rec.RecordId);
                             AdvanceWorkflowCUL.DeleteExtraLine_ApprovalEntry_LT(Rec.RecordId);
                             // Stop 21.04.2020 Advance Workflow
+                            // Start #Levtech WF
+                            CancelAndDeleteApprovalEntryTrans_LT(Rec.RecordId);
+                            // Stop #Levtech WF
 
                         end;
                     end;
@@ -849,9 +852,7 @@ page 60064 "Leave Request Card"
             SeqNo_L := 0;
             for i := 1 to CountForLoop_L do begin
                 //Clear(Delegate_L);
-
                 ReportingID_L := GetEmployeePostionEmployeeID_LT(SenderID_L);
-
                 if GetEmployeePostionEmployeeID_FinalPosituion_LT(SenderID_L) then begin
                     if (ReportingID_L = '') then begin//(i = 1) AND
                         ReportingID_L := SenderID_L;
@@ -862,7 +863,6 @@ page 60064 "Leave Request Card"
                 end;
 
                 SeqNo_L += 1;
-
                 if ReportingID_L = '' then
                     ERROR('Next level Approval Position Not Define');
 
@@ -880,8 +880,6 @@ page 60064 "Leave Request Card"
 
                 Delegate_L := CheckDelegateForEmployee_LT(ReportingID_L);
 
-                //MESSAGE('Sender - %1 .............. Appr - %2 ', UserSetupRec_L."User ID",UserSetupRec2_L."User ID");
-                //MESSAGE('I - %1',i);
 
                 if i <= ApprovalLevelSetupRec_L.Level then begin
                     InsertApprovalEntryTrans_LT(TransID,
