@@ -41,7 +41,7 @@ page 60147 "Asset Issue"
                     Editable = Edit;
                     ShowMandatory = true;
                     ApplicationArea = All;
-                    TableRelation = "Fixed Asset";
+                    TableRelation = "Fixed Asset" where("Asset Custody" = filter(Employer));
                     trigger OnValidate()
                     begin
                         AssetAssiReg.RESET;
@@ -199,19 +199,6 @@ page 60147 "Asset Issue"
 
                     trigger OnAction()
                     begin
-                        //commented By Avinash 
-                        /*
-                        if not ApprovalsMgmt.CheckAARPossiblePosting(Rec) then begin
-                            TESTFIELD("WorkFlow Status", Rec."WorkFlow Status"::Released);
-                            Post_Action;
-                            Rec.DELETE
-                        end else begin
-                            Post_Action;
-                            Rec.DELETE
-                        end;
-                        */
-                        //commented By Avinash 
-
                         IF "WorkFlow Status" = "WorkFlow Status"::Released THEN
                             Post_Action
                         ELSE
@@ -682,6 +669,7 @@ page 60147 "Asset Issue"
                     end;
                 end;
         end;
+
     end;
 
     //commented By Avinash  [Scope('Internal')]

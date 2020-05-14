@@ -60,10 +60,7 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                 Editable = false;
                 ApplicationArea = All;
             }
-            field("Blood Group"; "Blood Group")
-            {
-                ApplicationArea = All;
-            }
+
 
         }
         addafter(General)
@@ -164,10 +161,13 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
             field("Age As Of Date"; "Age As Of Date")
             {
                 Editable = false;
+                ApplicationArea = All;
             }
             field(Religion; "Employee Religion")
             {
                 ShowMandatory = true;
+                Caption = 'Religion';
+                ApplicationArea = All;
             }
             field(Nationality; Nationality)
             {
@@ -175,6 +175,10 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                 ShowMandatory = true;
             }
             field("Nationality In Arabic"; "Nationality In Arabic")
+            {
+                ApplicationArea = All;
+            }
+            field("Blood Group"; "Blood Group")
             {
                 ApplicationArea = All;
             }

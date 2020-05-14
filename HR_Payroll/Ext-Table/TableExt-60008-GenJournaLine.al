@@ -23,7 +23,7 @@ tableextension 60008 GenJournaLine extends "Gen. Journal Line"
                 //ALFA
             end;
         }
-        field(50000; "FA Quantity"; Integer)
+        field(50055; "FA Quantity"; Integer)
         {
             Caption = 'FA Quantity';
             Description = 'ALFA';
@@ -38,7 +38,7 @@ tableextension 60008 GenJournaLine extends "Gen. Journal Line"
                 UpdateAmount;
             end;
         }
-        field(50001; "FA Unit Amount"; Decimal)
+        field(50051; "FA Unit Amount"; Decimal)
         {
             Caption = 'FA Unit Amount';
             Description = 'ALFA';
@@ -51,17 +51,17 @@ tableextension 60008 GenJournaLine extends "Gen. Journal Line"
                 UpdateAmount();
             end;
         }
-        field(50002; "Total Amount"; Decimal)
+        field(50052; "Total Amount"; Decimal)
         {
             CalcFormula = Sum ("Gen. Journal Line"."Amount (LCY)" WHERE("Document No." = FIELD("Document No."),
                                                                         "Amount (LCY)" = FILTER(> 0)));
             Editable = false;
             FieldClass = FlowField;
         }
-        field(50003; "Total Amount LCY"; Decimal)
+        field(50053; "Total Amount LCY"; Decimal)
         {
         }
-        field(50004; "Shortcut Dimension 3 Code"; Code[20])
+        field(50054; "Shortcut Dimension 3 Code"; Code[20])
         {
             CaptionClass = '1,2,2';
             Caption = 'Shortcut Dimension 3 Code';

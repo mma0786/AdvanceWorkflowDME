@@ -1654,32 +1654,32 @@ xmlport 60548 "DMS Universal XMLport"
 
                 // Avinash need to check logic as per BC 160
 
-                // // // // //   lcuCreateResEntry.CreateReservEntryFor(
-                // // // // //                   DATABASE::"Item Journal Line", // ForType: Option;
-                // // // // //                   "Entry Type", // ForSubtype: Integer; 
-                // // // // //                   "Journal Template Name",// ForID: Code[20]; 
-                // // // // //                    "Journal Batch Name",// ForBatchName: Code[10];
-                // // // // //                   0, //prod order line// ForProdOrderLine: Integer;
-                // // // // //                   "Line No.", //source ref no.//  ForRefNo: Integer;
-                // // // // //                   "Qty. per Unit of Measure",// ForQtyPerUOM: Decimal; 
-                // // // // //                   Quantity,// Quantity: Decimal;
-                // // // // //                   "Quantity (Base)",// QuantityBase: Decimal; 
-                // // // // //                   "Serial No.",
-                // // // // //                   "Lot No."
-                // // // // //                 );
-
-
                 lcuCreateResEntry.CreateReservEntryFor(
-                  DATABASE::"Item Journal Line", // ForType: Option;
-                  "Entry Type", // ForSubtype: Integer; 
-                  "Journal Template Name",// ForID: Code[20]; 
-                   "Journal Batch Name",// ForBatchName: Code[10];
-                  0, //prod order line// ForProdOrderLine: Integer;
-                  "Line No.", //source ref no.//  ForRefNo: Integer;
-                  "Qty. per Unit of Measure",// ForQtyPerUOM: Decimal; 
-                  Quantity,// Quantity: Decimal;
-                  "Quantity (Base)",// QuantityBase: Decimal; 
-                  ForReservEntry);
+                                DATABASE::"Item Journal Line", // ForType: Option;
+                                "Entry Type", // ForSubtype: Integer; 
+                                "Journal Template Name",// ForID: Code[20]; 
+                                 "Journal Batch Name",// ForBatchName: Code[10];
+                                0, //prod order line// ForProdOrderLine: Integer;
+                                "Line No.", //source ref no.//  ForRefNo: Integer;
+                                "Qty. per Unit of Measure",// ForQtyPerUOM: Decimal; 
+                                Quantity,// Quantity: Decimal;
+                                "Quantity (Base)",// QuantityBase: Decimal; 
+                                "Serial No.",
+                                "Lot No."
+                              );
+
+
+                // // // lcuCreateResEntry.CreateReservEntryFor(
+                // // //   DATABASE::"Item Journal Line", // ForType: Option;
+                // // //   "Entry Type", // ForSubtype: Integer; 
+                // // //   "Journal Template Name",// ForID: Code[20]; 
+                // // //    "Journal Batch Name",// ForBatchName: Code[10];
+                // // //   0, //prod order line// ForProdOrderLine: Integer;
+                // // //   "Line No.", //source ref no.//  ForRefNo: Integer;
+                // // //   "Qty. per Unit of Measure",// ForQtyPerUOM: Decimal; 
+                // // //   Quantity,// Quantity: Decimal;
+                // // //   "Quantity (Base)",// QuantityBase: Decimal; 
+                // // //   ForReservEntry);
 
                 lcuCreateResEntry.SetDates("Warranty Date", "Expiration Date");
 

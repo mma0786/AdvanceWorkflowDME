@@ -251,6 +251,7 @@ page 60034 "HCM Leave Types ErnGrp"
                 field("Is Paternity Leave"; "Is Paternity Leave")
                 {
                     ApplicationArea = All;
+                    Caption = 'Is paternity/Adoption Leave';
 
                     trigger
                               OnValidate()

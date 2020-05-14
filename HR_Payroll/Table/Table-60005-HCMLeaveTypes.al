@@ -226,6 +226,7 @@ table 60005 "HCM Leave Types"
                     "CarryForward Lapse After Month" := AccrualComponent."CarryForward Lapse After Month";
                     "Repeat After Months" := AccrualComponent."Repeat After Months";
                     "Avail Allow Till" := AccrualComponent."Avail Allow Till";
+                    "Roll Over Period" := AccrualComponent."Roll Over Period";
                 END
                 ELSE BEGIN
                     "Accrual Description" := '';
@@ -239,6 +240,7 @@ table 60005 "HCM Leave Types"
                     "Max Carry Forward" := 0;
                     "CarryForward Lapse After Month" := 0;
                     "Repeat After Months" := 0;
+                    "Roll Over Period" := 0;
                     "Avail Allow Till" := "Avail Allow Till"::"Accrual Till Date";
                 END;
 

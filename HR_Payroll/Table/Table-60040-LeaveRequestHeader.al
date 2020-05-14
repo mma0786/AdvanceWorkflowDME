@@ -365,7 +365,7 @@ table 60040 "Leave Request Header"
         // @Avinash 08.05.2020
         field(73; "Dependent ID"; Code[20])
         {
-            TableRelation = "Employee Dependents Master" where(Relationship = filter(Child));
+            TableRelation = "Employee Dependents Master" where(Relationship = filter(Child), "Employee ID" = field("Personnel Number"));
             trigger
             OnValidate()
             var
@@ -375,15 +375,17 @@ table 60040 "Leave Request Header"
             begin
                 EmpDepeMasterRecL.Reset();
                 if EmpDepeMasterRecL.Get("Dependent ID", "Personnel Number") then begin
-                    "Dependent Name" := EmpDepeMasterRecL.FullName();
+                    "Dependent Name" := EmpDepeMasterRecL."Dependent First Name" + ' ' + EmpDepeMasterRecL."Dependent Middle Name" + ' ' + EmpDepeMasterRecL."Dependent Last Name";
                     ChildCurrentAge := Today - EmpDepeMasterRecL."Date of Birth";
 
                     HCMLeaveTypeRecL.Reset();
                     HCMLeaveTypeRecL.SetRange("Leave Type Id", "Leave Type");
                     HCMLeaveTypeRecL.SetRange("Is Paternity Leave", true);
-                    if HCMLeaveTypeRecL.FindFirst() then
+                    if HCMLeaveTypeRecL.FindFirst() then begin
+                        HCMLeaveTypeRecL.TestField("Child Age Limit in Months");
                         if ChildCurrentAge > (HCMLeaveTypeRecL."Child Age Limit in Months" * 30) then
-                            Error('you cannot apply for this leave.');
+                            Error('Dependent Age must be less than  %1 months', HCMLeaveTypeRecL."Child Age Limit in Months");
+                    end;
 
 
                 end;

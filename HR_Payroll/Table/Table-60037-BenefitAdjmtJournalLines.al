@@ -105,7 +105,7 @@ table 60037 "Benefit Adjmt. Journal Lines"
     begin
         BenefitAdjmtJournalheader.GET("Journal No.");
         if BenefitAdjmtJournalheader.Posted then
-            ERROR('You cannot modify confirmed journals');
+            ERROR('You cannot delete confirmed journals');
     end;
 
     trigger OnModify()

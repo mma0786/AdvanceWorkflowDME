@@ -6,8 +6,8 @@ page 60078 "Benefit Adjmt. Lines"
     MultipleNewLines = true;
     PageType = List;
     SourceTable = "Benefit Adjmt. Journal Lines";
-    UsageCategory = Administration;
-    ApplicationArea = All;
+    UsageCategory = Lists;
+    // ApplicationArea = All;
 
     layout
     {
@@ -65,10 +65,46 @@ page 60078 "Benefit Adjmt. Lines"
                     ApplicationArea = All;
                 }
             }
+
         }
+
+
+
     }
 
+    actions
+    {
+        area(processing)
+        {
+            action("Import Lines")
+            {
+                Caption = 'Imports Lines';
+                ApplicationArea = All;
+                Image = Line;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                trigger
+                OnAction()
+                var
+                    BenefitLineImportXmlport: XmlPort "Benefit Admnt Line Xmlport";
+                    BenefitHeaderRecL: Record "Benefit Adjmt. Journal header";
+                begin
+                    BenefitHeaderRecL.Reset();
+                    BenefitHeaderRecL.SetRange("Journal No.", "Journal No.");
+                    if BenefitHeaderRecL.FindFirst() then
+                        if BenefitHeaderRecL.Posted then
+                            Error('Journal already confirmed.');
 
+                    Clear(BenefitLineImportXmlport);
+                    BenefitLineImportXmlport.SetJournNo("Journal No.");
+                    BenefitLineImportXmlport.Run();
+
+                end;
+            }
+        }
+    }
 
     var
         PayperiodCodeandLineNo: Code[40];

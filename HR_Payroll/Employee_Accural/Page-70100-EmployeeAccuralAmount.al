@@ -86,6 +86,7 @@ page 70100 "Employee Accural Amount"
                     // ExpressCU.Run();
                     AdvancePayrollRecL.Reset();
                     AdvancePayrollRecL.Get();
+                    AdvancePayrollRecL.TestField("Accrual Per day Formula");
                     EmployeeAccuralAmountRecL.Reset();
                     if EmployeeAccuralAmountRecL.FindSet() then begin
                         repeat

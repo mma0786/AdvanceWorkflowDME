@@ -4,12 +4,10 @@ page 60002 "Asset Return List"
     PageType = List;
     SourceTable = "Asset Assignment Register";
     SourceTableView = SORTING("Issue Document No.", "Posted Issue Document No", "Return Document No.", "Posted Return Document No")
-                      ORDER(Ascending)
-                      WHERE("Transaction Type" = FILTER(Return),
-                            Posted = FILTER(false));
-    UsageCategory = Administration;
+                      ORDER(Ascending) WHERE("Transaction Type" = FILTER(Return), Posted = FILTER(false));
+    UsageCategory = Lists;
     ApplicationArea = All;
-    PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
+    // PromotedActionCategoriesML = ENU = 'New,Process,Report,Approval,'','','','',Request Approval', ESP = 'New,Process,Report,Approval,'','','','',Request Approval';
     layout
     {
         area(content)

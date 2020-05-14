@@ -88,6 +88,7 @@ table 60001 "Payroll Earning Code"
         }
         field(110; "Formula For Days"; Text[30])
         {
+
         }
         field(120; WPSType; Option)
         {

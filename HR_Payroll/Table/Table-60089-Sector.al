@@ -119,7 +119,7 @@ table 60089 Sector
     begin
         HrSetupRec.GET;
         if "Sector ID" = '' then;
-        //commented By Avinash  NoSeriesMgt.InitSeries(HrSetupRec."Sector ID", xRec."Sector ID", TODAY(), "Sector ID", HrSetupRec."Sector ID")
+        NoSeriesMgt.InitSeries(HrSetupRec."Sector ID", xRec."Sector ID", TODAY(), "Sector ID", HrSetupRec."Sector ID")
     end;
 }
 

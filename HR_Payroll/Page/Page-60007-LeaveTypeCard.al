@@ -110,10 +110,7 @@ page 60007 "Leave Type Card"
                 {
                     ApplicationArea = All;
                 }
-                field("Pay Type"; "Pay Type")
-                {
-                    ApplicationArea = All;
-                }
+
                 field(Gender; Gender)
                 {
                     ApplicationArea = All;
@@ -123,6 +120,10 @@ page 60007 "Leave Type Card"
                     ApplicationArea = All;
                 }
                 field("Marital Status"; "Marital Status")
+                {
+                    ApplicationArea = All;
+                }
+                field("Pay Type"; "Pay Type")
                 {
                     ApplicationArea = All;
                 }
@@ -253,6 +254,7 @@ page 60007 "Leave Type Card"
                 field("Is Paternity Leave"; "Is Paternity Leave")
                 {
                     ApplicationArea = All;
+                    Caption = 'Is paternity/Adoption Leave';
 
                     trigger
                               OnValidate()

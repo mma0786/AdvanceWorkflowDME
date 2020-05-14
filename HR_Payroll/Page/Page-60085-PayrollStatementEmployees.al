@@ -25,6 +25,7 @@ page 60085 "Payroll Statement Employees"
                 SubPageLink = "Payroll Statement ID" = FIELD("Payroll Statement ID"),
                               "Payroll Pay Cycle" = FIELD("Pay Cycle"),
                               "Payroll Pay Period" = FIELD("Pay Period");
+                ApplicationArea = All;
             }
             part("Payroll Statement Lines"; "Payroll Statement Lines")
             {
@@ -32,12 +33,15 @@ page 60085 "Payroll Statement Employees"
                 ShowFilter = true;
                 SubPageLink = "Payroll Statement ID" = FIELD("Payroll Statement ID"),
                               Worker = FIELD(Worker);
+                ApplicationArea = All;
+
             }
             part("Payroll Statement Transactions"; "Payroll Statemnt Emp Stmt.")
             {
                 Provider = Employees;
                 SubPageLink = "Payroll Statement ID" = FIELD("Payroll Statement ID"),
                               Worker = FIELD(Worker);
+                ApplicationArea = All;
             }
         }
     }

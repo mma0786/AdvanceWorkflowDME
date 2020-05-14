@@ -1,4 +1,4 @@
-codeunit 50002 InitialiseAllCodeunit
+codeunit 60352 InitialiseAllCodeunit
 {
     trigger OnRun()
     begin

@@ -30,6 +30,7 @@ page 60122 "Payroll Department"
                 field("Department In Arabic"; "Department In Arabic")
                 {
                     ApplicationArea = All;
+                    Caption = 'Department In Arabic';
                 }
                 field("Shortcut Dimension 1 Code"; "Shortcut Dimension 1 Code")
                 {
@@ -56,9 +57,8 @@ page 60122 "Payroll Department"
             {
                 Image = Database;
                 Promoted = true;
-                //commented By AvinashRunObject = Page "Asset Assignment RegisterList";
-                //commented By Avinash  RunPageLink = Field10 = FIELD ("Department ID"),
-                //commented By Avinash             Field25 = FILTER (true);
+                RunObject = Page "Asset Assignment Register List";
+                RunPageLink = "Issue to/Return by" = FIELD("Department ID"), Posted = FILTER(true);
             }
         }
     }

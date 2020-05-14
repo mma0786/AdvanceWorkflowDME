@@ -90,6 +90,7 @@ table 60110 "Asset Assignment Register"
             //The property 'ValidateTableRelation' can only be set if the property 'TableRelation' is set
             //ValidateTableRelation = false;
 
+
             trigger OnValidate()
             begin
                 AllowEditDelet;
@@ -257,7 +258,7 @@ table 60110 "Asset Assignment Register"
             Editable = true;
             // OptionCaption = 'Open,Approved,Send for Approval,Rejected';
             // OptionMembers = Open,Released,"Pending Approval",Rejected;
-            OptionCaption = 'Open,Pending For Approval,Released,Rejected';
+            OptionCaption = 'Open,Pending For Approval,Approved,Rejected';
             OptionMembers = Open,"Pending For Approval",Released,Rejected;
         }
         field(25; Posted; Boolean)
