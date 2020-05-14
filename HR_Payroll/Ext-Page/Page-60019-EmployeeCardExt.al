@@ -36,6 +36,11 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                 ApplicationArea = All;
                 Visible = false;
             }
+
+            field("Probation Months"; "Probation Months")
+            {
+                ApplicationArea = All;
+            }
             field("Probation Period"; "Probation Period")
             {
                 ApplicationArea = All;
@@ -60,6 +65,10 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                 Editable = false;
                 ApplicationArea = All;
             }
+            field(Sponcer; Sponcer)
+            {
+                ApplicationArea = All;
+            }
 
 
         }
@@ -77,6 +86,7 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                 ApplicationArea = All;
                 SubPageLink = "Employee ID" = FIELD("No."), "Table Type Option" = FILTER("Employee Contacts Line");
             }
+
         }
 
         addlast(Administration)
@@ -149,6 +159,12 @@ pageextension 60019 EmployeeCardExt extends "Employee Card"
                 Visible = false;
                 ApplicationArea = All;
             }
+            field("Employee notice period in Days"; "Employee notice period in Days")
+            {
+
+                ApplicationArea = All;
+            }
+
 
         }
         addlast(Personal)

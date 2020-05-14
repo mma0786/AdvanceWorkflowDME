@@ -47,16 +47,19 @@ page 60284 "Document request Card"
                 {
                     ApplicationArea = All;
                     Enabled = "Document format ID" = "Document format ID"::"Administrative Certificate";
+                    Visible = false;
                 }
                 field("Dependent Name"; "Dependent Name")
                 {
                     Editable = false;
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Document Title"; "Document Title")
                 {
                     Editable = false;
                     ApplicationArea = All;
+                    Visible = false;
                 }
                 field("Request Date"; "Request Date")
                 {
@@ -91,7 +94,10 @@ page 60284 "Document request Card"
                 trigger OnAction();
                 begin
                     if "WorkFlow Status" = "WorkFlow Status"::Released then begin
-                        // Email_Confirmation.Document_Request(Rec);
+                        Email_Confirmation.Document_Request(Rec);
+                        Message('Document Letter Request has been completed.');
+                        Completed := true;
+                        Modify();
                     end else
                         ERROR('WorkFlow status should be Approved for reopen');
                 end;
@@ -103,6 +109,7 @@ page 60284 "Document request Card"
                 {
                     ApplicationArea = All;
                     Caption = 'Approve';
+                    Enabled = OpenApprovalEntriesExistForCurrUser;
                     Image = Approve;
                     Promoted = true;
                     PromotedCategory = Category4;
@@ -220,7 +227,8 @@ page 60284 "Document request Card"
                         ReleaseSalesDoc: Codeunit "Release Sales Document";
                         pa: page "Requests to Approve";
                     begin
-                        if "WorkFlow Status" = "WorkFlow Status"::"Pending Approval" then
+                        TestField(Completed, false);
+                        if "WorkFlow Status" = "WorkFlow Status"::Released then
                             //  ERROR('WorkFlow status should be Approved for reopen');/////////
 
                             "WorkFlow Status" := "WorkFlow Status"::Open;
@@ -291,6 +299,8 @@ page 60284 "Document request Card"
                     Enabled = "WorkFlow Status" = "WorkFlow Status"::Released;
                     Image = PrintAttachment;
                     Promoted = true;
+                    ApplicationArea = All;
+                    PromotedIsBig = true;
 
                     trigger OnAction();
                     var
@@ -310,43 +320,46 @@ page 60284 "Document request Card"
                             CLEAR(LeaveAnalysis);
                             LeaveAnalysis.Run();
                         end;
-                        /*if "Document format ID" = "Document format ID"::"Bank Transfer" then begin
-                          CLEAR(Trans_SalaryRep);
-                          Rec2 := Rec;
-                          CurrPage.SETSELECTIONFILTER(Rec2);
-                          Trans_SalaryRep.SETTABLEVIEW(Rec2);
-                          Trans_SalaryRep.RUNMODAL;
+                        if "Document format ID" = "Document format ID"::"Bank Transfer" then begin
+                            CLEAR(Trans_SalaryRep);
+
+                            CurrPage.SETSELECTIONFILTER(Rec2);
+                            if Rec2.FindFirst() then;
+
+                            // Trans_SalaryRep.SETTABLEVIEW(Rec2);
+                            // Trans_SalaryRep.RUNMODAL;
+                            Report.RunModal(Report::"Transfer of Salary", false, false, Rec);
                         end;
-                        
-                        
-                        if "Document format ID" = "Document format ID"::"Administrative Certificate" then begin
-                          CLEAR(AdminCertRep);
-                          EmployeeDependentsMaster.RESET;
-                          EmployeeDependentsMaster.SETRANGE("Employee ID",Rec."Employee ID");
-                          if EmployeeDependentsMaster.FINDFIRST then begin
-                            AdminCertRep.SETTABLEVIEW(EmployeeDependentsMaster);
-                            AdminCertRep.RUNMODAL;
-                          end;
-                        end;
-                        
-                        if "Document format ID" = "Document format ID"::"US Consulate" then begin
-                          CLEAR(USConsulateRep);
-                          IdentificationMasterRec.RESET;
-                          IdentificationMasterRec.SETRANGE("Employee No.",Rec."Employee ID");
-                          if IdentificationMasterRec.FINDFIRST then begin
-                            USConsulateRep.SETTABLEVIEW(IdentificationMasterRec);
-                            USConsulateRep.RUNMODAL;
-                          end;
-                        end;
-                        if "Document format ID" = "Document format ID"::"Administrative Certificate Arabic" then begin
-                          CLEAR(AdimArabRep);
-                          EmpRec.RESET;
-                          EmpRec.SETRANGE("No.","Employee ID");
-                          if EmpRec.FINDFIRST then  begin
-                              AdimArabRep.SETTABLEVIEW(EmpRec);
-                              AdimArabRep.RUNMODAL;
-                          end;
-                        end;
+
+                        /*
+                       if "Document format ID" = "Document format ID"::"Administrative Certificate" then begin
+                         CLEAR(AdminCertRep);
+                         EmployeeDependentsMaster.RESET;
+                         EmployeeDependentsMaster.SETRANGE("Employee ID",Rec."Employee ID");
+                         if EmployeeDependentsMaster.FINDFIRST then begin
+                           AdminCertRep.SETTABLEVIEW(EmployeeDependentsMaster);
+                           AdminCertRep.RUNMODAL;
+                         end;
+                       end;
+
+                       if "Document format ID" = "Document format ID"::"US Consulate" then begin
+                         CLEAR(USConsulateRep);
+                         IdentificationMasterRec.RESET;
+                         IdentificationMasterRec.SETRANGE("Employee No.",Rec."Employee ID");
+                         if IdentificationMasterRec.FINDFIRST then begin
+                           USConsulateRep.SETTABLEVIEW(IdentificationMasterRec);
+                           USConsulateRep.RUNMODAL;
+                         end;
+                       end;
+                       if "Document format ID" = "Document format ID"::"Administrative Certificate Arabic" then begin
+                         CLEAR(AdimArabRep);
+                         EmpRec.RESET;
+                         EmpRec.SETRANGE("No.","Employee ID");
+                         if EmpRec.FINDFIRST then  begin
+                             AdimArabRep.SETTABLEVIEW(EmpRec);
+                             AdimArabRep.RUNMODAL;
+                         end;
+                       end;
 */
                     end;
                 }
@@ -374,9 +387,9 @@ page 60284 "Document request Card"
         OpenApprovalEntriesExist: Boolean;
         CanCancelApprovalForRecord: Boolean;
         ApprovalsMgmt: Codeunit "Approvals Mgmt.";
-        // Email_Confirmation : Codeunit "Email Confirmation";
+        Email_Confirmation: Codeunit Email_Confirmation;
         Rec2: Record "Document Request";
-        // Trans_SalaryRep : Report "Transfer of Salary";
+        Trans_SalaryRep: Report "Transfer of Salary";
         //  AdminCertRep : Report "ADMINISTRATIVE CERTIFICATE";
         EmployeeDependentsMaster: Record "Employee Dependents Master";
         //  USConsulateRep : Report "US Consulate";

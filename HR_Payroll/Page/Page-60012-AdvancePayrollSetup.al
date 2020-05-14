@@ -265,6 +265,10 @@ page 60012 "Advance Payroll Setup"
                 {
                     ApplicationArea = All;
                 }
+                field("Probation Months"; "Probation Months")
+                {
+                    ApplicationArea = All;
+                }
             }
             group(Journal)
             {

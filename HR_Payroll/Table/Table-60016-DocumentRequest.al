@@ -145,6 +145,10 @@ table 60016 "Document Request"
         }
         field(13; RecId; RecordId)
         { }
+        field(14; Completed; Boolean)
+        {
+
+        }
     }
 
     keys

@@ -54,6 +54,40 @@ page 60083 "Payroll Adjmt. Journal Lines"
         }
     }
 
+    actions
+    {
+        area(processing)
+        {
+            action("Import Lines")
+            {
+                Caption = 'Imports Lines';
+                ApplicationArea = All;
+                Image = Line;
+                Promoted = true;
+                PromotedCategory = Process;
+                PromotedIsBig = true;
+                PromotedOnly = true;
+                trigger
+                OnAction()
+                var
+                    PayrollAdjmtJournalLinesXmlport: XmlPort "Payroll Adjmt. Journal Lines";
+                    PayrollAdjmtJournalheaderRecL: Record "Payroll Adjmt. Journal header";
+                begin
+                    PayrollAdjmtJournalheaderRecL.Reset();
+                    PayrollAdjmtJournalheaderRecL.SetRange("Journal No.", "Journal No.");
+                    if PayrollAdjmtJournalheaderRecL.FindFirst() then
+                        if PayrollAdjmtJournalheaderRecL.Posted then
+                            Error('Journal already confirmed.');
+
+                    Clear(PayrollAdjmtJournalLinesXmlport);
+                    PayrollAdjmtJournalLinesXmlport.SetJournNo("Journal No.");
+                    PayrollAdjmtJournalLinesXmlport.Run();
+
+                end;
+            }
+        }
+    }
+
 
 }
 

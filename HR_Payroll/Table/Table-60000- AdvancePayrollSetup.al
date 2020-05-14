@@ -326,6 +326,11 @@ table 60000 "Advance Payroll Setup"
         {
 
         }
+        field(137; "Probation Months"; Integer)
+        {
+
+
+        }
     }
 
     keys

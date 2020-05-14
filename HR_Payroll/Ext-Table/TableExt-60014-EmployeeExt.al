@@ -299,6 +299,47 @@ tableextension 60014 EmployeeExt extends Employee
         {
             OptionMembers = " ","O−","O+","A−","A+","B−","B+","AB−","AB+";
         }
+
+        field(60053; "Employee Notice Period In Days"; Integer)
+        {
+
+        }
+        field(60054; "Sponcer"; Code[250])
+        {
+            TableRelation = Company;
+            trigger
+            OnValidate()
+            var
+                CompanyRecL: Record Company;
+            begin
+                CompanyRecL.Reset();
+                if CompanyRecL.Get(Sponcer) then
+                    Sponcer := UpperCase(CompanyRecL.Name);
+
+            end;
+        }
+
+        field(60055; "Probation Months"; Integer)
+        {
+
+            trigger OnValidate()
+            var
+                AdvPayrollSetupRecL: Record "Advance Payroll Setup";
+                DateExpr: Text;
+            begin
+                AdvPayrollSetupRecL.Reset();
+                AdvPayrollSetupRecL.Get();
+                if "Probation Months" > AdvPayrollSetupRecL."Probation Months" then
+                    Error('Probation  Mothas cannoot greater than %1', AdvPayrollSetupRecL."Probation Months");
+
+                //DateExpr := '<' + Format("Joining Date") + '+' + Format("Probation Months") + 'M';
+
+                DateExpr := '<' + Format("Probation Months") + 'M>';
+
+                "Probation Period" := CalcDate(dateExpr, "Joining Date");
+            end;
+        }
+
         modify("First Name")
         {
             trigger OnAfterValidate()

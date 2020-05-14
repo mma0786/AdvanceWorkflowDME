@@ -28,7 +28,7 @@ codeunit 60000 Email_Confirmation
 
         SMTPSetup.RESET;
         SMTPSetup.GET;
-        ////////////  SMTP.CreateMessage(USERID, SMTPSetup."User ID", MailId, DocumentRequest."Document Title", '', TRUE);
+        SMTP.CreateMessage(USERID, SMTPSetup."User ID", MailId, DocumentRequest."Document Title", '', TRUE);
         SMTP.AppendBody('Dear Sir / Madam,');
         SMTP.AppendBody('<br><br>');
         SMTP.AppendBody('The ' + DocumentRequest."Document Title" + ' document ready');
